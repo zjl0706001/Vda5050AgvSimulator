@@ -1,0 +1,211 @@
+﻿[
+  {
+    "orderId": "2",
+    "orderUpdateId": 1,
+    "nodes": [
+      {
+        "nodeId": "784",
+        "sequenceId": 0,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 24.099689483642578,
+          "y": -17.974309921264648,
+          "theta": 1.5707999467849731,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      },
+      {
+        "nodeId": "110",
+        "sequenceId": 2,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 24.099689483642578,
+          "y": -18.664310455322266,
+          "theta": 0.0,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      },
+      {
+        "nodeId": "110",
+        "sequenceId": 4,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 24.099689483642578,
+          "y": -18.664310455322266,
+          "theta": 0.0,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      },
+      {
+        "nodeId": "109",
+        "sequenceId": 6,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 24.554689407348633,
+          "y": -18.664310455322266,
+          "theta": 0.0,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      }
+    ],
+    "edges": [
+      {
+        "edgeId": "edge_100141",
+        "sequenceId": 1,
+        "edgeDescription": "",
+        "released": true,
+        "startNodeId": "784",
+        "endNodeId": "110",
+        "maxSpeed": 0.5,
+        "maxHeight": 4.0,
+        "minHeight": 1.0,
+        "orientation": 3.1415926535897931,
+        "orientationType": "GLOBAL",
+        "direction": "straight",
+        "rotationAllowed": false,
+        "maxRotationSpeed": 0.0,
+        "length": 0.68999999761581421,
+        "actions": [],
+        "securityId": 1,
+        "needQrFinishTask": false
+      },
+      {
+        "edgeId": "rotate_2",
+        "sequenceId": 3,
+        "edgeDescription": "",
+        "released": true,
+        "startNodeId": "110",
+        "endNodeId": "110",
+        "maxSpeed": 0.0,
+        "maxHeight": 4.0,
+        "minHeight": 1.0,
+        "orientation": 0.0,
+        "orientationType": "GLOBAL",
+        "direction": "straight",
+        "rotationAllowed": false,
+        "maxRotationSpeed": 0.0,
+        "length": 0.0,
+        "actions": [
+          {
+            "actionType": "rotateLoad",
+            "actionId": "e5216ce2-cd13-437b-9f96-c1592fbfe16a",
+            "actionDescription": "",
+            "blockingType": "NONE",
+            "actionParameters": [
+              {
+                "key": "theta",
+                "value": "1.5708"
+              }
+            ]
+          }
+        ],
+        "securityId": 12,
+        "needQrFinishTask": false
+      },
+      {
+        "edgeId": "edge_100828",
+        "sequenceId": 5,
+        "edgeDescription": "",
+        "released": true,
+        "startNodeId": "110",
+        "endNodeId": "109",
+        "maxSpeed": 0.5,
+        "maxHeight": 4.0,
+        "minHeight": 1.0,
+        "orientation": 0.0,
+        "orientationType": "GLOBAL",
+        "direction": "straight",
+        "rotationAllowed": true,
+        "maxRotationSpeed": 0.0,
+        "length": 0.45500001311302185,
+        "actions": [],
+        "securityId": 1,
+        "needQrFinishTask": false
+      }
+    ],
+    "headerId": 15,
+    "timestamp": "2026-05-16T22:32:39Z",
+    "version": "V2.0.0",
+    "manufacturer": "HX",
+    "serialNumber": "100"
+  },
+  {
+    "orderId": "2",
+    "orderUpdateId": 2,
+    "nodes": [
+      {
+        "nodeId": "109",
+        "sequenceId": 6,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 24.554689407348633,
+          "y": -18.664310455322266,
+          "theta": 0.0,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      },
+      {
+        "nodeId": "108",
+        "sequenceId": 8,
+        "nodeDescription": "",
+        "released": true,
+        "nodePosition": {
+          "x": 25.578689575195313,
+          "y": -18.664310455322266,
+          "theta": 0.0,
+          "allowedDeviationXY": 0.0,
+          "allowedDeviationTheta": 0.0,
+          "mapId": "1"
+        },
+        "actions": []
+      }
+    ],
+    "edges": [
+      {
+        "edgeId": "edge_100829",
+        "sequenceId": 7,
+        "edgeDescription": "",
+        "released": true,
+        "startNodeId": "109",
+        "endNodeId": "108",
+        "maxSpeed": 0.5,
+        "maxHeight": 4.0,
+        "minHeight": 1.0,
+        "orientation": 0.0,
+        "orientationType": "GLOBAL",
+        "direction": "straight",
+        "rotationAllowed": false,
+        "maxRotationSpeed": 0.0,
+        "length": 1.0240000486373901,
+        "actions": [],
+        "securityId": 1,
+        "needQrFinishTask": false
+      }
+    ],
+    "headerId": 30,
+    "timestamp": "2026-05-16T22:32:46Z",
+    "version": "V2.0.0",
+    "manufacturer": "HX",
+    "serialNumber": "100"
+  }
+]

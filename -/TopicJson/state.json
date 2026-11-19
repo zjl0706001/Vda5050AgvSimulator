@@ -1,0 +1,190 @@
+﻿{
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "91b80943-b856-4670-9000-42cdeb8fb8a5",
+      "actionStatus": "FINISHED",
+      "actionType": "rotateLoad",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V42",
+    "positionInitialized": true,
+    "theta": -1.1831068995892999,
+    "x": 13.977628982373462,
+    "y": -13.219215715146351
+  },
+  "avoidAreaId": 1,
+  "batteryState": {
+    "batteryCharge": 36,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [
+    {
+      "edgeId": "edge_101253",
+      "released": true,
+      "sequenceId": 3
+    },
+    {
+      "edgeId": "rotate_4",
+      "released": true,
+      "sequenceId": 5
+    },
+    {
+      "edgeId": "edge_100927",
+      "released": true,
+      "sequenceId": 7
+    },
+    {
+      "edgeId": "edge_100928",
+      "released": true,
+      "sequenceId": 9
+    },
+    {
+      "edgeId": "edge_100929",
+      "released": true,
+      "sequenceId": 11
+    },
+    {
+      "edgeId": "edge_101047",
+      "released": true,
+      "sequenceId": 13
+    }
+  ],
+  "errors": [],
+  "headerId": 1435,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "607",
+  "lastNodeSequenceId": 2,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [
+    {
+      "nodeId": "97",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 13.749690055847168,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 4
+    },
+    {
+      "nodeId": "97",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 13.749690055847168,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 6
+    },
+    {
+      "nodeId": "98",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 14.730690002441406,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 8
+    },
+    {
+      "nodeId": "99",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 15.730690002441406,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 10
+    },
+    {
+      "nodeId": "100",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 16.730690002441406,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 12
+    },
+    {
+      "nodeId": "113",
+      "nodePosition": {
+        "allowedDeviationTheta": 0,
+        "allowedDeviationXY": 0,
+        "mapId": "map1",
+        "theta": 0,
+        "x": 17.157690048217773,
+        "y": -13.224309921264648
+      },
+      "released": true,
+      "sequenceId": 14
+    }
+  ],
+  "operatingMode": "AUTOMATIC",
+  "orderId": "18",
+  "orderUpdateId": 2,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T03:31:15.311Z",
+  "turntableState": {
+    "theta": 1.5777776704344841
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}

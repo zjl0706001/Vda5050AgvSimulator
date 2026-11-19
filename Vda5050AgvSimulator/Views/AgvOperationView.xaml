@@ -1,0 +1,258 @@
+﻿<UserControl x:Class="Vda5050AgvSimulator.Views.AgvOperationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="Inter, Segoe UI, Microsoft YaHei UI" FontSize="13"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             UseLayoutRounding="True">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="OpText" Color="#172338" />
+        <SolidColorBrush x:Key="OpMuted" Color="#52637A" />
+        <SolidColorBrush x:Key="OpAccent" Color="#225ADB" />
+        <SolidColorBrush x:Key="OpDanger" Color="#AE3532" />
+        <SolidColorBrush x:Key="OpBorder" Color="#DCE4EE" />
+        <SolidColorBrush x:Key="OpNeutralFill" Color="#E9EFF7" />
+        <SolidColorBrush x:Key="OpOnlineText" Color="#126549" />
+        <SolidColorBrush x:Key="OpOnlineFill" Color="#DEF2E8" />
+        <SolidColorBrush x:Key="OpOfflineText" Color="#A63A32" />
+        <SolidColorBrush x:Key="OpOfflineFill" Color="#FBE8E4" />
+
+        <Style x:Key="OpSection" TargetType="Border">
+            <Setter Property="Padding" Value="11" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource OpBorder}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="9" />
+        </Style>
+        <Style x:Key="OpSectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource OpText}" />
+        </Style>
+        <Style x:Key="OpMetricLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource OpMuted}" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="OpMetricValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource OpText}" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style x:Key="ButtonStandard" TargetType="Button">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="5,5" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource OpText}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource OpBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CommandChrome" Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="CommandChrome" Property="BorderBrush" Value="#82A9FF" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="CommandChrome" Property="Opacity" Value="0.8" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="CommandChrome" Property="Opacity" Value="0.44" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EEF4FD" />
+                    <Setter Property="BorderBrush" Value="#B8CBEA" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonPrimary" TargetType="Button" BasedOn="{StaticResource ButtonStandard}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource OpAccent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource OpAccent}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#184ABD" />
+                    <Setter Property="BorderBrush" Value="#184ABD" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ButtonSelected" TargetType="Button" BasedOn="{StaticResource ButtonStandard}">
+            <Setter Property="Foreground" Value="{StaticResource OpAccent}" />
+            <Setter Property="Background" Value="#E9F1FF" />
+            <Setter Property="BorderBrush" Value="#B8CDF7" />
+        </Style>
+        <Style x:Key="ButtonDanger" TargetType="Button" BasedOn="{StaticResource ButtonStandard}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource OpDanger}" />
+            <Setter Property="BorderBrush" Value="{StaticResource OpDanger}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#912C29" />
+                    <Setter Property="BorderBrush" Value="#912C29" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                  CanContentScroll="False" PanningMode="VerticalOnly">
+        <StackPanel Margin="9,8,9,1">
+            <Border Style="{StaticResource OpSection}" Background="#F1F6FD" BorderBrush="#DBE6F5">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="SelectedAgvIdTextBlock" Text="选择一台 AGV"
+                                   FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"
+                                   Foreground="{StaticResource OpText}" TextTrimming="CharacterEllipsis" />
+                        <Border x:Name="SelectedStatusBorder" Grid.Column="1" Margin="8,0,0,0"
+                                Padding="8,3" CornerRadius="8" VerticalAlignment="Center"
+                                Background="{StaticResource OpNeutralFill}" Visibility="Collapsed">
+                            <TextBlock x:Name="SelectedStatusTextBlock" FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource OpMuted}" />
+                        </Border>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock Text="当前地标" Style="{StaticResource OpMetricLabel}" />
+                            <TextBlock x:Name="SelectedPositionTextBlock" Text="—" Style="{StaticResource OpMetricValue}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="电量" Style="{StaticResource OpMetricLabel}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="SelectedElectricTextBlock" Text="—" Style="{StaticResource OpMetricValue}" />
+                                <ProgressBar x:Name="SelectedBatteryBar" Grid.Column="1" Height="4" Margin="7,0,0,0"
+                                             Minimum="0" Maximum="100" Focusable="False"
+                                             Foreground="#278568" Background="#DCE6F1" BorderThickness="0"
+                                             AutomationProperties.Name="电量">
+                                    <ProgressBar.Template>
+                                        <ControlTemplate TargetType="ProgressBar">
+                                            <Border x:Name="PART_Track" CornerRadius="2" Background="{TemplateBinding Background}">
+                                                <Border x:Name="PART_Indicator" CornerRadius="2" HorizontalAlignment="Left"
+                                                        Background="{TemplateBinding Foreground}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </ProgressBar.Template>
+                                </ProgressBar>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,6,8,0">
+                            <TextBlock Text="运行状态" Style="{StaticResource OpMetricLabel}" />
+                            <TextBlock x:Name="SelectedRunStatusTextBlock" Text="—" Style="{StaticResource OpMetricValue}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,6,0,0">
+                            <TextBlock Text="带载状态" Style="{StaticResource OpMetricLabel}" />
+                            <TextBlock x:Name="SelectedLoadStatusTextBlock" Text="—" Style="{StaticResource OpMetricValue}" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource OpSection}">
+                <StackPanel>
+                    <TextBlock Text="连接与模式" Style="{StaticResource OpSectionTitle}" />
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="52" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="连接" Foreground="{StaticResource OpMuted}" VerticalAlignment="Center" />
+                        <UniformGrid Grid.Column="1" Columns="2">
+                            <Button x:Name="OnlineButton" Content="上线" Margin="0,0,3,0"
+                                    Style="{StaticResource ButtonStandard}" Click="OnlineButton_Click" />
+                            <Button x:Name="OfflineButton" Content="下线" Margin="3,0,0,0"
+                                    Style="{StaticResource ButtonStandard}" Click="OfflineButton_Click" />
+                        </UniformGrid>
+
+                        <TextBlock Grid.Row="1" Text="模式" Margin="0,6,0,0"
+                                   Foreground="{StaticResource OpMuted}" VerticalAlignment="Center" />
+                        <UniformGrid Grid.Row="1" Grid.Column="1" Columns="2" Margin="0,6,0,0">
+                            <Button x:Name="ManualModeButton" Content="手动" Margin="0,0,3,0"
+                                    Style="{StaticResource ButtonStandard}" Click="ManualModeButton_Click" />
+                            <Button x:Name="AutomaticModeButton" Content="自动" Margin="3,0,0,0"
+                                    Style="{StaticResource ButtonStandard}" Click="AutomaticModeButton_Click" />
+                        </UniformGrid>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource OpSection}">
+                <StackPanel>
+                    <TextBlock Text="运行控制" Style="{StaticResource OpSectionTitle}" />
+                    <UniformGrid Columns="2" Margin="0,8,0,0">
+                        <Button x:Name="StartButton" Content="启动" Margin="0,0,3,6"
+                                Style="{StaticResource ButtonPrimary}" Click="StartButton_Click" />
+                        <Button x:Name="StopButton" Content="停止" Margin="3,0,0,6"
+                                Style="{StaticResource ButtonStandard}" Click="StopButton_Click" />
+                        <Button x:Name="PreciseStopButton" Content="精准停车" Margin="0,0,3,0"
+                                Style="{StaticResource ButtonStandard}" Click="PreciseStopButton_Click" />
+                        <Button x:Name="ResetButton" Content="复位" Margin="3,0,0,0"
+                                Style="{StaticResource ButtonStandard}" Click="ResetButton_Click" />
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource OpSection}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="安全控制" Style="{StaticResource OpSectionTitle}" />
+                        <TextBlock x:Name="SelectedSafetyTextBlock" Grid.Column="1" Margin="8,0,0,0"
+                                   Text="—" FontSize="11" Foreground="{StaticResource OpMuted}"
+                                   TextAlignment="Right" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                    <UniformGrid Columns="2" Margin="0,8,0,0">
+                        <Button x:Name="EmergencyStopButton" Content="急停" Margin="0,0,3,0"
+                                Style="{StaticResource ButtonDanger}" Click="EmergencyStopButton_Click" />
+                        <Button x:Name="ReleaseEmergencyStopButton" Content="解除急停" Margin="3,0,0,0"
+                                Style="{StaticResource ButtonStandard}" Click="ReleaseEmergencyStopButton_Click" />
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

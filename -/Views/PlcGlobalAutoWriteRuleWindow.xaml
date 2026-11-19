@@ -1,0 +1,315 @@
+<Window x:Class="Vda5050AgvSimulator.Views.PlcGlobalAutoWriteRuleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="全局自动写入规则"
+        Width="1180"
+        Height="720"
+        ResizeMode="CanResize"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True"
+        Background="#F5F7FA">
+    <Window.Resources>
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#111827" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="NormalButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="78" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#D1D5DB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource NormalButtonStyle}">
+            <Setter Property="Background" Value="#2563EB" />
+            <Setter Property="BorderBrush" Value="#2563EB" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="240" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="12"
+                Margin="0,0,0,8">
+            <StackPanel>
+                <TextBlock Text="全局自动写入规则"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#111827" />
+                <TextBlock
+                    Text="这里维护全局规则模板；地址建议直接写偏移地址，例如 0.0 / 2.0 / 5.0，执行时会自动组合为当前绑定DB块号。也兼容 DB{DB}.5.0 和 DB1500.5.0。规则触发关系固定为：全部启用触发条件满足；若规则启用延时，则条件连续满足到延时时间后才执行写入动作。"
+                    FontSize="12"
+                    Foreground="#6B7280"
+                    Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="8"
+                Margin="0,0,0,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="规则列表"
+                               Style="{StaticResource SectionTitleStyle}" />
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Content="新增规则"
+                                Style="{StaticResource NormalButtonStyle}"
+                                Click="AddRuleButton_Click" />
+                        <Button Content="请求进入模板"
+                                Style="{StaticResource NormalButtonStyle}"
+                                Click="AddRequestInTemplateButton_Click" />
+                        <Button Content="删除规则"
+                                Style="{StaticResource NormalButtonStyle}"
+                                Click="RemoveRuleButton_Click" />
+                    </StackPanel>
+                </Grid>
+
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding Rules}"
+                          SelectedItem="{Binding SelectedRule, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          HeadersVisibility="Column"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          RowHeight="34"
+                          ColumnHeaderHeight="26">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="启用"
+                                                Width="60"
+                                                Binding="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="RuleId"
+                                            Width="70"
+                                            IsReadOnly="True"
+                                            Binding="{Binding RuleId}" />
+                        <DataGridTextColumn Header="规则名称"
+                                            Width="220"
+                                            Binding="{Binding RuleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridCheckBoxColumn Header="规则延时"
+                                                Width="80"
+                                                Binding="{Binding DelayTriggerEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <DataGridTextColumn Header="规则延时(ms)"
+                                            Width="110"
+                                            Binding="{Binding DelayMilliseconds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="备注"
+                                            Width="*"
+                                            Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="触发条件"
+                                   Style="{StaticResource SectionTitleStyle}" />
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="+ 条件"
+                                    Style="{StaticResource NormalButtonStyle}"
+                                    Click="AddTriggerButton_Click" />
+                            <Button Content="删条件"
+                                    Style="{StaticResource NormalButtonStyle}"
+                                    Click="RemoveTriggerButton_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding SelectedRule.Triggers}"
+                              SelectedItem="{Binding SelectedTrigger, Mode=TwoWay}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              RowHeight="34"
+                              ColumnHeaderHeight="26">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Header="启用"
+                                                    Width="55"
+                                                    Binding="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="ID"
+                                                Width="50"
+                                                Binding="{Binding TriggerId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="名称"
+                                                Width="110"
+                                                Binding="{Binding TriggerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="读取地址"
+                                                Width="120"
+                                                Binding="{Binding ReadAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Header="触发值"
+                                                    Width="65"
+                                                    Binding="{Binding TriggerValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="备注"
+                                                Width="*"
+                                                Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="写入动作"
+                                   Style="{StaticResource SectionTitleStyle}" />
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="+ 写入"
+                                    Style="{StaticResource NormalButtonStyle}"
+                                    Click="AddWriteItemButton_Click" />
+                            <Button Content="删写入"
+                                    Style="{StaticResource NormalButtonStyle}"
+                                    Click="RemoveWriteItemButton_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding SelectedRule.WriteItems}"
+                              SelectedItem="{Binding SelectedWriteItem, Mode=TwoWay}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              RowHeight="34"
+                              ColumnHeaderHeight="26">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Header="启用"
+                                                    Width="55"
+                                                    Binding="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="ID"
+                                                Width="45"
+                                                Binding="{Binding WriteId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="名称"
+                                                Width="95"
+                                                Binding="{Binding WriteName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="写入地址"
+                                                Width="110"
+                                                Binding="{Binding WriteAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Header="写值"
+                                                    Width="55"
+                                                    Binding="{Binding WriteValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Header="复位"
+                                                    Width="55"
+                                                    Binding="{Binding ResetWhenNotTrigger, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridCheckBoxColumn Header="复值"
+                                                    Width="55"
+                                                    Binding="{Binding ResetValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Header="备注"
+                                                Width="*"
+                                                Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="3"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="8"
+                Margin="0,8,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="保存后会写入全局规则配置文件；偏移地址如 5.0 会按当前绑定DB块执行，运行中的PLC需在主PLC配置窗口保存后重载。"
+                           FontSize="12"
+                           Foreground="#6B7280"
+                           VerticalAlignment="Center" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="保存全局规则"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="SaveButton_Click" />
+                    <Button Content="关闭"
+                            Style="{StaticResource NormalButtonStyle}"
+                            Click="CloseButton_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+
+    <PropertyGroup>
+
+        <NeutralLanguage>zh-CN</NeutralLanguage>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{2BEE9E1A-E8CE-4FBB-9804-80E0598D58DD}</ProjectGuid>
+        <OutputType>WinExe</OutputType>
+        <RootNamespace>Vda5050AgvSimulator</RootNamespace>
+        <AssemblyName>Vda5050AgvSimulator</AssemblyName>
+        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+        <WarningLevel>4</WarningLevel>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>x64</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>x64</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="HandyControl, Version=3.5.1.0, Culture=neutral, PublicKeyToken=45be8712787a1e5b, processorArchitecture=MSIL">
+            <HintPath>..\packages\HandyControl.3.5.1\lib\net472\HandyControl.dll</HintPath>
+        </Reference>
+        <Reference Include="HslCommunication, Version=12.8.1.0, Culture=neutral, PublicKeyToken=3d72ad3b6b5ec0e3, processorArchitecture=MSIL">
+            <HintPath>..\packages\HslCommunication.12.8.1\lib\net451\HslCommunication.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.7\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+        </Reference>
+        <Reference Include="MQTTnet, Version=4.3.7.1207, Culture=neutral, PublicKeyToken=fdb7629f2e364a63, processorArchitecture=MSIL">
+            <HintPath>..\packages\MQTTnet.4.3.7.1207\lib\net461\MQTTnet.dll</HintPath>
+        </Reference>
+        <Reference Include="mscorlib"/>
+        <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+            <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="System"/>
+        <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Drawing"/>
+        <Reference Include="System.Windows.Forms"/>
+        <Reference Include="System.IO.Pipelines, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.IO.Pipelines.10.0.7\lib\net462\System.IO.Pipelines.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Numerics"/>
+        <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encodings.Web, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Text.Encodings.Web.10.0.7\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+        </Reference>
+        <Reference Include="System.ValueTuple"/>
+        <Reference Include="System.Xml"/>
+        <Reference Include="System.Xaml">
+            <RequiredTargetFramework>4.0</RequiredTargetFramework>
+        </Reference>
+        <Reference Include="WindowsBase"/>
+        <Reference Include="PresentationCore"/>
+        <Reference Include="PresentationFramework"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ApplicationDefinition Include="App.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </ApplicationDefinition>
+        <Compile Include="Helpers\AgvHelper.cs"/>
+        <Compile Include="Helpers\AgvTurnHelper.cs"/>
+        <Compile Include="Helpers\GrowlHelper.cs"/>
+        <Compile Include="Helpers\MqttTopicHelper.cs"/>
+        <Compile Include="Helpers\PopupHelper.cs"/>
+        <Compile Include="Helpers\VdaAngleHelper.cs"/>
+        <Compile Include="Helpers\VdaPayloadBuilder.cs"/>
+        <Compile Include="Helpers\VdaTimeHelper.cs"/>
+        <Compile Include="Models\Agv\AddAgvRequestModel.cs"/>
+        <Compile Include="Models\Agv\AgvModel.cs"/>
+        <Compile Include="Models\Map\MapModel.cs"/>
+        <Compile Include="Models\Mqtt\MqttConfigModel.cs"/>
+        <Compile Include="Models\Mqtt\MqttMessageModel.cs"/>
+        <Compile Include="Models\OptionItem.cs"/>
+        <Compile Include="Models\Plc\DbBlockBitRowModel.cs"/>
+        <Compile Include="Models\Plc\PlcAgvSignalModel.cs"/>
+        <Compile Include="Models\Plc\PlcAutoWriteRuleModel.cs"/>
+        <Compile Include="Models\Plc\PlcConfigModel.cs"/>
+        <Compile Include="Models\Plc\PlcDbBlockModel.cs"/>
+        <Compile Include="Models\Plc\PlcProtocolBoardRowModel.cs"/>
+        <Compile Include="Models\Vda\VdaConnectionModel.cs"/>
+        <Compile Include="Models\Vda\VdaFactSheetModel.cs"/>
+        <Compile Include="Models\Vda\VdaInstantActionsModel.cs"/>
+        <Compile Include="Models\Vda\VdaOrderModel.cs"/>
+        <Compile Include="Models\Vda\VdaStateModel.cs"/>
+        <Compile Include="Models\Vda\VdaVisualizationModel.cs"/>
+        <Compile Include="Services\Agv\AgvSimulationService.cs"/>
+        <Compile Include="Services\Agv\AgvStoreService.cs"/>
+        <Compile Include="Services\Agv\ConfigStoreService.cs"/>
+        <Compile Include="Services\Agv\MapStoreService.cs"/>
+        <Compile Include="Services\Agv\MqttService.cs"/>
+        <Compile Include="Services\Agv\Vda5050Service.cs"/>
+        <Compile Include="Services\File\ConfigFileService.cs"/>
+        <Compile Include="Services\Plc\PlcAutoWriteRuleStoreService.cs"/>
+        <Compile Include="Services\Plc\PlcDbBlockService.cs"/>
+        <Compile Include="Services\Plc\PlcStoreService.cs"/>
+        <Compile Include="Services\Plc\PlcVirtualServerService.cs"/>
+        <Compile Include="Services\Plc\WindowsPortProxyService.cs"/>
+        <Compile Include="ViewModels\MainViewModel.cs"/>
+        <Compile Include="Views\AddAgvPopupView.xaml.cs">
+            <DependentUpon>AddAgvPopupView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\AgvListView.xaml.cs">
+            <DependentUpon>AgvListView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\AgvMapView.xaml.cs">
+            <DependentUpon>AgvMapView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\AgvOperationView.xaml.cs">
+            <DependentUpon>AgvOperationView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\DbBlockBitsWindow.xaml.cs">
+            <DependentUpon>DbBlockBitsWindow.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\EditAgvPopupView.xaml.cs">
+            <DependentUpon>EditAgvPopupView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\LogView.xaml.cs">
+            <DependentUpon>LogView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\MessageMonitorView.xaml.cs">
+            <DependentUpon>MessageMonitorView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\MqttConfigView.xaml.cs">
+            <DependentUpon>MqttConfigView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\MqttParameterPopupView.xaml.cs">
+            <DependentUpon>MqttParameterPopupView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\OrderView.xaml.cs">
+            <DependentUpon>OrderView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\PlcConfigWindow.xaml.cs">
+            <DependentUpon>PlcConfigWindow.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Views\PlcDbBlockProtocolBoardConfigWindow.xaml.cs"/>
+        <Compile Include="Views\PlcDbBlockResetConfigWindow.xaml.cs"/>
+        <Compile Include="Views\PlcGlobalAutoWriteRuleWindow.xaml.cs"/>
+        <Page Include="MainWindow.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Compile Include="App.xaml.cs">
+            <DependentUpon>App.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="MainWindow.xaml.cs">
+            <DependentUpon>MainWindow.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Page Include="Views\AddAgvPopupView.xaml"/>
+        <Page Include="Views\AgvListView.xaml"/>
+        <Page Include="Views\AgvMapView.xaml"/>
+        <Page Include="Views\AgvOperationView.xaml"/>
+        <Page Include="Views\DbBlockBitsWindow.xaml"/>
+        <Page Include="Views\EditAgvPopupView.xaml"/>
+        <Page Include="Views\LogView.xaml"/>
+        <Page Include="Views\MessageMonitorView.xaml"/>
+        <Page Include="Views\MqttConfigView.xaml"/>
+        <Page Include="Views\MqttParameterPopupView.xaml"/>
+        <Page Include="Views\OrderView.xaml"/>
+        <Page Include="Views\PlcConfigWindow.xaml"/>
+        <Page Include="Views\PlcDbBlockProtocolBoardConfigWindow.xaml"/>
+        <Page Include="Views\PlcDbBlockResetConfigWindow.xaml"/>
+        <Page Include="Views\PlcGlobalAutoWriteRuleWindow.xaml"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs">
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <EmbeddedResource Include="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="App.config"/>
+        <None Include="packages.config"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="TopicJson\instantActions.json"/>
+        <Content Include="TopicJson\log.json"/>
+        <Content Include="TopicJson\order.json"/>
+        <Content Include="TopicJson\state.json"/>
+        <Content Include="TopicJson\开机.json"/>
+        <Content Include="TopicJson\急停.json"/>
+        <Content Include="TopicJson\旋转.json"/>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')"/>
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))"/>
+    </Target>
+</Project>

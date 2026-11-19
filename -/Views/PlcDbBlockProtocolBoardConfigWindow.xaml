@@ -1,0 +1,237 @@
+﻿<Window x:Class="Vda5050AgvSimulator.Views.PlcDbBlockProtocolBoardConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DB块协议看板配置"
+        Width="1180"
+        Height="640"
+        MinWidth="980"
+        MinHeight="560"
+        ResizeMode="CanResize"
+        SizeToContent="Manual"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True"
+        Topmost="False"
+        Background="#F5F7FA">
+
+    <Window.Resources>
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="78" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource ToolButtonStyle}">
+            <Setter Property="Background" Value="#2563EB" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#2563EB" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题说明 -->
+        <Border Grid.Row="0"
+                Style="{StaticResource CardBorderStyle}"
+                Padding="12"
+                Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="协议看板配置"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#111827" />
+
+                <TextBlock Margin="0,6,0,0"
+                           Foreground="#6B7280"
+                           TextWrapping="Wrap">
+                    <Run Text="当前对象：" />
+                    <Run Text="PlcId=" />
+                    <Run Text="{Binding PlcId, Mode=OneWay}" />
+                    <Run Text="，DB" />
+                    <Run Text="{Binding DbNumber, Mode=OneWay}" />
+                    <Run
+                        Text="。运行中会显示当前值，可在“写入值”列输入新值后点击“写入”。地址支持 DB{DB}.DBX0.0 / DB{DB}.DBB2 / DB{DB}.DBW4 / DB{DB}.DBD6，也支持 0.0、DBX0.0、DBW4。" />
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- 工具栏 -->
+        <Grid Grid.Row="1"
+              Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                <TextBlock VerticalAlignment="Center"
+                           Foreground="{Binding RunningStatusForeground}"
+                           Text="{Binding RunningStatusText}" />
+
+                <CheckBox Margin="16,0,0,0"
+                          VerticalAlignment="Center"
+                          Content="自动刷新当前值"
+                          IsChecked="{Binding AutoRefreshEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+                <Button Content="刷新值"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="RefreshValuesButton_Click" />
+
+                <Button Content="写入选中"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="WriteSelectedValueButton_Click" />
+
+                <Button Content="新增协议项"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="AddProtocolItemButton_Click" />
+
+                <Button Content="导入基础模板"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="ImportBasicTemplateButton_Click" />
+
+                <Button Content="删除选中"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="RemoveProtocolItemButton_Click" />
+
+                <Button Content="清空配置"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="ClearProtocolItemsButton_Click" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 表格 -->
+        <Border Grid.Row="2"
+                Style="{StaticResource CardBorderStyle}"
+                Padding="8">
+            <DataGrid x:Name="ProtocolDataGrid"
+                      ItemsSource="{Binding ProtocolRows}"
+                      SelectedItem="{Binding SelectedProtocolRow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      HeadersVisibility="Column"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      RowHeight="34"
+                      ColumnHeaderHeight="28"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="启用"
+                                            Width="55"
+                                            Binding="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTextColumn Header="ID"
+                                        Width="50"
+                                        Binding="{Binding ProtocolItemId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTextColumn Header="名称"
+                                        Width="140"
+                                        Binding="{Binding SignalName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTemplateColumn Header="数据类型"
+                                            Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox
+                                    ItemsSource="{Binding DataContext.DataTypes, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    SelectedItem="{Binding DataType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    BorderThickness="0"
+                                    Padding="4,0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="偏移量地址"
+                                        Width="170"
+                                        Binding="{Binding OffsetAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTextColumn Header="实际地址"
+                                        Width="135"
+                                        IsReadOnly="True"
+                                        Binding="{Binding ActualAddress}" />
+
+                    <DataGridTextColumn Header="当前值"
+                                        Width="130"
+                                        IsReadOnly="True"
+                                        Binding="{Binding CurrentValue}" />
+
+                    <DataGridTextColumn Header="写入值"
+                                        Width="130"
+                                        Binding="{Binding WriteValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTemplateColumn Header="操作"
+                                            Width="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="写入"
+                                        MinWidth="52"
+                                        Height="24"
+                                        Padding="6,0"
+                                        HorizontalAlignment="Center"
+                                        Click="WriteRowValueButton_Click" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="注释"
+                                        Width="*"
+                                        Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <DataGridTextColumn Header="状态"
+                                        Width="190"
+                                        IsReadOnly="True"
+                                        Binding="{Binding LastMessage}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- 底部 -->
+        <Grid Grid.Row="3"
+              Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Foreground="#6B7280"
+                       TextWrapping="Wrap"
+                       Text="写入说明：Bool 可填 true/false、1/0、是/否；Byte/Word/Int/DInt 可填十进制或0x开头十六进制；Real填小数；ByteArray示例：01 02 FF。" />
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+                <Button Content="确定"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Click="OkButton_Click" />
+
+                <Button Content="取消"
+                        Style="{StaticResource ToolButtonStyle}"
+                        Click="CancelButton_Click" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

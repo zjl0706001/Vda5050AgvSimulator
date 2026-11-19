@@ -1,0 +1,810 @@
+﻿<UserControl x:Class="Vda5050AgvSimulator.Views.AgvListView"
+             x:Name="AgvListRoot"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:agv="clr-namespace:Vda5050AgvSimulator.Models.Agv"
+             mc:Ignorable="d"
+             d:DesignWidth="1120" d:DesignHeight="720"
+             d:DataContext="{d:DesignInstance Type=views:AgvListView}"
+             FontFamily="Inter, Segoe UI, Microsoft YaHei UI"
+             FontSize="13"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AgvPageBrush" Color="#F2F5F9" />
+        <SolidColorBrush x:Key="AgvSurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="AgvBorderBrush" Color="#DCE4EE" />
+        <SolidColorBrush x:Key="AgvTextBrush" Color="#172338" />
+        <SolidColorBrush x:Key="AgvMutedBrush" Color="#52637A" />
+        <SolidColorBrush x:Key="AgvAccentBrush" Color="#225ADB" />
+        <SolidColorBrush x:Key="AgvMetricBrush" Color="#F4F7FB" />
+        <SolidColorBrush x:Key="AgvDangerBrush" Color="#A63A32" />
+
+        <Style x:Key="AgvToolbarButtonStyle" TargetType="Button">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Padding" Value="13,7" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{StaticResource AgvSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AgvBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource AgvTextBrush}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#8FB2FF" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.78" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.48" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EAF1FE" />
+                    <Setter Property="BorderBrush" Value="#B9CCEF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AgvPrimaryButtonStyle" TargetType="Button"
+               BasedOn="{StaticResource AgvToolbarButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource AgvAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AgvAccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#184ABD" />
+                    <Setter Property="BorderBrush" Value="#184ABD" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AgvCardActionStyle" TargetType="Button"
+               BasedOn="{StaticResource AgvToolbarButtonStyle}">
+            <Setter Property="MinHeight" Value="26" />
+            <Setter Property="Padding" Value="7,3" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource AgvAccentBrush}" />
+        </Style>
+
+        <Style x:Key="AgvDeleteButtonStyle" TargetType="Button"
+               BasedOn="{StaticResource AgvCardActionStyle}">
+            <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FCF0ED" />
+                    <Setter Property="BorderBrush" Value="#F2D5D0" />
+                    <Setter Property="Foreground" Value="{StaticResource AgvDangerBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AgvSummaryLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#CAD7EB" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="AgvSummaryNumberStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style x:Key="AgvMetricLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="AgvMetricValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AgvTextBrush}" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="AgvLiveValueStyle" TargetType="TextBlock" BasedOn="{StaticResource AgvMetricValueStyle}">
+            <EventSetter Event="Loaded" Handler="CardTelemetry_Loaded" />
+            <EventSetter Event="Unloaded" Handler="CardTelemetry_Unloaded" />
+        </Style>
+        <Style x:Key="AgvCoordinateStyle" TargetType="TextBlock" BasedOn="{StaticResource AgvLiveValueStyle}">
+            <Setter Property="FontFamily" Value="IBM Plex Mono, Consolas" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
+        </Style>
+        <Style x:Key="AgvBatteryMeterStyle" TargetType="ProgressBar">
+            <Setter Property="Height" Value="4" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Maximum" Value="100" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Background" Value="#DCE6F1" />
+            <Setter Property="Foreground" Value="#278568" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2">
+                            <Border x:Name="PART_Indicator" HorizontalAlignment="Left"
+                                    Background="{TemplateBinding Foreground}" CornerRadius="2" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="Loaded" Handler="CardTelemetry_Loaded" />
+            <EventSetter Event="Unloaded" Handler="CardTelemetry_Unloaded" />
+        </Style>
+
+        <Style x:Key="AgvStatusPillStyle" TargetType="Border">
+            <Setter Property="Background" Value="#EDF1F6" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="8,3" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding OnlineStatus}" Value="1">
+                    <Setter Property="Background" Value="#E8F5EE" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding OnlineStatus}" Value="2">
+                    <Setter Property="Background" Value="#FCF0ED" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AgvStatusTextStyle" TargetType="TextBlock">
+            <Setter Property="Text" Value="未知" />
+            <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding OnlineStatus}" Value="1">
+                    <Setter Property="Text" Value="在线" />
+                    <Setter Property="Foreground" Value="#126549" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding OnlineStatus}" Value="2">
+                    <Setter Property="Text" Value="离线" />
+                    <Setter Property="Foreground" Value="{StaticResource AgvDangerBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer x:Name="AgvPageScrollViewer"
+                  Background="{StaticResource AgvPageBrush}"
+                  VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                  CanContentScroll="False" PanningMode="VerticalOnly">
+        <Grid Margin="12,14,12,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <Border Grid.Row="0"
+                    Margin="6,0,6,10"
+                    Padding="14,8"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="#DCE8F8"
+                    SnapsToDevicePixels="True">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#F8FBFF" Offset="0" />
+                        <GradientStop Color="#EAF3FF" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 左侧标题 -->
+                    <DockPanel Grid.Row="0"
+                               Grid.Column="0"
+                               VerticalAlignment="Center"
+                               LastChildFill="True">
+
+                        <Border DockPanel.Dock="Left"
+                                Width="36"
+                                Height="36"
+                                Margin="0,0,10,0"
+                                Background="#438CE8"
+                                CornerRadius="9">
+
+                            <Path Width="20"
+                                  Height="20"
+                                  Stretch="Uniform"
+                                  Stroke="White"
+                                  StrokeThickness="1.6"
+                                  StrokeLineJoin="Round"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M 3,8 L 19,8 L 19,16 L 3,16 Z
+                            M 6,8 L 6,5 L 16,5 L 16,8
+                            M 6,16 L 6,19
+                            M 16,16 L 16,19
+                            M 7,12 L 15,12" />
+                        </Border>
+
+                        <TextBlock Text="AGV 车队"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#24476F"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+                    </DockPanel>
+
+                    <!-- 统计信息 -->
+                    <Border Grid.Row="0"
+                            Grid.Column="1"
+                            Background="#FFFFFF"
+                            BorderBrush="#E0EAF7"
+                            BorderThickness="1"
+                            CornerRadius="9"
+                            Padding="6,5"
+                            VerticalAlignment="Center">
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="1" />
+                                <Setter Property="Margin" Value="12,0,0,0" />
+
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsCompactLayout,
+                                              ElementName=AgvListRoot}"
+                                        Value="True">
+                                        <Setter Property="Grid.Row" Value="1" />
+                                        <Setter Property="Grid.Column" Value="0" />
+                                        <Setter Property="Grid.ColumnSpan" Value="2" />
+                                        <Setter Property="Margin" Value="0,8,0,0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <UniformGrid Columns="3">
+
+                            <!-- 总数 -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="10,0">
+
+                                <Ellipse Width="7" Height="7"
+                                         Fill="#6F9FE5"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,6,0" />
+
+                                <TextBlock Text="总数"
+                                           FontSize="11"
+                                           Foreground="#8091AA"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,7,0" />
+
+                                <TextBlock x:Name="TotalCountTextBlock"
+                                           Text="0"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#285CA4"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <!-- 在线 -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="10,0">
+
+                                <Ellipse Width="7" Height="7"
+                                         Fill="#62C9A7"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,6,0" />
+
+                                <TextBlock Text="在线"
+                                           FontSize="11"
+                                           Foreground="#8091AA"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,7,0" />
+
+                                <TextBlock x:Name="OnlineCountTextBlock"
+                                           Text="0"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#238B70"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <!-- 离线 -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="10,0">
+
+                                <Ellipse Width="7" Height="7"
+                                         Fill="#E8A49B"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,6,0" />
+
+                                <TextBlock Text="离线"
+                                           FontSize="11"
+                                           Foreground="#8091AA"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,7,0" />
+
+                                <TextBlock x:Name="OfflineCountTextBlock"
+                                           Text="0"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#CB776E"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                        </UniformGrid>
+                    </Border>
+                </Grid>
+            </Border>
+
+
+            <Grid Grid.Row="1" Margin="6,0,6,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid VerticalAlignment="Top">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Margin" Value="0,0,10,6" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompactLayout, ElementName=AgvListRoot}" Value="True">
+                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                    <Setter Property="Margin" Value="0,0,0,8" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border CornerRadius="9" Height="38"
+                            Background="{StaticResource AgvSurfaceBrush}" BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{StaticResource AgvBorderBrush}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource AgvAccentBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="39" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="SearchIdTextBox"
+                                     AutomationProperties.Name="按 AGV ID 搜索"
+                                     BorderThickness="0" Padding="11,0,4,0"
+                                     Background="Transparent" Foreground="{StaticResource AgvTextBrush}"
+                                     VerticalContentAlignment="Center"
+                                     hc:InfoElement.Placeholder="按 AGV ID 搜索"
+                                     KeyDown="SearchIdTextBox_KeyDown"
+                                     TextChanged="SearchIdTextBox_TextChanged" />
+                            <Button Grid.Column="1" Margin="2" Padding="8,4"
+                                    AutomationProperties.Name="搜索" ToolTip="搜索（Enter）"
+                                    Style="{StaticResource AgvCardActionStyle}" Click="SearchButton_Click">
+                                <Path Width="16" Height="16" Stretch="Uniform" StrokeThickness="1.6"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                      Data="M 13.5,8 A 5.5,5.5 0 1 1 2.5,8 A 5.5,5.5 0 1 1 13.5,8 M 12,12 L 17,17" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="ImportMapButton" Grid.Column="1" Margin="8,0,0,0"
+                            Style="{StaticResource AgvToolbarButtonStyle}" Click="ImportMapButton_Click"
+                            AutomationProperties.Name="导入地图" ToolTip="导入包含地标和坐标的 JSON 地图">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="15" Height="15" Margin="0,0,7,0" Stretch="Uniform"
+                                  Stroke="{StaticResource AgvAccentBrush}" StrokeThickness="1.5"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                  Data="M 2,11 V 16 H 16 V 11 M 9,2 V 11 M 5.5,7.5 L 9,11 L 12.5,7.5" />
+                            <TextBlock Text="导入地图" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <WrapPanel>
+                    <WrapPanel.Style>
+                        <Style TargetType="WrapPanel">
+                            <Setter Property="Grid.Column" Value="1" />
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompactLayout, ElementName=AgvListRoot}" Value="True">
+                                    <Setter Property="Grid.Row" Value="1" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </WrapPanel.Style>
+                    <Button x:Name="ToggleAllAgvOnlineButton" Content="全部上线"
+                            Margin="0,0,8,6" Style="{StaticResource AgvToolbarButtonStyle}"
+                            Click="ToggleAllAgvOnlineButton_Click" />
+                    <Button x:Name="BatchPositionButton" Content="批量地标"
+                            Margin="0,0,8,6" Style="{StaticResource AgvToolbarButtonStyle}"
+                            Click="BatchPositionButton_Click" />
+                    <Button x:Name="AddAgvButton" Margin="0,0,0,6"
+                            Style="{StaticResource AgvPrimaryButtonStyle}" Click="AddAgvButton_Click"
+                            AutomationProperties.Name="添加 AGV">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="12" Height="12" Margin="0,0,7,0" Stretch="Uniform"
+                                  Stroke="White" StrokeThickness="1.6" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" Data="M 6,1 L 6,11 M 1,6 L 11,6" />
+                            <TextBlock Text="添加 AGV" />
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+            </Grid>
+
+            <ListBox Grid.Row="2" x:Name="AgvCardListBox"
+                     ItemsSource="{Binding AgvView}"
+                     SelectedItem="{Binding SelectedAgv, Mode=TwoWay}"
+                     SelectionChanged="AgvCardListBox_SelectionChanged"
+                     SizeChanged="AgvCardListBox_SizeChanged"
+                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                     Background="Transparent" BorderThickness="0">
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <ItemsPresenter />
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid
+                            Columns="{Binding CardColumnCount, FallbackValue=1,
+                            RelativeSource={RelativeSource AncestorType={x:Type views:AgvListView}}}" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="6,0,6,12" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="CardChrome" Background="{StaticResource AgvSurfaceBrush}"
+                                            BorderBrush="{StaticResource AgvBorderBrush}"
+                                            BorderThickness="1" CornerRadius="11">
+                                        <ContentPresenter
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="CardChrome" Property="BorderBrush" Value="#A7BCDE" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="CardChrome" Property="Background" Value="#F7FAFF" />
+                                            <Setter TargetName="CardChrome" Property="BorderBrush"
+                                                    Value="{StaticResource AgvAccentBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocused" Value="True">
+                                            <Setter TargetName="CardChrome" Property="BorderBrush"
+                                                    Value="{StaticResource AgvAccentBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="agv:AgvModel">
+                        <Border Padding="12,10,12,8" Background="Transparent" Cursor="Hand"
+                                ToolTip="双击编辑 AGV" MouseLeftButtonDown="AgvCardBorder_MouseLeftButtonDown">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                               Text="{Binding DeviceID, StringFormat='AGV {0}'}"
+                                               FontSize="17" FontWeight="SemiBold"
+                                               Foreground="{StaticResource AgvTextBrush}" />
+                                    <Border Grid.Column="1" Margin="6,0,4,0" VerticalAlignment="Center"
+                                            Style="{StaticResource AgvStatusPillStyle}">
+                                        <TextBlock Style="{StaticResource AgvStatusTextStyle}" />
+                                    </Border>
+                                    <Button Grid.Column="2" Style="{StaticResource AgvDeleteButtonStyle}"
+                                            AutomationProperties.Name="删除 AGV" ToolTip="删除当前 AGV"
+                                            Click="DeleteAgvButton_Click">
+                                        <Path Width="13" Height="14" Stretch="Uniform" StrokeThickness="1.4"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                              StrokeLineJoin="Round"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                              Data="M 3,5 L 15,5 M 6,5 L 6,3 L 12,3 L 12,5 M 5,5 L 6,16 L 12,16 L 13,5 M 8,8 L 8,13 M 10,8 L 10,13" />
+                                    </Button>
+                                </Grid>
+
+                                <Border Grid.Row="1" Margin="0,8,0,0" Padding="9,7"
+                                        Background="{StaticResource AgvMetricBrush}" CornerRadius="8">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="0,0,7,0">
+                                            <TextBlock Text="地标" Style="{StaticResource AgvMetricLabelStyle}" />
+                                            <TextBlock Text="{Binding PositionID}"
+                                                       Style="{StaticResource AgvLiveValueStyle}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="电量" Style="{StaticResource AgvMetricLabelStyle}" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Equantity, StringFormat='{}{0:0.#}%'}"
+                                                           Style="{StaticResource AgvLiveValueStyle}" />
+                                                <ProgressBar Grid.Column="1" Margin="7,0,0,0"
+                                                             VerticalAlignment="Center" Value="{Binding Equantity}"
+                                                             AutomationProperties.Name="电量"
+                                                             Style="{StaticResource AgvBatteryMeterStyle}" />
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Margin="0,6,7,0">
+                                            <TextBlock Text="车头角度" Style="{StaticResource AgvMetricLabelStyle}" />
+                                            <TextBlock Text="{Binding Angle, StringFormat='{}{0:0.#}°'}"
+                                                       Style="{StaticResource AgvLiveValueStyle}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,6,0,0">
+                                            <TextBlock Text="运行状态" Style="{StaticResource AgvMetricLabelStyle}" />
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock"
+                                                           BasedOn="{StaticResource AgvMetricValueStyle}">
+                                                        <Setter Property="Text" Value="{Binding RunStatus}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RunStatus}" Value="0">
+                                                                <Setter Property="Text" Value="停止" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RunStatus}" Value="1">
+                                                                <Setter Property="Text" Value="行驶" />
+                                                                <Setter Property="Foreground"
+                                                                        Value="{StaticResource AgvAccentBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding RunStatus}" Value="2">
+                                                                <Setter Property="Text" Value="停车" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Grid Grid.Row="2" Margin="0,8,0,7">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding X, StringFormat='X  {0:0.000}'}" Margin="0,0,7,0"
+                                               ToolTip="{Binding X}" Style="{StaticResource AgvCoordinateStyle}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Y, StringFormat='Y  {0:0.000}'}"
+                                               ToolTip="{Binding Y}" Style="{StaticResource AgvCoordinateStyle}" />
+                                </Grid>
+
+                                <Border Grid.Row="3" Padding="0,4,0,0" BorderThickness="0,1,0,0"
+                                        BorderBrush="{StaticResource AgvBorderBrush}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock FontSize="11" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{StaticResource AgvMutedBrush}"
+                                                   ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="本地  {0}:{1}">
+                                                    <Binding Path="LocalIP" />
+                                                    <Binding Path="LocalPort" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <Button Grid.Column="1" Margin="5,0,0,0" Content="编辑"
+                                                Style="{StaticResource AgvCardActionStyle}"
+                                                Click="EditAgvButton_Click" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Grid.Row="2" Margin="6,0,6,12" Padding="12,26" CornerRadius="11"
+                    Background="{StaticResource AgvSurfaceBrush}" BorderBrush="{StaticResource AgvBorderBrush}"
+                    BorderThickness="1" IsHitTestVisible="False">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasItems, ElementName=AgvCardListBox}" Value="False">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock x:Name="AgvEmptyStateTextBlock" Text="暂无 AGV"
+                           HorizontalAlignment="Center" TextWrapping="Wrap"
+                           Foreground="{StaticResource AgvMutedBrush}" />
+            </Border>
+
+            <Popup x:Name="BatchPositionPopup"
+                   PlacementTarget="{Binding ElementName=BatchPositionButton}"
+                   Placement="Bottom" StaysOpen="True" AllowsTransparency="True"
+                   PopupAnimation="Fade">
+                <Border Width="378" MaxWidth="{Binding ActualWidth, ElementName=AgvListRoot, FallbackValue=378}"
+                        Padding="16" Background="{StaticResource AgvSurfaceBrush}"
+                        BorderBrush="{StaticResource AgvBorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Content="×" Margin="6,0,0,0"
+                                    Style="{StaticResource AgvCardActionStyle}" FontSize="16"
+                                    AutomationProperties.Name="关闭" Click="BatchPositionCancelButton_Click" />
+                            <TextBlock Text="批量修改地标" VerticalAlignment="Center" TextWrapping="Wrap"
+                                       FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource AgvTextBrush}" />
+                        </DockPanel>
+
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="起始 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <TextBox x:Name="BatchStartAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                         Padding="7,0" VerticalContentAlignment="Center"
+                                         AutomationProperties.Name="起始 AGV ID" hc:InfoElement.Placeholder="例如 1" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="结束 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <TextBox x:Name="BatchEndAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                         Padding="7,0" VerticalContentAlignment="Center"
+                                         AutomationProperties.Name="结束 AGV ID" hc:InfoElement.Placeholder="例如 20" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                                <TextBlock Text="起始地标" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <TextBox x:Name="BatchStartPositionIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                         Padding="7,0" VerticalContentAlignment="Center"
+                                         AutomationProperties.Name="起始地标" hc:InfoElement.Placeholder="例如 1001" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,10,0,0">
+                                <TextBlock Text="地标递增" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <TextBox x:Name="BatchPositionStepTextBox" Margin="0,4,0,0" MinHeight="32"
+                                         Padding="7,0" Text="0" VerticalContentAlignment="Center"
+                                         AutomationProperties.Name="地标递增" hc:InfoElement.Placeholder="例如 1" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                                <TextBlock Text="车头角度（°）" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <TextBox x:Name="BatchAngleTextBox" Margin="0,4,0,0" MinHeight="32"
+                                         Padding="7,0" VerticalContentAlignment="Center"
+                                         AutomationProperties.Name="车头角度" hc:InfoElement.Placeholder="例如 270" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,10,0,0">
+                                <TextBlock Text="带载状态" Style="{StaticResource AgvMetricLabelStyle}" />
+                                <ComboBox x:Name="BatchLoadStatusComboBox" Margin="0,4,0,0" MinHeight="32"
+                                          SelectedIndex="0" SelectedValuePath="Tag"
+                                          AutomationProperties.Name="带载状态" VerticalContentAlignment="Center">
+                                    <ComboBoxItem Content="保持原状态" />
+                                    <ComboBoxItem Content="空载" Tag="UNLOAD" />
+                                    <ComboBoxItem Content="带载" Tag="LOADED" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Margin="0,11,0,0" TextWrapping="Wrap" FontSize="12"
+                                   Foreground="{StaticResource AgvMutedBrush}"
+                                   Text="按 AGV ID 升序设置地标，坐标从地图读取。递增为 0 时，所选车辆使用同一个地标。" />
+                        <WrapPanel Margin="0,13,0,0" HorizontalAlignment="Right">
+                            <Button Content="取消" Margin="0,0,8,0" Style="{StaticResource AgvToolbarButtonStyle}"
+                                    Click="BatchPositionCancelButton_Click" />
+                            <Button Content="确认修改" Style="{StaticResource AgvPrimaryButtonStyle}"
+                                    Click="BatchPositionConfirmButton_Click" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+
+            <Popup x:Name="AddAgvPopup"
+                   PlacementTarget="{Binding ElementName=AddAgvButton}"
+                   Placement="Bottom" StaysOpen="True" AllowsTransparency="True"
+                   PopupAnimation="Fade">
+                <views:AddAgvPopupView x:Name="AddAgvPopupView"
+                                       CloseRequested="AddAgvPopupView_CloseRequested"
+                                       AddRequested="AddAgvPopupView_AddRequested"
+                                       PopupDragDelta="AddAgvPopupView_PopupDragDelta" />
+            </Popup>
+
+            <Popup x:Name="EditAgvPopup"
+                   PlacementTarget="{Binding ElementName=AgvCardListBox}"
+                   Placement="Center" StaysOpen="True" AllowsTransparency="True"
+                   PopupAnimation="Fade">
+                <views:EditAgvPopupView x:Name="EditAgvPopupView"
+                                        CloseRequested="EditAgvPopupView_CloseRequested"
+                                        SaveRequested="EditAgvPopupView_SaveRequested"
+                                        PopupDragDelta="EditAgvPopupView_PopupDragDelta" />
+            </Popup>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,3451 @@
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5722099327015109,
+    "x": 24.100591418970897,
+    "y": -17.977841816881149
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 548,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:37.810Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719657208295503,
+    "x": 24.100591405292096,
+    "y": -17.977841799418851
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 549,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:38.020Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.572046015136416,
+    "x": 24.100615732951145,
+    "y": -17.977846634845658
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 550,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:38.230Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5717412163496567,
+    "x": 24.100591393243111,
+    "y": -17.977841782189383
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 551,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:38.430Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719400213250312,
+    "x": 24.100591400344445,
+    "y": -17.977841791036948
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 552,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:38.640Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0030000000260770321,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719557339754628,
+    "x": 24.10059140098473,
+    "y": -17.97784179173544
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 553,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:38.840Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5718598601762199,
+    "x": 24.100591399587746,
+    "y": -17.97784179173544
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 554,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:39.040Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719370918478317,
+    "x": 24.10059140372049,
+    "y": -17.977841797090544
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 555,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:39.241Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719733108386569,
+    "x": 24.100615728818401,
+    "y": -17.977846629956215
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 556,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:39.450Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720617277868474,
+    "x": 24.100591410588994,
+    "y": -17.97784180640377
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 557,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:39.660Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5718705128205797,
+    "x": 24.100591400111615,
+    "y": -17.97784179196827
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 558,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:39.860Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5722313711482854,
+    "x": 24.100615743428524,
+    "y": -17.97784664625436
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 559,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:40.070Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5722456190601175,
+    "x": 24.10059142089175,
+    "y": -17.977841818510964
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 560,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:40.270Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.57197251189033,
+    "x": 24.100591405641342,
+    "y": -17.977841799884512
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 561,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:40.470Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5721023409934713,
+    "x": 24.100591412859092,
+    "y": -17.977841809430569
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 562,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:40.680Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.572179572665084,
+    "x": 24.100591417108252,
+    "y": -17.977841814087181
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 563,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:40.890Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720670541090278,
+    "x": 24.100591410821824,
+    "y": -17.977841805938109
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 564,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:41.090Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.572171583181813,
+    "x": 24.10059141664259,
+    "y": -17.977841813388689
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 565,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:41.300Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5718147195957428,
+    "x": 24.100591397201232,
+    "y": -17.977841788475811
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 566,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:41.500Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5717131200001568,
+    "x": 24.100615714848562,
+    "y": -17.977846613192408
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 567,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:41.710Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720148561516631,
+    "x": 24.100591407969649,
+    "y": -17.97784180267848
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 568,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:41.920Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5722063374340391,
+    "x": 24.100591418738066,
+    "y": -17.977841816415488
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 569,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:42.130Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5718931496898458,
+    "x": 24.100615724511034,
+    "y": -17.977846625066771
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 570,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:42.330Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5717751716535553,
+    "x": 24.100615718224606,
+    "y": -17.977846617849021
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 571,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:42.540Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.571903802334206,
+    "x": 24.10059140197426,
+    "y": -17.977841794995069
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 572,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:42.740Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5716815615412383,
+    "x": 24.10059139027452,
+    "y": -17.977841778696924
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 573,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:42.940Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5721155236408677,
+    "x": 24.100591413674,
+    "y": -17.977841810361891
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 574,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:43.150Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719710471517312,
+    "x": 24.100591405524927,
+    "y": -17.97784179918602
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 575,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:43.350Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720051356136826,
+    "x": 24.100615730506423,
+    "y": -17.977846631586029
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 576,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:43.560Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5718444138418972,
+    "x": 24.100591398772838,
+    "y": -17.977841790571286
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 577,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:43.770Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719774387383467,
+    "x": 24.100591405932381,
+    "y": -17.977841800117343
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 578,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:43.980Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5719071312855686,
+    "x": 24.100591399005669,
+    "y": -17.977841788708641
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 579,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:44.190Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720749104342433,
+    "x": 24.100615734522751,
+    "y": -17.977846636475473
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 580,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:44.390Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.572282370683161,
+    "x": 24.100591423161848,
+    "y": -17.977841822003423
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 581,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:44.600Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5722044732212757,
+    "x": 24.100591418738066,
+    "y": -17.977841816881149
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 582,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:44.810Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/connection {
+  "connectionState": "OFFLINE",
+  "headerId": 7,
+  "manufacturer": "HX",
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:44.940Z",
+  "version": "V2.0.0"
+}
+VDA/V2.0.0/HX/27/instantActions {
+  "actions": [
+    {
+      "actionType": "cancelOrder",
+      "actionId": "64",
+      "actionDescription": "",
+      "blockingType": "HARD",
+      "actionParameters": [
+        {
+          "key": "stopRight",
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "headerId": 3096,
+  "timestamp": "2026-05-09T14:13:28Z",
+  "version": "V2.0.0",
+  "manufacturer": "HX",
+  "serialNumber": "27"
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720678530573551,
+    "x": 24.10061573405709,
+    "y": -17.977846635776981
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 583,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.020Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/instantActions {
+  "actions": [
+    {
+      "actionType": "factsheetRequest",
+      "actionId": "65",
+      "actionDescription": "",
+      "blockingType": "HARD",
+      "actionParameters": []
+    }
+  ],
+  "headerId": 3097,
+  "timestamp": "2026-05-09T14:13:29Z",
+  "version": "V2.0.0",
+  "manufacturer": "HX",
+  "serialNumber": "27"
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5715707740398912,
+    "x": 24.10061570768902,
+    "y": -17.977846604810505
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 584,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.220Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/connection {
+  "connectionState": "ONLINE",
+  "headerId": 8,
+  "manufacturer": "HX",
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.241Z",
+  "version": "V2.0.0"
+}
+VDA/V2.0.0/HX/27/factsheet {
+  "headerId": 0,
+  "manufacturer": "HX",
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.241Z",
+  "typeSpecification": {
+    "agvClass": "CARRIER",
+    "agvKinematic": "DIFF",
+    "maxLoadMass": 0,
+    "seriesDescription": "",
+    "seriesName": "HXAMR-1.5T-TYPE"
+  },
+  "version": "V2.0.0"
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5717529342584524,
+    "x": 24.100615716944038,
+    "y": -17.977846615986376
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 585,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.430Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0010000000474974513,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5723264459992017,
+    "x": 24.100615748900044,
+    "y": -17.977846651143803
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 586,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.630Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5721785074006478,
+    "x": 24.100615740343518,
+    "y": -17.9778466427619
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 587,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:45.840Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5723875655462187,
+    "x": 24.100615752625334,
+    "y": -17.977846655567586
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 588,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:46.050Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5723280438958558,
+    "x": 24.100591425664778,
+    "y": -17.97784182433173
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 589,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:46.260Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5721297715526994,
+    "x": 24.100591414430699,
+    "y": -17.977841811526044
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 590,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:46.460Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": -0.0020000000949949026,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5720313677504212,
+    "x": 24.100591408900971,
+    "y": -17.977841804075464
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 591,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:46.670Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.5717081931521397,
+    "x": 24.100615714732147,
+    "y": -17.97784661365807
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 592,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:46.880Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}
+VDA/V2.0.0/HX/27/state {
+  "actionStates": [
+    {
+      "actionDescription": "",
+      "actionId": "65",
+      "actionStatus": "FINISHED",
+      "actionType": "factsheetRequest",
+      "resultDescription": ""
+    }
+  ],
+  "agvPosition": {
+    "deviationRange": 0,
+    "localizationScore": 0,
+    "mapDescription": "",
+    "mapId": "map1",
+    "mapVersion": "V44",
+    "positionInitialized": true,
+    "theta": 1.571928969206507,
+    "x": 24.100591403254828,
+    "y": -17.977841796392052
+  },
+  "avoidAreaId": 0,
+  "batteryState": {
+    "batteryCharge": 34,
+    "batteryHealth": 0,
+    "batteryVoltage": 0,
+    "charging": false,
+    "reach": 0
+  },
+  "distanceSinceLastNode": 0,
+  "driving": false,
+  "edgeStates": [],
+  "errors": [],
+  "headerId": 593,
+  "information": [],
+  "interactionZones": [],
+  "lastNodeId": "",
+  "lastNodeSequenceId": 0,
+  "loads": [
+    {
+      "boundingBoxReference": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "loadDimensions": {
+        "height": 0,
+        "length": 0,
+        "width": 0
+      },
+      "loadId": "DUMMY",
+      "loadPosition": "",
+      "loadType": "",
+      "weight": 1000
+    }
+  ],
+  "manufacturer": "HX",
+  "newBaseRequest": false,
+  "nodeStates": [],
+  "operatingMode": "MANUAL",
+  "orderId": "",
+  "orderUpdateId": 0,
+  "paused": false,
+  "safetyState": {
+    "eStop": "NONE",
+    "fieldViolation": false
+  },
+  "serialNumber": "27",
+  "timestamp": "2026-05-09T06:11:47.090Z",
+  "turntableState": {
+    "theta": 0
+  },
+  "velocity": {
+    "omega": 0,
+    "vx": 0,
+    "vy": 0
+  },
+  "version": "V2.0.0",
+  "zoneSetId": ""
+}

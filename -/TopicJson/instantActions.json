@@ -1,0 +1,16 @@
+﻿{
+  "actions": [
+    {
+      "actionType": "stopPause",
+      "actionId": "52",
+      "actionDescription": "",
+      "blockingType": "HARD",
+      "actionParameters": []
+    }
+  ],
+  "headerId": 2639,
+  "timestamp": "2026-05-09T11:32:04Z",
+  "version": "V2.0.0",
+  "manufacturer": "HX",
+  "serialNumber": "27"
+}

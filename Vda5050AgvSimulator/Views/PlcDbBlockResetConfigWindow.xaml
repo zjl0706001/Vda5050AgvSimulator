@@ -1,0 +1,7 @@
+<Window x:Class="Vda5050AgvSimulator.Views.PlcDbBlockResetConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="全局PLC复位配置"
+        Width="780"
+        Height="520">
+</Window>
