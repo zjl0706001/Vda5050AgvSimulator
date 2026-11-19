@@ -170,7 +170,9 @@
                     <Setter Property="Background" Value="#F2F7FF" />
                     <Setter Property="BorderBrush" Value="#B8CEF4" />
                 </Trigger>
-                <DataTrigger Binding="{Binding DataContext.IsCompactCard, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                <DataTrigger
+                    Binding="{Binding DataContext.IsCompactCard, RelativeSource={RelativeSource AncestorType=Window}}"
+                    Value="True">
                     <Setter Property="Height" Value="74" />
                     <Setter Property="Padding" Value="6,5" />
                     <Setter Property="CornerRadius" Value="6" />
@@ -182,7 +184,6 @@
         <Style x:Key="RangeTabStyle" TargetType="TabItem">
             <Setter Property="Height" Value="34" />
             <Setter Property="MinWidth" Value="100" />
-            <Setter Property="Margin" Value="0,0,5,0" />
             <Setter Property="Padding" Value="14,0" />
             <Setter Property="Foreground" Value="#61708A" />
             <Setter Property="Cursor" Value="Hand" />
@@ -203,7 +204,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabChrome" Property="Background" Value="{StaticResource AccentFillBrush}" />
+                                <Setter TargetName="TabChrome" Property="Background"
+                                        Value="{StaticResource AccentFillBrush}" />
                                 <Setter TargetName="TabChrome" Property="BorderBrush" Value="#CEDDFC" />
                                 <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
                                 <Setter Property="FontWeight" Value="SemiBold" />
@@ -212,7 +214,8 @@
                                 <Setter TargetName="TabChrome" Property="Background" Value="#EDF3FC" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="TabChrome" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="TabChrome" Property="BorderBrush"
+                                        Value="{StaticResource AccentBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -306,7 +309,8 @@
                                                 <Setter TargetName="ComboChrome" Property="BorderBrush" Value="#9BB9E8" />
                                             </Trigger>
                                             <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="ComboChrome" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                                <Setter TargetName="ComboChrome" Property="BorderBrush"
+                                                        Value="{StaticResource AccentBrush}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -327,7 +331,8 @@
                                         BorderThickness="1"
                                         CornerRadius="8">
                                     <Border.Effect>
-                                        <DropShadowEffect Color="#152747" BlurRadius="12" ShadowDepth="3" Opacity="0.12" />
+                                        <DropShadowEffect Color="#152747" BlurRadius="12" ShadowDepth="3"
+                                                          Opacity="0.12" />
                                     </Border.Effect>
                                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                                   HorizontalScrollBarVisibility="Disabled"
@@ -471,7 +476,9 @@
                                 </Grid>
                             </Border>
                             <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding DataContext.IsCompactCard, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                <DataTrigger
+                                    Binding="{Binding DataContext.IsCompactCard, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Value="True">
                                     <Setter TargetName="NormalCardLayout" Property="Visibility" Value="Collapsed" />
                                     <Setter TargetName="CompactCardLayout" Property="Visibility" Value="Visible" />
                                 </DataTrigger>
@@ -537,8 +544,9 @@
                                 <Style TargetType="Button" BasedOn="{StaticResource ToolButtonStyle}">
                                     <Setter Property="Content" Value="窗口置顶" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Topmost, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                     Value="True">
+                                        <DataTrigger
+                                            Binding="{Binding Topmost, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            Value="True">
                                             <Setter Property="Content" Value="取消置顶" />
                                             <Setter Property="Background" Value="{StaticResource AccentFillBrush}" />
                                             <Setter Property="BorderBrush" Value="#BDD1F7" />
@@ -605,14 +613,16 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="AGV → PLC" FontSize="15" FontWeight="SemiBold" Foreground="#22334F" />
+                                            <TextBlock Text="AGV → PLC" FontSize="15" FontWeight="SemiBold"
+                                                       Foreground="#22334F" />
                                             <Border Margin="9,0,0,0" Padding="6,2"
                                                     Background="#EEF3FA" CornerRadius="4">
                                                 <TextBlock Text="0–199" Foreground="#64748B" FontSize="10" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="小车发送至 PLC 的点位"
-                                                   Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                                   Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}"
+                                                   FontSize="11" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="选择设备" VerticalAlignment="Center"
@@ -624,9 +634,10 @@
                                                   Style="{StaticResource TargetPickerStyle}" />
                                         <ContentControl DataContext="{Binding SelectedTarget}"
                                                         Template="{StaticResource PlcStateTemplate}" />
-                                        <TextBlock Text="{Binding SelectedTarget.AgvToPlc.Cards.Count, StringFormat={}{0} 个点位}"
-                                                   VerticalAlignment="Center" Margin="12,0,0,0"
-                                                   Foreground="#718096" FontSize="11" />
+                                        <TextBlock
+                                            Text="{Binding SelectedTarget.AgvToPlc.Cards.Count, StringFormat={}{0} 个点位}"
+                                            VerticalAlignment="Center" Margin="12,0,0,0"
+                                            Foreground="#718096" FontSize="11" />
                                     </StackPanel>
                                 </Grid>
                                 <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
@@ -655,14 +666,16 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="PLC → AGV" FontSize="15" FontWeight="SemiBold" Foreground="#22334F" />
+                                            <TextBlock Text="PLC → AGV" FontSize="15" FontWeight="SemiBold"
+                                                       Foreground="#22334F" />
                                             <Border Margin="9,0,0,0" Padding="6,2"
                                                     Background="#EEF3FA" CornerRadius="4">
                                                 <TextBlock Text="200–400" Foreground="#64748B" FontSize="10" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="PLC 发送至小车的点位"
-                                                   Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                                   Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}"
+                                                   FontSize="11" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="选择设备" VerticalAlignment="Center"
@@ -674,9 +687,10 @@
                                                   Style="{StaticResource TargetPickerStyle}" />
                                         <ContentControl DataContext="{Binding SelectedTarget}"
                                                         Template="{StaticResource PlcStateTemplate}" />
-                                        <TextBlock Text="{Binding SelectedTarget.PlcToAgv.Cards.Count, StringFormat={}{0} 个点位}"
-                                                   VerticalAlignment="Center" Margin="12,0,0,0"
-                                                   Foreground="#718096" FontSize="11" />
+                                        <TextBlock
+                                            Text="{Binding SelectedTarget.PlcToAgv.Cards.Count, StringFormat={}{0} 个点位}"
+                                            VerticalAlignment="Center" Margin="12,0,0,0"
+                                            Foreground="#718096" FontSize="11" />
                                     </StackPanel>
                                 </Grid>
                                 <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
@@ -843,7 +857,8 @@
                              HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
                              AutomationProperties.Name="写入值" AutomationProperties.HelpText="{Binding DisplayName}">
                         <TextBox.ToolTip>
-                            <ToolTip DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <ToolTip
+                                DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                                 <TextBlock>
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0} · {1} · {2}">
@@ -857,7 +872,8 @@
                         </TextBox.ToolTip>
                     </TextBox>
                     <Button Grid.Column="1" Style="{StaticResource PanelButtonStyle}" MinWidth="0" MinHeight="0"
-                            Padding="0" Background="{StaticResource AccentBrush}" BorderBrush="{StaticResource AccentBrush}"
+                            Padding="0" Background="{StaticResource AccentBrush}"
+                            BorderBrush="{StaticResource AccentBrush}"
                             Foreground="White" ToolTip="写入（Enter）" AutomationProperties.Name="写入"
                             Click="SaveValueButton_Click">
                         <Path Data="M 1,6 L 4.5,9.5 L 12,2" Stroke="White" StrokeThickness="1.7"
@@ -871,7 +887,8 @@
                     </Button>
                     <TextBlock x:Name="ValueEditorError" Grid.Row="1" Grid.ColumnSpan="3" Margin="3,3,2,1"
                                Foreground="#9D3340" FontSize="11" TextWrapping="Wrap" MaxHeight="32"
-                               TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
