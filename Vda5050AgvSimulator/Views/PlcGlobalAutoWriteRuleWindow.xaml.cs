@@ -454,6 +454,146 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         OnPropertyChanged(nameof(SelectedRule));
     }
 
+
+    /// <summary>
+    /// 规则列表新增的多选启停操作。与单条开关一致，已保存规则的开关立即生效；
+    /// 新增未保存的规则只更改编辑状态，保存后才正式进入全局规则库。
+    /// </summary>
+    /// <summary>
+    /// 通过单个“批量启停”按钮打开四项操作菜单。
+    /// 菜单沿用既有事件处理函数，不改变全局启用优先、持久化与多选逻辑。
+    /// </summary>
+    private void OpenAutoWriteRuleBatchMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.ContextMenu == null)
+        {
+            return;
+        }
+
+        button.ContextMenu.PlacementTarget = button;
+        button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        // 下拉菜单右边缘与按钮右边缘对齐，避免菜单挡住右侧工具按钮。
+        var menuWidth = double.IsNaN(button.ContextMenu.Width) ? 256d : button.ContextMenu.Width;
+        button.ContextMenu.HorizontalOffset = Math.Min(0d, button.ActualWidth - menuWidth);
+        button.ContextMenu.VerticalOffset = 5d;
+        button.ContextMenu.IsOpen = true;
+    }
+
+    private void SelectAllRuleRowsButton_Click(object sender, RoutedEventArgs e) => RuleListDataGrid.SelectAll();
+
+    private void EnableAllRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyRuleEnabledBatch(Rules.ToList(), true, "全部规则");
+
+    private void DisableAllRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyRuleEnabledBatch(Rules.ToList(), false, "全部规则");
+
+    private void EnableSelectedRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyRuleEnabledBatch(GetSelectedRuleRows(), true, "选中规则");
+
+    private void DisableSelectedRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyRuleEnabledBatch(GetSelectedRuleRows(), false, "选中规则");
+
+    private List<PlcAutoWriteRuleModel> GetSelectedRuleRows() =>
+        RuleListDataGrid.SelectedItems
+            .OfType<PlcAutoWriteRuleModel>()
+            .Where(x => x != null)
+            .GroupBy(x => x.RuleId)
+            .Select(x => x.First())
+            .ToList();
+
+    private void ApplyRuleEnabledBatch(IEnumerable<PlcAutoWriteRuleModel> rules, bool enabled, string scope)
+    {
+        var targets = rules?
+            .Where(x => x != null)
+            .GroupBy(x => x.RuleId)
+            .Select(x => x.First())
+            .ToList() ?? new List<PlcAutoWriteRuleModel>();
+
+        if (targets.Count == 0)
+        {
+            MessageBox.Show(this, "请先选择要操作的规则。", "自动写入规则",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        try
+        {
+            var store = PlcAutoWriteRuleStoreService.Instance;
+            store.EnsureLoadedFromConfig();
+            var savedRules = store.GetSnapshotList();
+            var savedMap = savedRules.Where(x => x != null)
+                .GroupBy(x => x.RuleId)
+                .ToDictionary(x => x.Key, x => x.First());
+            var changedSaved = 0;
+            var changedUi = 0;
+            var pendingCount = 0;
+
+            foreach (var rule in targets)
+            {
+                if (rule.IsEnabled != enabled)
+                {
+                    changedUi++;
+                }
+
+                if (savedMap.TryGetValue(rule.RuleId, out var savedRule))
+                {
+                    if (savedRule.IsEnabled != enabled)
+                    {
+                        savedRule.IsEnabled = enabled;
+                        changedSaved++;
+                    }
+                }
+                else
+                {
+                    pendingCount++;
+                }
+            }
+
+            // 合并为一次ReplaceAll：实时持久化开关，但不提交其它未保存的规则编辑。
+            if (changedSaved > 0)
+            {
+                store.ReplaceAll(savedRules);
+            }
+
+            foreach (var rule in targets)
+            {
+                rule.IsEnabled = enabled;
+            }
+
+            if (changedSaved > 0)
+            {
+                RulesApplied?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (RuleListDataGrid.Items is IEditableCollectionView
+                { IsEditingItem: false, IsAddingNew: false })
+            {
+                // 刷新行显示时保留用户的多选，避免批量操作后自动丢失选中行。
+                var selectedRowsBeforeRefresh = RuleListDataGrid.SelectedItems.Cast<object>().ToList();
+                RuleListDataGrid.Items.Refresh();
+                foreach (var selectedRow in selectedRowsBeforeRefresh)
+                {
+                    if (RuleListDataGrid.Items.Contains(selectedRow) &&
+                        !RuleListDataGrid.SelectedItems.Contains(selectedRow))
+                    {
+                        RuleListDataGrid.SelectedItems.Add(selectedRow);
+                    }
+                }
+            }
+
+            var state = enabled ? "启用" : "禁用";
+            var detail = pendingCount > 0 ? $"\r\n有 {pendingCount} 条新增规则尚未保存，需点击‘保存’才会持久化。" : string.Empty;
+            MessageBox.Show(this,
+                $"{scope}共 {targets.Count} 条，已{state}；界面变更 {changedUi} 条，其中 {changedSaved} 条已保存规则的开关发生变化。{detail}",
+                "批量设置完成", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, "批量修改规则启用状态失败：\r\n" + ex.Message,
+                "自动写入规则", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     /// <summary>
     /// 规则启用状态实时生效。
     /// 这里只同步启用状态，规则名称、地址等其它编辑仍由“保存”按钮统一提交。

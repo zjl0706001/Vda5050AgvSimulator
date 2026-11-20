@@ -8,35 +8,403 @@
         MinHeight="440"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
-        Background="#F3F4F6">
+        Background="#F0F3F6"
+        Foreground="#142740"
+        FontFamily="Microsoft YaHei UI, Microsoft YaHei, Segoe UI"
+        FontSize="13"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
     <Window.Resources>
-        <Style x:Key="MonitorButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="32" />
-            <Setter Property="MinWidth" Value="74" />
-            <Setter Property="Padding" Value="10,0" />
-            <Setter Property="Margin" Value="8,0,0,0" />
+        <SolidColorBrush x:Key="Ink" Color="#142740" />
+        <SolidColorBrush x:Key="Muted" Color="#4D5F76" />
+        <SolidColorBrush x:Key="Line" Color="#D5DBE4" />
+        <SolidColorBrush x:Key="Accent" Color="#235DB5" />
+        <SolidColorBrush x:Key="AccentWash" Color="#E0E9F5" />
+        <SolidColorBrush x:Key="Soft" Color="#F1F4F7" />
+
+        <PathGeometry x:Key="PinIcon" Figures="M5,2.5 L12,2.5 M6,2.7 L6,6.7 L3.8,9.5 L3.8,10 L13.2,10 L13.2,9.5 L11,6.7 L11,2.7 M8.5,10 L8.5,15" />
+
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="9" />
         </Style>
-        <Style x:Key="MonitorGridStyle" TargetType="DataGrid">
+        <Style x:Key="Heading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock" BasedOn="{StaticResource Heading}">
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        <Style x:Key="DetailText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,7,0" />
+        </Style>
+
+        <Style x:Key="ActionButton" TargetType="{x:Type ButtonBase}">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="11,0" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#C5CFDB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" CornerRadius="6">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Path x:Name="Glyph" Width="13" Height="13" Margin="0,0,6,0" Stretch="Uniform"
+                                      Data="{TemplateBinding Tag}" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.5"
+                                      StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Tag" Value="{x:Null}">
+                                <Setter TargetName="Glyph" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F4F9" />
+                    <Setter Property="BorderBrush" Value="#7E9ABE" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#D4DFEE" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#083D82" />
+                    <Setter Property="BorderBrush" Value="#083D82" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#07346F" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PinButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Tag" Value="{StaticResource PinIcon}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Topmost, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentWash}" />
+                    <Setter Property="Foreground" Value="#083C80" />
+                    <Setter Property="BorderBrush" Value="#7998C1" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PickerItem" TargetType="ComboBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="9,5" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentWash}" />
+                    <Setter Property="Foreground" Value="#083E83" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                </Trigger>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#D6E0ED" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="Picker" TargetType="ComboBox">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="MaxDropDownHeight" Value="264" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="BorderBrush" Value="#BAC6D5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PickerItem}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid x:Name="PickerRoot">
+                            <ToggleButton Style="{x:Null}" Focusable="False" IsTabStop="False" ClickMode="Press"
+                                          Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="1" CornerRadius="6">
+                                            <Path x:Name="Arrow" Data="M1,1 L5,5 L9,1" Stroke="#435771" StrokeThickness="1.5"
+                                                  StrokeLineJoin="Round" Margin="0,0,10,0"
+                                                  HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Arrow" Property="Data" Value="M1,5 L5,1 L9,5" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="Selection" Margin="10,1,28,1" VerticalAlignment="Center"
+                                              IsHitTestVisible="False" ClipToBounds="True"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" />
+                            <TextBlock x:Name="PickerHint" Visibility="Collapsed" Margin="10,1,28,1"
+                                       IsHitTestVisible="False" Text="{TemplateBinding Tag}" Foreground="{StaticResource Muted}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Collapsed" Margin="9,1,27,1"
+                                     Style="{x:Null}" Background="Transparent" BorderThickness="0" Padding="0"
+                                     VerticalContentAlignment="Center" Foreground="{TemplateBinding Foreground}"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}" />
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False"
+                                   PlacementTarget="{Binding ElementName=PickerRoot}" Placement="Bottom" VerticalOffset="3"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}">
+                                <Border Width="{Binding ActualWidth, ElementName=PickerRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        Padding="3" Background="White" BorderBrush="#A6B3C3" BorderThickness="1" CornerRadius="6">
+                                    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsEditable" Value="False" />
+                                    <Condition Property="SelectedIndex" Value="-1" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PickerHint" Property="Visibility" Value="Visible" />
+                            </MultiTrigger>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter Property="IsTabStop" Value="False" />
+                                <Setter TargetName="Selection" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#718CAF" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                </Trigger>
+                <Trigger Property="IsDropDownOpen" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="NamedChoice">
+            <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+        </DataTemplate>
+
+        <Style x:Key="TableHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#ECEFF4" />
+            <Setter Property="Foreground" Value="#3D5068" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="7,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="BorderBrush" Value="#D9DFE7" />
+            <Setter Property="BorderThickness" Value="0,0,1,1" />
+        </Style>
+        <Style x:Key="TableCell" TargetType="DataGridCell">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DAE5F3" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#607FA8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TableRow" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White" />
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#F8F9FA" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EBF0F6" />
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DAE5F3" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="MonitorTable" TargetType="DataGrid">
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="CanUserAddRows" Value="False" />
             <Setter Property="CanUserDeleteRows" Value="False" />
-            <Setter Property="CanUserSortColumns" Value="False" />
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="SelectionMode" Value="Single" />
             <Setter Property="SelectionUnit" Value="FullRow" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#E5E7EB" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E5E8ED" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="AlternatingRowBackground" Value="#F9FAFB" />
-            <Setter Property="RowHeight" Value="32" />
-            <Setter Property="ColumnHeaderHeight" Value="32" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="RowHeight" Value="31" />
+            <Setter Property="ColumnHeaderHeight" Value="30" />
+            <Setter Property="AlternationCount" Value="2" />
+            <Setter Property="EnableRowVirtualization" Value="True" />
+            <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+            <Setter Property="ColumnHeaderStyle" Value="{StaticResource TableHeader}" />
+            <Setter Property="CellStyle" Value="{StaticResource TableCell}" />
+            <Setter Property="RowStyle" Value="{StaticResource TableRow}" />
         </Style>
-        <Style x:Key="MonitorTextCellStyle" TargetType="TextBlock">
+        <Style x:Key="CellText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="6,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+        </Style>
+        <Style x:Key="CodeText" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei UI" />
+            <Setter Property="Foreground" Value="#2C425E" />
+        </Style>
+        <Style x:Key="EmptyText" TargetType="TextBlock" BasedOn="{StaticResource DetailText}">
+            <Setter Property="Margin" Value="6,30,6,0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+        <Style x:Key="PaneDivider" TargetType="GridSplitter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="ResizeBehavior" Value="PreviousAndNext" />
+            <Setter Property="KeyboardIncrement" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridSplitter">
+                        <Border Background="{TemplateBinding Background}">
+                            <Border x:Name="Grip" Width="3" Height="32" CornerRadius="2"
+                                    Background="#B7C2D1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ResizeDirection" Value="Rows">
+                                <Setter TargetName="Grip" Property="Width" Value="36" />
+                                <Setter TargetName="Grip" Property="Height" Value="3" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Grip" Property="Background" Value="{StaticResource Accent}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Grip" Property="Background" Value="{StaticResource Accent}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <PathGeometry x:Key="RefreshIcon" Figures="M14,6.5 A5.8,5.8 0 1 0 13.1,12 M14,2.5 L14,6.8 L9.7,6.8" />
+        <Style x:Key="NumericHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource TableHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="2,0" />
+        </Style>
+        <Style x:Key="NumericText" TargetType="TextBlock" BasedOn="{StaticResource CodeText}">
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="RuleState" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{StaticResource Soft}" />
+            <Setter Property="TextElement.Foreground" Value="#4C5D72" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsExecuted}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentWash}" />
+                    <Setter Property="TextElement.Foreground" Value="#083E83" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="DB 未就绪">
+                    <Setter Property="Background" Value="#FFF0D8" />
+                    <Setter Property="TextElement.Foreground" Value="#80500F" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="标记不可读">
+                    <Setter Property="Background" Value="#FFF0D8" />
+                    <Setter Property="TextElement.Foreground" Value="#80500F" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasDefinition}" Value="False">
+                    <Setter Property="Background" Value="#FBE9E6" />
+                    <Setter Property="TextElement.Foreground" Value="#943F34" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="BitBadge" TargetType="Border">
+            <Setter Property="MinWidth" Value="32" />
+            <Setter Property="Padding" Value="5,1" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource Muted}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentValue}" Value="0">
+                    <Setter Property="Background" Value="#E8ECF1" />
+                    <Setter Property="TextElement.Foreground" Value="#3E516A" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CurrentValue}" Value="1">
+                    <Setter Property="Background" Value="#C6D8EF" />
+                    <Setter Property="TextElement.Foreground" Value="#083B7E" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -47,174 +415,187 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Background="White"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                CornerRadius="10"
-                Padding="14"
-                Margin="0,0,0,10">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="PLC / DB"
-                           Target="{Binding ElementName=PlcTargetPicker}"
-                           Foreground="#4B5563"
-                           VerticalAlignment="Center" />
-                    <ComboBox x:Name="PlcTargetPicker"
-                              Width="192"
-                              Height="32"
-                              VerticalContentAlignment="Center"
-                              IsSynchronizedWithCurrentItem="False"
+        <Border Style="{StaticResource PanelBorder}" Padding="13,10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Width="36" Height="36" Background="#163E71" CornerRadius="8" VerticalAlignment="Center">
+                    <Viewbox Width="23" Height="23">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M4,12 L11,12 M11,6 L11,18 M11,6 L16,6 M11,18 L16,18"
+                                  Stroke="#C8DBF3" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                            <Path Data="M2,9.5 L6.5,9.5 L6.5,14 L2,14 Z M16,3.5 L21,3.5 L21,8.5 L16,8.5 Z M16,15.5 L21,15.5 L21,20.5 L16,20.5 Z"
+                                  Fill="#163E71" Stroke="White" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                        </Canvas>
+                    </Viewbox>
+                </Border>
+                <TextBlock x:Name="DbTitleText" Grid.Column="1" Margin="10,0,12,0"
+                           Style="{StaticResource Heading}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="PLC / DB" Target="{Binding ElementName=PlcTargetPicker}" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="PlcTargetPicker" Width="184" Style="{StaticResource Picker}" Tag="选择 PLC / DB"
+                              ItemTemplate="{StaticResource NamedChoice}" TextSearch.TextPath="DisplayName"
+                              AutomationProperties.Name="监视的 PLC 和 DB"
                               ToolTip="{Binding SelectedItem.DisplayName, RelativeSource={RelativeSource Self}}"
-                              SelectionChanged="PlcTargetPicker_SelectionChanged">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}"
-                                           ToolTip="{Binding DisplayName}"
-                                           TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="刷新"
-                            Style="{StaticResource MonitorButtonStyle}"
-                            Click="RefreshButton_Click" />
-                    <Button x:Name="TopmostButton"
-                            Content="置顶"
-                            Style="{StaticResource MonitorButtonStyle}"
-                            Click="TopmostButton_Click" />
-                    <Button Content="关闭"
-                            Style="{StaticResource MonitorButtonStyle}"
-                            Click="CloseButton_Click" />
+                              SelectionChanged="PlcTargetPicker_SelectionChanged" />
+                    <Button Content="刷新" Tag="{StaticResource RefreshIcon}" Style="{StaticResource PrimaryButton}"
+                            Margin="8,0,0,0" Click="RefreshButton_Click" />
+                    <Button x:Name="TopmostButton" Content="置顶" Style="{StaticResource PinButton}"
+                            Margin="6,0,0,0" Click="TopmostButton_Click" />
+                    <Button Content="关闭" Style="{StaticResource ActionButton}" Margin="6,0,0,0" Click="CloseButton_Click" />
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock x:Name="DbTitleText"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Foreground="#111827"
-                               TextTrimming="CharacterEllipsis"
-                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-                    <TextBlock Text="双击「当前值」切换 0 / 1。"
-                               Margin="0,4,0,0"
-                               Foreground="#4B5563" />
-                </StackPanel>
-            </DockPanel>
+            </Grid>
         </Border>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="446" />
+                <ColumnDefinition Width="39*" MinWidth="288" />
                 <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="61*" MinWidth="435" />
             </Grid.ColumnDefinitions>
 
-            <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="8">
-                <DataGrid x:Name="RulesGrid"
-                          Style="{StaticResource MonitorGridStyle}"
-                          SelectionChanged="RulesGrid_SelectionChanged">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="顺序" Width="48" Binding="{Binding SortIndex}" />
-                        <DataGridTextColumn Header="ID" Width="40" Binding="{Binding RuleId}" />
-                        <DataGridTextColumn Header="规则" Width="*" Binding="{Binding Name}"
-                                            ElementStyle="{StaticResource MonitorTextCellStyle}" />
-                        <DataGridTextColumn Header="执行次数" Width="76"
-                                            Binding="{Binding ExecutionCount, TargetNullValue=—}" />
-                        <DataGridTemplateColumn Header="执行状态" Width="110">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Status}"
-                                               ToolTip="{Binding StatusDetail}"
-                                               VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#4B5563" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsExecuted}" Value="True">
-                                                        <Setter Property="Foreground" Value="#047857" />
-                                                        <Setter Property="FontWeight" Value="SemiBold" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Border>
-
-            <Border Grid.Column="2" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="8">
+            <Border Style="{StaticResource PanelBorder}" Padding="0,0,0,4">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="SelectedRuleText"
-                               Margin="4,2,4,8"
-                               FontWeight="SemiBold"
-                               Foreground="#111827"
-                               TextTrimming="CharacterEllipsis" />
-                    <DataGrid x:Name="PointsGrid" Grid.Row="1" Style="{StaticResource MonitorGridStyle}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="类型" Width="105" Binding="{Binding Kind}"
-                                                ElementStyle="{StaticResource MonitorTextCellStyle}" />
-                            <DataGridTextColumn Header="点位名称" Width="*" MinWidth="100" Binding="{Binding Name}"
-                                                ElementStyle="{StaticResource MonitorTextCellStyle}" />
-                            <DataGridTextColumn Header="地址" Width="146" Binding="{Binding Address}"
-                                                ElementStyle="{StaticResource MonitorTextCellStyle}" />
-                            <DataGridTextColumn Header="条件 / 写入" Width="90" Binding="{Binding ExpectedValue}" />
-                            <DataGridTextColumn Header="复位" Width="54" Binding="{Binding ResetValue}" />
-                            <DataGridTemplateColumn Header="当前值" Width="76">
-                                <DataGridTemplateColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <EventSetter Event="PreviewMouseLeftButtonDown"
-                                                     Handler="PointValueCell_PreviewMouseLeftButtonDown" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CanToggle}" Value="True">
-                                                <Setter Property="Cursor" Value="Hand" />
-                                                <Setter Property="ToolTip" Value="双击取反" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTemplateColumn.CellStyle>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding CurrentValue}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="#6B7280" />
-                                                    <Setter Property="FontWeight" Value="SemiBold" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding CurrentValue}" Value="1">
-                                                            <Setter Property="Foreground" Value="#2563EB" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <DockPanel Margin="13,10,13,9">
+                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource DetailText}"
+                                   Text="{Binding Items.Count, ElementName=RulesGrid, StringFormat={}{0} 条}" />
+                        <TextBlock Text="规则列表" Style="{StaticResource SectionTitle}" />
+                    </DockPanel>
+                    <Grid Grid.Row="1" Margin="4,0">
+                        <DataGrid x:Name="RulesGrid" Style="{StaticResource MonitorTable}" CanUserSortColumns="False"
+                                  AutomationProperties.Name="自动写入规则" SelectionChanged="RulesGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="顺序" Width="41" Binding="{Binding SortIndex}"
+                                                    HeaderStyle="{StaticResource NumericHeader}" ElementStyle="{StaticResource NumericText}" />
+                                <DataGridTextColumn Header="ID" Width="41" Binding="{Binding RuleId}"
+                                                    HeaderStyle="{StaticResource NumericHeader}" ElementStyle="{StaticResource NumericText}" />
+                                <DataGridTextColumn Header="规则名称" Width="*" MinWidth="56" Binding="{Binding Name}"
+                                                    ElementStyle="{StaticResource CellText}" />
+                                <DataGridTextColumn Header="执行次数" Width="63" Binding="{Binding ExecutionCount, TargetNullValue=—}"
+                                                    HeaderStyle="{StaticResource NumericHeader}" ElementStyle="{StaticResource NumericText}" />
+                                <DataGridTemplateColumn Header="执行状态" Width="97">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource RuleState}" ToolTip="{Binding StatusDetail}">
+                                                <TextBlock Style="{x:Null}" Text="{Binding Status}" TextTrimming="CharacterEllipsis" FontSize="12" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Text="暂无可显示的规则">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyText}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasItems, ElementName=RulesGrid}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <GridSplitter Grid.Column="1" Style="{StaticResource PaneDivider}" ResizeDirection="Columns"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          AutomationProperties.Name="调整规则列表与点位明细宽度" ToolTip="拖动调整两栏宽度" />
+
+            <Border Grid.Column="2" Style="{StaticResource PanelBorder}" Padding="0,0,0,4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Margin="13,10,13,9">
+                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource DetailText}"
+                                   Text="{Binding Items.Count, ElementName=PointsGrid, StringFormat={}{0} 个点位}" />
+                        <TextBlock DockPanel.Dock="Left" Text="点位明细" Style="{StaticResource SectionTitle}" />
+                        <TextBlock x:Name="SelectedRuleText" Margin="10,0" Style="{StaticResource DetailText}" />
+                    </DockPanel>
+                    <Grid Grid.Row="1" Margin="4,0">
+                        <DataGrid x:Name="PointsGrid" Style="{StaticResource MonitorTable}" CanUserSortColumns="False"
+                                  AutomationProperties.Name="选中规则的点位明细">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="类型" Width="1*" MinWidth="68" Binding="{Binding Kind}"
+                                                    ElementStyle="{StaticResource CellText}" />
+                                <DataGridTextColumn Header="点位名称" Width="1.6*" MinWidth="70" Binding="{Binding Name}"
+                                                    ElementStyle="{StaticResource CellText}" />
+                                <DataGridTextColumn Header="地址" Width="1.4*" MinWidth="110" Binding="{Binding Address}"
+                                                    ElementStyle="{StaticResource CodeText}" />
+                                <DataGridTextColumn Header="条件 / 写入" Width="78" Binding="{Binding ExpectedValue}"
+                                                    HeaderStyle="{StaticResource NumericHeader}" ElementStyle="{StaticResource NumericText}" />
+                                <DataGridTextColumn Header="复位" Width="43" Binding="{Binding ResetValue}"
+                                                    HeaderStyle="{StaticResource NumericHeader}" ElementStyle="{StaticResource NumericText}" />
+                                <DataGridTemplateColumn Header="当前值" Width="61" HeaderStyle="{StaticResource NumericHeader}">
+                                    <DataGridTemplateColumn.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource TableCell}">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="PointValueCell_PreviewMouseLeftButtonDown" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CanToggle}" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Setter Property="ToolTip" Value="双击切换 0 / 1" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTemplateColumn.CellStyle>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource BitBadge}">
+                                                <TextBlock Style="{x:Null}" Text="{Binding CurrentValue}" TextAlignment="Center"
+                                                           FontFamily="Consolas, Microsoft YaHei UI" FontWeight="SemiBold" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Text="暂无可显示的点位">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyText}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasItems, ElementName=PointsGrid}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="4,9,4,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="ReadStatusText"
-                       Foreground="#4B5563"
-                       TextTrimming="CharacterEllipsis"
-                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-            <TextBlock x:Name="EditStatusText"
-                       Grid.Column="1"
-                       TextAlignment="Right"
-                       Foreground="#4B5563"
-                       TextTrimming="CharacterEllipsis"
-                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-        </Grid>
+        <Border Grid.Row="2" Style="{StaticResource PanelBorder}" Padding="12,6" Margin="0,8,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="ReadStatusText" Margin="0,0,8,0" Style="{StaticResource DetailText}" />
+                <TextBlock x:Name="EditStatusText" Grid.Column="1" TextAlignment="Right" Style="{StaticResource DetailText}" />
+                <TextBlock Grid.Column="1" Text="双击可读点位的当前值可切换 0 / 1" TextAlignment="Right">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource DetailText}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=EditStatusText}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

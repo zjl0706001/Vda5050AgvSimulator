@@ -30,6 +30,9 @@ namespace Vda5050AgvSimulator.Views;
 public partial class PlcConfigWindow : INotifyPropertyChanged
 {
     private bool _isApplyingPlcEnableState;
+    // 保存配置时，DB块列表/下拉框可能因绑定刷新暂时清空选择。
+    // 该标记只影响保存阶段，不干扰用户正常切换DB块。
+    private bool _isSavingPlcConfig;
     private string _plcSearchText = string.Empty;
     private int _plcModeFilterIndex;
     private readonly DispatcherTimer _plcConnectionTimer = new(DispatcherPriority.Background)
@@ -201,6 +204,14 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         get;
         set
         {
+            // 保存期间 SelectedPlc.DbBlocks 绑定刷新会产生临时 null，
+            // 只要之前的DB仍属于当前PLC，就不让这个中间状态覆盖当前选择。
+            if (_isSavingPlcConfig && value == null && field != null &&
+                SelectedPlc?.DbBlocks?.Contains(field) == true)
+            {
+                return;
+            }
+
             field = value;
 
             RefreshSelectedDbBlockRuleNames();
@@ -894,6 +905,258 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         finally
         {
             checkBox.GetBindingExpression(CheckBox.IsCheckedProperty)?.UpdateTarget();
+        }
+    }
+
+
+    /// <summary>
+    /// 全局自动写入规则批量启停：仅更新已存储规则的开关，不保存页面其它尚未提交的PLC配置。
+    /// 全局禁用后，按现有规则同步关停所有PLC/DB块对应绑定；全局重新启用不会反向强行开启绑定。
+    /// </summary>
+    /// <summary>
+    /// 通过单个“批量启停”按钮打开四项操作菜单。
+    /// 菜单沿用既有事件处理函数，不改变全局启用优先、持久化与多选逻辑。
+    /// </summary>
+    private void OpenAutoWriteRuleBatchMenu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.ContextMenu == null)
+        {
+            return;
+        }
+
+        button.ContextMenu.PlacementTarget = button;
+        button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        // 下拉菜单右边缘与按钮右边缘对齐，避免菜单挡住右侧工具按钮。
+        var menuWidth = double.IsNaN(button.ContextMenu.Width) ? 256d : button.ContextMenu.Width;
+        button.ContextMenu.HorizontalOffset = Math.Min(0d, button.ActualWidth - menuWidth);
+        button.ContextMenu.VerticalOffset = 5d;
+        button.ContextMenu.IsOpen = true;
+    }
+
+    private void EnableAllGlobalRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyGlobalRulesEnabledBatch(GlobalAutoWriteRules.ToList(), true, "全部全局规则");
+
+    private void DisableAllGlobalRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyGlobalRulesEnabledBatch(GlobalAutoWriteRules.ToList(), false, "全部全局规则");
+
+    private void EnableSelectedGlobalRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyGlobalRulesEnabledBatch(GetSelectedGlobalRules(), true, "选中的全局规则");
+
+    private void DisableSelectedGlobalRulesButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyGlobalRulesEnabledBatch(GetSelectedGlobalRules(), false, "选中的全局规则");
+
+    private void ApplyGlobalRulesEnabledBatch(IEnumerable<PlcAutoWriteRuleModel> ruleSource, bool enabled, string scope)
+    {
+        var targets = ruleSource?
+            .Where(x => x != null)
+            .GroupBy(x => x.RuleId)
+            .Select(x => x.First())
+            .ToList() ?? new List<PlcAutoWriteRuleModel>();
+
+        if (targets.Count == 0)
+        {
+            Growl.WarningGlobal("请先选择要操作的全局规则。");
+            return;
+        }
+
+        try
+        {
+            var store = PlcAutoWriteRuleStoreService.Instance;
+            store.EnsureLoadedFromConfig();
+            var savedRules = store.GetSnapshotList();
+            var savedMap = savedRules.Where(x => x != null)
+                .GroupBy(x => x.RuleId)
+                .ToDictionary(x => x.Key, x => x.First());
+            var changedCount = 0;
+            var missedCount = 0;
+
+            foreach (var rule in targets)
+            {
+                if (!savedMap.TryGetValue(rule.RuleId, out var savedRule))
+                {
+                    missedCount++;
+                    continue;
+                }
+
+                if (savedRule.IsEnabled != enabled)
+                {
+                    savedRule.IsEnabled = enabled;
+                    changedCount++;
+                }
+            }
+
+            // 一次性提交全部开关，避免为每条规则反复保存配置。
+            if (changedCount > 0)
+            {
+                store.ReplaceAll(savedRules);
+            }
+
+            foreach (var rule in targets)
+            {
+                if (!savedMap.TryGetValue(rule.RuleId, out var savedRule))
+                {
+                    continue;
+                }
+
+                rule.IsEnabled = savedRule.IsEnabled;
+                if (_currentPopupWindow is PlcGlobalAutoWriteRuleWindow editor)
+                {
+                    editor.SyncRuleEnabled(rule.RuleId, rule.IsEnabled);
+                }
+            }
+
+            PublishGlobalRuleEnabledStates();
+            var disabledBindings = enabled ? 0 : DisableBindingsForGloballyDisabledRules();
+            if (GlobalAutoWriteRulesDataGrid.Items is IEditableCollectionView
+                { IsEditingItem: false, IsAddingNew: false })
+            {
+                // 刷新行显示时保留用户的多选，避免批量操作后自动丢失选中行。
+                var selectedRowsBeforeRefresh = GlobalAutoWriteRulesDataGrid.SelectedItems.Cast<object>().ToList();
+                GlobalAutoWriteRulesDataGrid.Items.Refresh();
+                foreach (var selectedRow in selectedRowsBeforeRefresh)
+                {
+                    if (GlobalAutoWriteRulesDataGrid.Items.Contains(selectedRow) &&
+                        !GlobalAutoWriteRulesDataGrid.SelectedItems.Contains(selectedRow))
+                    {
+                        GlobalAutoWriteRulesDataGrid.SelectedItems.Add(selectedRow);
+                    }
+                }
+            }
+
+            var action = enabled ? "启用" : "禁用";
+            var skipped = missedCount > 0 ? $"，跳过已删除 {missedCount} 条" : string.Empty;
+            var suffix = disabledBindings > 0 ? $"，同步禁用 PLC 规则绑定 {disabledBindings} 条" : string.Empty;
+            Growl.SuccessGlobal($"{scope}共 {targets.Count} 条，已{action}（开关变更 {changedCount} 条）{suffix}{skipped}。");
+        }
+        catch (Exception ex)
+        {
+            Growl.WarningGlobal("批量切换全局规则失败：" + ex.Message);
+            RefreshGlobalRulesAndBindings();
+        }
+    }
+
+    /// <summary>
+    /// 当前DB块引用批量启停：只处理当前PLC、当前DB块中对应规则引用。
+    /// 启用时严格执行全局开关优先，禁用时不受全局开关限制。
+    /// </summary>
+    private void EnableAllDbBlockRuleRefsButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyDbBlockRuleRefsEnabledBatch(SelectedDbBlock?.AutoWriteRuleList, true, "全部绑定规则");
+
+    private void DisableAllDbBlockRuleRefsButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyDbBlockRuleRefsEnabledBatch(SelectedDbBlock?.AutoWriteRuleList, false, "全部绑定规则");
+
+    private void EnableSelectedDbBlockRuleRefsButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyDbBlockRuleRefsEnabledBatch(GetSelectedDbBlockRuleRefs(), true, "选中的绑定规则");
+
+    private void DisableSelectedDbBlockRuleRefsButton_Click(object sender, RoutedEventArgs e) =>
+        ApplyDbBlockRuleRefsEnabledBatch(GetSelectedDbBlockRuleRefs(), false, "选中的绑定规则");
+
+    private void ApplyDbBlockRuleRefsEnabledBatch(
+        IEnumerable<PlcDbBlockAutoWriteRuleRefModel> source, bool enabled, string scope)
+    {
+        var plc = SelectedPlc;
+        var dbBlock = SelectedDbBlock;
+        if (plc == null || dbBlock == null)
+        {
+            Growl.WarningGlobal("请先选择PLC和DB块。");
+            return;
+        }
+
+        var targets = source?
+            .Where(x => x != null)
+            .GroupBy(x => x.RuleId)
+            .Select(x => x.First())
+            .ToList() ?? new List<PlcDbBlockAutoWriteRuleRefModel>();
+        if (targets.Count == 0)
+        {
+            Growl.WarningGlobal("请先选择要操作的DB块规则绑定。");
+            return;
+        }
+
+        try
+        {
+            var globalMap = enabled ? GetGlobalRuleMap() : null;
+            var allowed = new List<PlcDbBlockAutoWriteRuleRefModel>();
+            var skipped = 0;
+            foreach (var ruleRef in targets)
+            {
+                if (enabled && (!globalMap.TryGetValue(ruleRef.RuleId, out var globalRule) || !globalRule.IsEnabled))
+                {
+                    skipped++;
+                    continue;
+                }
+
+                allowed.Add(ruleRef);
+            }
+
+            if (allowed.Count == 0)
+            {
+                Growl.WarningGlobal("选中的规则全部被全局规则库禁用或已删除，不能在DB块中启用。");
+                return;
+            }
+
+            var store = PlcStoreService.Instance;
+            store.EnsureLoadedFromConfig();
+            var storedPlcs = store.GetSnapshotList();
+            var storedDbBlock = storedPlcs
+                .FirstOrDefault(x => x != null && x.PlcId == plc.PlcId)?
+                .DbBlocks?.FirstOrDefault(x => x != null && x.DbNumber == dbBlock.DbNumber);
+            var changedStored = 0;
+            var unsaved = 0;
+            var changedUi = allowed.Count(x => x.IsEnabled != enabled);
+
+            foreach (var ruleRef in allowed)
+            {
+                var storedRef = storedDbBlock?.AutoWriteRuleList?
+                    .FirstOrDefault(x => x != null && x.RuleId == ruleRef.RuleId);
+                if (storedRef == null)
+                {
+                    unsaved++;
+                    continue;
+                }
+
+                if (storedRef.IsEnabled != enabled)
+                {
+                    storedRef.IsEnabled = enabled;
+                    changedStored++;
+                }
+            }
+
+            // 一次性更新运行时PLC绑定快照，不重新加载PLC，也不覆盖尚未保存的其它页面编辑。
+            if (changedStored > 0)
+            {
+                store.ReplaceAll(storedPlcs);
+            }
+
+            foreach (var ruleRef in allowed)
+            {
+                ruleRef.IsEnabled = enabled;
+            }
+
+            if (DbBlockRuleRefsDataGrid.Items is IEditableCollectionView
+                { IsEditingItem: false, IsAddingNew: false })
+            {
+                // 刷新行显示时保留用户的多选，避免批量操作后自动丢失选中行。
+                var selectedRowsBeforeRefresh = DbBlockRuleRefsDataGrid.SelectedItems.Cast<object>().ToList();
+                DbBlockRuleRefsDataGrid.Items.Refresh();
+                foreach (var selectedRow in selectedRowsBeforeRefresh)
+                {
+                    if (DbBlockRuleRefsDataGrid.Items.Contains(selectedRow) &&
+                        !DbBlockRuleRefsDataGrid.SelectedItems.Contains(selectedRow))
+                    {
+                        DbBlockRuleRefsDataGrid.SelectedItems.Add(selectedRow);
+                    }
+                }
+            }
+
+            var action = enabled ? "启用" : "禁用";
+            var skipNote = skipped > 0 ? $"，跳过全局未启用 {skipped} 条" : string.Empty;
+            var unsavedNote = unsaved > 0 ? $"，有 {unsaved} 条新绑定需点击‘保存配置’" : string.Empty;
+            Growl.SuccessGlobal($"DB{dbBlock.DbNumber} {scope}共 {targets.Count} 条，已{action} {allowed.Count} 条（变更 {changedUi} 条）{skipNote}{unsavedNote}。");
+        }
+        catch (Exception ex)
+        {
+            Growl.WarningGlobal("批量修改DB块规则绑定失败：" + ex.Message);
         }
     }
 
@@ -4586,6 +4849,14 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
+        // 保存前以逻辑标识保留选择，而不是依赖 DataGrid/ComboBox 的 SelectedItem 对象引用。
+        // ValidatePlcs 会 NormalizePlc，并多次触发 SelectedPlc 的绑定刷新。
+        var selectedPlcIdBeforeSave = SelectedPlc?.PlcId ?? 0;
+        var selectedDbNumberBeforeSave = SelectedDbBlock?.DbNumber ?? 0;
+        _isSavingPlcConfig = true;
+
+        try
+        {
         if (!SaveCurrentPlcsToStore(false))
         {
             return;
@@ -4605,6 +4876,65 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         }
 
         RefreshPlcList();
+        }
+        finally
+        {
+            _isSavingPlcConfig = false;
+            RestoreSelectedDbBlockAfterSave(selectedPlcIdBeforeSave, selectedDbNumberBeforeSave);
+
+            // 处理 WPF 在本次事件处理结束后才完成的 SelectedItem 双向绑定更新。
+            // 如果控件在布局刷新时再把选择清空，下一轮 Dispatcher 会重新选中原DB。
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (IsLoaded && IsVisible)
+                {
+                    RestoreSelectedDbBlockAfterSave(selectedPlcIdBeforeSave, selectedDbNumberBeforeSave);
+                }
+            }), DispatcherPriority.Loaded);
+        }
+    }
+
+    /// <summary>
+    /// 保存配置及PLC重载后，按PLC ID / DB编号恢复原先的选中项。
+    /// 仅选择仍然存在的DB块，不会新增或覆盖用户的DB配置。
+    /// </summary>
+    private void RestoreSelectedDbBlockAfterSave(int plcId, int dbNumber)
+    {
+        if (plcId <= 0)
+        {
+            return;
+        }
+
+        var plc = Plcs.FirstOrDefault(item => item != null && item.PlcId == plcId);
+        if (plc == null || !PlcListView.Contains(plc))
+        {
+            return;
+        }
+
+        if (!ReferenceEquals(SelectedPlc, plc))
+        {
+            SelectedPlc = plc;
+        }
+
+        if (dbNumber <= 0)
+        {
+            return;
+        }
+
+        var dbBlock = plc.DbBlocks?.FirstOrDefault(item => item != null && item.DbNumber == dbNumber);
+        if (dbBlock == null)
+        {
+            // DB确实已被删除或更改编号时，不恢复过期的选中对象。
+            return;
+        }
+
+        if (!ReferenceEquals(SelectedDbBlock, dbBlock))
+        {
+            SelectedDbBlock = dbBlock;
+        }
+
+        // 即使对象引用未变化，也通知两个绑定控件恢复可见的选中状态。
+        OnPropertyChanged(nameof(SelectedDbBlock));
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Interop;
 using Vda5050AgvSimulator.Services.Agv;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
 using Vda5050AgvSimulator.Services.Plc;
@@ -150,11 +151,65 @@ public partial class App
         return false;
     }
 
+    /// <summary>
+    /// 应用退出时统一关闭所有仍由 WPF 管理的窗口，包括没有 Owner 的独立窗口。
+    /// 使用快照倒序关闭，避免关闭过程中修改 Application.Windows 集合。
+    /// </summary>
+    private static void CloseAllApplicationWindows()
+    {
+        if (Current == null)
+        {
+            return;
+        }
+
+        void CloseWindows()
+        {
+            var windows = Current.Windows.Cast<Window>().ToList();
+            var mainWindow = Current.MainWindow;
+
+            foreach (var window in windows.Where(x => !ReferenceEquals(x, mainWindow)))
+            {
+                try
+                {
+                    window.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"关闭子窗口失败：{window.GetType().Name}，{ex}");
+                }
+            }
+
+            if (mainWindow != null)
+            {
+                try
+                {
+                    mainWindow.Close();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"关闭主窗口失败：{ex}");
+                }
+            }
+        }
+
+        if (Current.Dispatcher.CheckAccess())
+        {
+            CloseWindows();
+        }
+        else
+        {
+            Current.Dispatcher.Invoke(CloseWindows);
+        }
+    }
+
     protected override void OnExit(ExitEventArgs e)
     {
         try
         {
             StopSingleInstancePipeServer();
+
+            // 退出前关闭全部 WPF 窗口（包括未设置 Owner 的独立窗口）。
+            CloseAllApplicationWindows();
 
             if (_createdNew)
             {

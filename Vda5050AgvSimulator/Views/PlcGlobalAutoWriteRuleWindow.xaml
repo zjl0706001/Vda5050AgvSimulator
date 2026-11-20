@@ -213,6 +213,147 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        <!-- 批量启停专用样式：仅作用于三个规则菜单，不影响其它右键菜单。 -->
+        <Style x:Key="BatchActionButtonStyle" TargetType="Button" BasedOn="{StaticResource NormalButtonStyle}">
+            <Setter Property="Width" Value="112" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="10,0,9,0" />
+            <Setter Property="Foreground" Value="#244A88" />
+            <Setter Property="Background" Value="#F3F7FF" />
+            <Setter Property="BorderBrush" Value="#C9D9F1" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BatchButtonBorder" CornerRadius="8"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" SnapsToDevicePixels="True">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                  RecognizesAccessKey="True" />
+                                <Path Grid.Column="1" Data="M 1,2 L 5,6 L 9,2"
+                                      Stroke="#55739F" StrokeThickness="1.6"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Margin="10,0,0,0" Width="10" Height="8"
+                                      Stretch="Uniform" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#EAF2FF" />
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#9DBBE9" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#DCEAFF" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#245EDB" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BatchButtonBorder" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ContextMenu 默认系统外观在不同 Windows 主题下不统一；使用统一圆角卡片。 -->
+        <Style x:Key="BatchActionContextMenuStyle" TargetType="ContextMenu">
+            <Setter Property="Width" Value="256" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="HasDropShadow" Value="False" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border x:Name="BatchMenuSurface" CornerRadius="12"
+                                Background="#FFFFFF" BorderBrush="#D9E3F1"
+                                BorderThickness="1" Padding="7" SnapsToDevicePixels="True">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#182E50" BlurRadius="18" ShadowDepth="4" Opacity="0.17" />
+                            </Border.Effect>
+                            <StackPanel>
+                                <Grid Margin="9,7,9,7">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="批量规则操作" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="#1C304C" />
+                                        <TextBlock Text="选择操作范围与状态" FontSize="11"
+                                                   Foreground="#7A8BA5" Margin="0,3,0,0" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="#EAF2FF" CornerRadius="7"
+                                            Padding="7,3" VerticalAlignment="Center">
+                                        <TextBlock Text="4 项" FontSize="10" FontWeight="SemiBold"
+                                                   Foreground="#3C6BC1" />
+                                    </Border>
+                                </Grid>
+                                <Border Height="1" Background="#EDF1F7" Margin="6,3,6,5" />
+                                <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 图标由菜单项自己的 Icon 提供；保留 MenuItem 的原始 Click 事件和键盘导航。 -->
+        <Style x:Key="BatchActionMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="#24364F" />
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="BatchMenuItemSurface" Margin="2,1" Padding="9,7"
+                                MinHeight="42" Background="Transparent" CornerRadius="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="39" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" ContentSource="Icon"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
+                                                      TextElement.FontWeight="SemiBold" />
+                                    <TextBlock Text="{TemplateBinding Tag}" FontSize="10.5"
+                                               Foreground="#8390A5" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BatchMenuItemSurface" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BatchActionMenuSeparatorStyle" TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Background="#EDF1F7" Height="1" Margin="10,6" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -255,6 +396,73 @@
                     </Grid.RowDefinitions>
                     <DockPanel Margin="0,0,0,11" LastChildFill="True">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                            <!-- 规则列表支持行多选与批量启用/禁用，点击不会保存尚未提交的其它编辑。 -->
+                            <Button Content="全选" Style="{StaticResource NormalButtonStyle}"
+                                    Click="SelectAllRuleRowsButton_Click" />
+                            <!-- 四种启停操作整合到一个下拉菜单；旧按钮原代码保留并折叠。 -->
+                            <Button Content="批量启停" Style="{StaticResource BatchActionButtonStyle}"
+                                    ToolTip="批量修改全局规则启用状态，支持Ctrl/Shift多选"
+                                    Click="OpenAutoWriteRuleBatchMenu_Click">
+                                <Button.ContextMenu>
+                                    <ContextMenu Style="{StaticResource BatchActionContextMenuStyle}">
+    <MenuItem Header="全部启用" Tag="启用当前列表中的全部规则" Style="{StaticResource BatchActionMenuItemStyle}"
+              Click="EnableAllRulesButton_Click">
+        <MenuItem.Icon>
+            <Border Width="32" Height="32" CornerRadius="8" Background="#E6F7EE">
+                <Path Data="M 3,9 L 7,13 L 15,5" Width="16" Height="16" Stretch="Uniform"
+                      Stroke="#18875A" StrokeThickness="2"
+                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </MenuItem.Icon>
+    </MenuItem>
+    <MenuItem Header="全部禁用" Tag="停用当前列表中的全部规则" Style="{StaticResource BatchActionMenuItemStyle}"
+              Click="DisableAllRulesButton_Click">
+        <MenuItem.Icon>
+            <Border Width="32" Height="32" CornerRadius="8" Background="#FFF0EF">
+                <Path Data="M 4,4 L 14,14 M 14,4 L 4,14" Width="16" Height="16" Stretch="Uniform"
+                      Stroke="#CC565A" StrokeThickness="2"
+                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </MenuItem.Icon>
+    </MenuItem>
+    <Separator Style="{StaticResource BatchActionMenuSeparatorStyle}" />
+    <MenuItem Header="选中启用" Tag="只启用当前选中的规则" Style="{StaticResource BatchActionMenuItemStyle}"
+              Click="EnableSelectedRulesButton_Click">
+        <MenuItem.Icon>
+            <Border Width="32" Height="32" CornerRadius="8" Background="#E9F1FF">
+                <Path Data="M 3,9 L 7,13 L 15,5" Width="16" Height="16" Stretch="Uniform"
+                      Stroke="#3268CB" StrokeThickness="2"
+                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </MenuItem.Icon>
+    </MenuItem>
+    <MenuItem Header="选中禁用" Tag="只停用当前选中的规则" Style="{StaticResource BatchActionMenuItemStyle}"
+              Click="DisableSelectedRulesButton_Click">
+        <MenuItem.Icon>
+            <Border Width="32" Height="32" CornerRadius="8" Background="#FFF4E7">
+                <Path Data="M 4,4 L 14,14 M 14,4 L 4,14" Width="16" Height="16" Stretch="Uniform"
+                      Stroke="#B47B2E" StrokeThickness="2"
+                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </MenuItem.Icon>
+    </MenuItem>
+</ContextMenu>
+                                </Button.ContextMenu>
+                            </Button>
+                            <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+                            <Button Content="全部启用" Style="{StaticResource NormalButtonStyle}"
+                                    Click="EnableAllRulesButton_Click" />
+                            <Button Content="全部禁用" Style="{StaticResource NormalButtonStyle}"
+                                    Click="DisableAllRulesButton_Click" />
+                            <Button Content="选中启用" Style="{StaticResource AccentButtonStyle}"
+                                    Click="EnableSelectedRulesButton_Click" />
+                            <Button Content="选中禁用" Style="{StaticResource NormalButtonStyle}"
+                                    Click="DisableSelectedRulesButton_Click" />
+                            </StackPanel>
                             <Button Content="新增规则" Style="{StaticResource AccentButtonStyle}"
                                     Click="AddRuleButton_Click" />
                             <Button Content="请求进入模板" Style="{StaticResource NormalButtonStyle}"
@@ -266,12 +474,15 @@
                             <TextBlock Text="规则列表" Style="{StaticResource SectionTitleStyle}" />
                             <TextBlock Style="{StaticResource RuleHintStyle}" Margin="9,0,0,0"
                                        Text="{Binding Rules.Count, StringFormat='共 {0} 条'}" />
+                            <TextBlock Style="{StaticResource RuleHintStyle}" Margin="9,0,0,0"
+                                       Text="{Binding SelectedItems.Count, ElementName=RuleListDataGrid, StringFormat='已选 {0} 条'}" />
                         </StackPanel>
                     </DockPanel>
 
                     <DataGrid x:Name="RuleListDataGrid" Grid.Row="1"
                               Style="{StaticResource RuleEditorGridStyle}"
                               ItemsSource="{Binding Rules}"
+                              SelectionMode="Extended" SelectionUnit="FullRow"
                               SelectedItem="{Binding SelectedRule, Mode=TwoWay}">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="启用" Width="64">

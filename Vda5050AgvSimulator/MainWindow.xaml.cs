@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -213,6 +213,23 @@ public partial class MainWindow
         _isRealExit = true;
 
         _notifyIcon?.Visible = false;
+
+        // 增量修复：明确触发 WPF 应用关闭，关闭全部 Application.Windows 窗口。
+        // 托盘事件不保证一定在 WPF Dispatcher 线程执行。
+        var application = Application.Current;
+        if (application != null)
+        {
+            if (application.Dispatcher.CheckAccess())
+            {
+                application.Shutdown();
+            }
+            else
+            {
+                application.Dispatcher.BeginInvoke(new Action(application.Shutdown));
+            }
+
+            return;
+        }
 
         Close();
     }
