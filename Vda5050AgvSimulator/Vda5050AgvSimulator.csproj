@@ -139,6 +139,7 @@
         <Compile Include="Services\Plc\PlcDbBlockService.cs"/>
         <Compile Include="Services\Plc\PlcPointWatchFileStore.cs"/>
         <Compile Include="Services\Plc\PlcProtocolBoardValueService.cs"/>
+        <Compile Include="Services\Plc\PlcProtocolTemplate.cs"/>
         <Compile Include="Services\Plc\PlcStoreService.cs"/>
         <Compile Include="Services\Plc\PlcVirtualServerService.cs"/>
         <Compile Include="Services\Plc\Rcs4SiemensS7Server.cs"/>
@@ -183,6 +184,7 @@
         <Compile Include="Views\PlcDbBlockResetConfigWindow.xaml.cs"/>
         <Compile Include="Views\PlcGlobalAutoWriteRuleWindow.xaml.cs"/>
         <Compile Include="Views\PlcPointChangeMonitorWindow.xaml.cs"/>
+        <Compile Include="Views\PlcProtocolTemplateImportWindow.xaml.cs"/>
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
@@ -212,6 +214,7 @@
         <Page Include="Views\PlcDbBlockResetConfigWindow.xaml"/>
         <Page Include="Views\PlcGlobalAutoWriteRuleWindow.xaml"/>
         <Page Include="Views\PlcPointChangeMonitorWindow.xaml"/>
+        <Page Include="Views\PlcProtocolTemplateImportWindow.xaml"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs">

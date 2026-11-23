@@ -27,8 +27,8 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
     private readonly DispatcherTimer _timer;
     private MonitorTarget _target;
     private bool _updatingTargetPicker;
-    private List<RuleRow> _rules = new();
-    private List<PointRow> _points = new();
+    private List<RuleRow> _rules = [];
+    private List<PointRow> _points = [];
     private int _requestedLength;
 
     internal int PlcId => _target.PlcId;
@@ -138,7 +138,7 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
                 ?.Where(reference => reference != null)
                 .OrderBy(reference => reference.SortIndex)
                 .ThenBy(reference => reference.RuleRefId)
-                .ToList() ?? new List<PlcDbBlockAutoWriteRuleRefModel>();
+                .ToList() ?? [];
             var definitions = PlcAutoWriteRuleStoreService.Instance.GetSnapshotList()
                 .GroupBy(rule => rule.RuleId)
                 .ToDictionary(group => group.Key, group => group.First());
@@ -158,8 +158,9 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
                     continue;
                 }
 
-                foreach (var trigger in rule.Triggers?.Where(trigger => trigger != null).OrderBy(trigger => trigger.TriggerId)
-                         ?? Enumerable.Empty<PlcAutoWriteTriggerModel>())
+                foreach (var trigger in rule.Triggers?.Where(trigger => trigger != null)
+                                            .OrderBy(trigger => trigger.TriggerId)
+                                        ?? Enumerable.Empty<PlcAutoWriteTriggerModel>())
                 {
                     row.Points.Add(CreatePoint(target.DbNumber,
                         "触发条件", trigger.TriggerName, trigger.ReadAddress, trigger.IsEnabled,
@@ -167,12 +168,13 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
                 }
 
                 foreach (var item in rule.WriteItems?.Where(item => item != null).OrderBy(item => item.WriteId)
-                         ?? Enumerable.Empty<PlcAutoWriteItemModel>())
+                                     ?? Enumerable.Empty<PlcAutoWriteItemModel>())
                 {
                     int? markedRuleId = null;
                     var match = ExecutionMarkerName.Match(item.WriteName?.Trim() ?? string.Empty);
                     if (item.WriteValue && match.Success &&
-                        int.TryParse(match.Groups["id"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var id))
+                        int.TryParse(match.Groups["id"].Value, NumberStyles.None, CultureInfo.InvariantCulture,
+                            out var id))
                     {
                         markedRuleId = id;
                     }
@@ -206,7 +208,7 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
             }
 
             _rules = rows;
-            _points = rows.SelectMany(row => row.Points).Distinct().ToList();
+            _points = [.. rows.SelectMany(row => row.Points).Distinct()];
             _requestedLength = _points.Select(point => point.ByteOffset + 1).DefaultIfEmpty(0).Max();
             RulesGrid.ItemsSource = rows;
             RulesGrid.SelectedItem = rows.FirstOrDefault(row => row.RuleId == selectedRuleId) ?? rows.FirstOrDefault();
@@ -223,8 +225,8 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
 
     private void ClearMonitor(string message)
     {
-        _rules = new List<RuleRow>();
-        _points = new List<PointRow>();
+        _rules = [];
+        _points = [];
         _requestedLength = 0;
         RulesGrid.ItemsSource = null;
         UpdateSelectedRule();
@@ -240,10 +242,12 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
         if (service.TryParseDbAddress(resolved, out var resolvedDbNumber, out var offset, out var bit) &&
             resolvedDbNumber == dbNumber && offset >= 0 && offset < ushort.MaxValue && bit is >= 0 and <= 7)
         {
-            return new PointRow(kind, name, $"DB{dbNumber}.DBX{offset}.{bit.Value}", enabled, expected, reset, offset, bit.Value);
+            return new PointRow(kind, name, $"DB{dbNumber}.DBX{offset}.{bit.Value}", enabled, expected, reset, offset,
+                bit.Value);
         }
 
-        return new PointRow(kind, name, string.IsNullOrWhiteSpace(address) ? "—" : address, enabled, expected, reset, -1, -1);
+        return new PointRow(kind, name, string.IsNullOrWhiteSpace(address) ? "—" : address, enabled, expected, reset,
+            -1, -1);
     }
 
     private void RefreshValues()
@@ -262,7 +266,8 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
             var readLength = Math.Min(_requestedLength, length);
             if (readLength > 0)
             {
-                if (_server.TryReadDbBytes(target.PlcId, target.DbNumber, readLength, out var snapshot, out var message))
+                if (_server.TryReadDbBytes(target.PlcId, target.DbNumber, readLength, out var snapshot,
+                        out var message))
                 {
                     bytes = snapshot;
                     ReadStatusText.Text = $"最后刷新 {DateTime.Now:HH:mm:ss.fff}";
@@ -424,7 +429,7 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
         public int RuleId { get; }
         public bool HasDefinition { get; }
         public string Name { get; }
-        public List<PointRow> Points { get; } = new();
+        public List<PointRow> Points { get; } = [];
         public PointRow ExecutionMarker { get; set; }
         public string Status { get; private set; } = "—";
         public string StatusDetail { get; private set; } = string.Empty;

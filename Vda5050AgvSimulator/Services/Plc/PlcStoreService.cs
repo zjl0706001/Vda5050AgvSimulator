@@ -106,10 +106,12 @@ public class PlcStoreService
         {
             ApplyGlobalResetItemsToAllPlcsCore();
 
-            return Plcs
-                .Where(x => x != null)
-                .Select(x => x.Clone())
-                .ToList();
+            return
+            [
+                .. Plcs
+                    .Where(x => x != null)
+                    .Select(x => x.Clone())
+            ];
         }
     }
 
@@ -123,11 +125,13 @@ public class PlcStoreService
 
         lock (_lockObj)
         {
-            return _globalResetItems
-                .Where(x => x != null)
-                .OrderBy(x => x.ResetItemId)
-                .Select(x => x.Clone())
-                .ToList();
+            return
+            [
+                .. _globalResetItems
+                    .Where(x => x != null)
+                    .OrderBy(x => x.ResetItemId)
+                    .Select(x => x.Clone())
+            ];
         }
     }
 
@@ -223,11 +227,13 @@ public class PlcStoreService
     /// </summary>
     private ObservableCollection<PlcConfigModel> CreateSnapshotCollection()
     {
-        return new ObservableCollection<PlcConfigModel>(
-            Plcs
+        return
+        [
+            .. Plcs
                 .Where(x => x != null)
                 .OrderBy(x => x.PlcId)
-                .Select(x => x.Clone()));
+                .Select(x => x.Clone())
+        ];
     }
 
     /// <summary>

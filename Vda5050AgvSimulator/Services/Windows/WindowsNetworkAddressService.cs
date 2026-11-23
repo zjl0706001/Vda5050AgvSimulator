@@ -31,13 +31,15 @@ public sealed class WindowsNetworkAddressService
     /// </summary>
     public IReadOnlyList<NetworkInterface> GetConfigurableNetworkInterfaces()
     {
-        return NetworkInterface.GetAllNetworkInterfaces()
-            .Where(x => x != null)
-            .Where(x => x.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-            .Where(x => x.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-            .OrderByDescending(x => x.OperationalStatus == OperationalStatus.Up)
-            .ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        return
+        [
+            .. NetworkInterface.GetAllNetworkInterfaces()
+                .Where(x => x != null)
+                .Where(x => x.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Where(x => x.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                .OrderByDescending(x => x.OperationalStatus == OperationalStatus.Up)
+                .ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+        ];
     }
 
     /// <summary>

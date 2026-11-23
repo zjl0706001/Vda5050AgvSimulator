@@ -14,6 +14,7 @@ internal static class PlcPointWatchFileStore
 {
     private static readonly string AppDataPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Vda5050AgvSimulator");
+
     private static readonly string SettingsPath = Path.Combine(AppDataPath, "Config", "PlcPointWatch.xml");
     private static readonly UTF8Encoding LogEncoding = new(false);
 
@@ -23,10 +24,11 @@ internal static class PlcPointWatchFileStore
     {
         if (!IoFile.Exists(SettingsPath))
         {
-            return new List<PlcPointWatchSetting>();
+            return [];
         }
 
-        using var reader = XmlReader.Create(SettingsPath, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit });
+        using var reader =
+            XmlReader.Create(SettingsPath, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit });
         var document = new XmlDocument { XmlResolver = null };
         document.Load(reader);
         var root = document.DocumentElement;

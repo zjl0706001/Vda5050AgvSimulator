@@ -365,9 +365,9 @@ public partial class OrderView
         public int HiddenNodeCount { get; set; }
         public string RemainingNodesText { get; set; }
         public string ProgressText { get; set; }
-        public List<NodeRow> UpcomingNodes { get; } = new List<NodeRow>();
-        public List<ActionRow> Actions { get; } = new List<ActionRow>();
-        public List<WarningRow> Warnings { get; } = new List<WarningRow>();
+        public List<NodeRow> UpcomingNodes { get; } = [];
+        public List<ActionRow> Actions { get; } = [];
+        public List<WarningRow> Warnings { get; } = [];
     }
 
     private sealed class NodeRow

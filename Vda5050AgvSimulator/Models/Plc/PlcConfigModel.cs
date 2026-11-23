@@ -295,18 +295,24 @@ public class PlcConfigModel : INotifyPropertyChanged
             ReceiveTimeOut = ReceiveTimeOut,
             PollIntervalMs = PollIntervalMs,
             AutoWriteEnabled = AutoWriteEnabled,
-            AutoWriteRules = new ObservableCollection<PlcAutoWriteRuleModel>(
-                AutoWriteRules == null
+            AutoWriteRules =
+            [
+                .. AutoWriteRules == null
                     ? []
-                    : AutoWriteRules.Where(x => x != null).Select(x => x.Clone())),
-            GlobalResetItems = new ObservableCollection<PlcDbBlockResetItemModel>(
-                GlobalResetItems == null
+                    : AutoWriteRules.Where(x => x != null).Select(x => x.Clone())
+            ],
+            GlobalResetItems =
+            [
+                .. GlobalResetItems == null
                     ? []
-                    : GlobalResetItems.Where(x => x != null).Select(x => x.Clone())),
-            DbBlocks = new ObservableCollection<PlcDbBlockModel>(
-                DbBlocks == null
+                    : GlobalResetItems.Where(x => x != null).Select(x => x.Clone())
+            ],
+            DbBlocks =
+            [
+                .. DbBlocks == null
                     ? []
-                    : DbBlocks.Where(x => x != null).Select(x => x.Clone()))
+                    : DbBlocks.Where(x => x != null).Select(x => x.Clone())
+            ]
         };
     }
 

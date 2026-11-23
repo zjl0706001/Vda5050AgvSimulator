@@ -65,6 +65,7 @@ public class PlcVirtualServerService
 
     private volatile ConditionalWeakTable<SiemensS7Server,
         ConcurrentDictionary<(int DbNumber, int RuleId), PlcAutoWriteRuleExecution>> _autoWriteRuleExecutions = new();
+
     private long _autoWriteScanSequence;
 
     private CancellationTokenSource _cancellationTokenSource;
@@ -1038,7 +1039,8 @@ public class PlcVirtualServerService
             var declaredLength = typeLength.Success ? typeLength : suffixLength;
             int maxLength = dataType == "STRING" ? 254 : 512;
             if (declaredLength.Success &&
-                (!int.TryParse(declaredLength.Value, NumberStyles.None, CultureInfo.InvariantCulture, out valueLength) ||
+                (!int.TryParse(declaredLength.Value, NumberStyles.None, CultureInfo.InvariantCulture,
+                     out valueLength) ||
                  valueLength < 1 || valueLength > maxLength))
             {
                 message = $"{dataType} 长度必须在 1–{maxLength} 范围内。";
@@ -1337,7 +1339,7 @@ public class PlcVirtualServerService
             }
         }
 
-        bytes = result.ToArray();
+        bytes = [.. result];
         return bytes.Length > 0;
     }
 

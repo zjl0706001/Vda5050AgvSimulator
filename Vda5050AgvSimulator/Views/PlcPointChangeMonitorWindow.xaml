@@ -591,11 +591,11 @@
                         <ComboBox x:Name="PointTypePicker" Grid.Column="5" AutomationProperties.Name="数据类型"
                                   IsEditable="True" IsTextSearchEnabled="False" Style="{StaticResource Picker}" />
                         <StackPanel Grid.Column="6" Margin="12,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button x:Name="NewPointButton" Content="新建" IsEnabled="False" Style="{StaticResource ActionButton}" Click="NewPointButton_Click" />
+                            <Button x:Name="SavePointButton" Content="保存修改" IsEnabled="False" Style="{StaticResource ActionButton}" Click="SavePointButton_Click" />
                             <Button x:Name="RemovePointButton" Content="删除" IsEnabled="False" Margin="5,0,0,0"
                                     Foreground="#934238" Style="{StaticResource ActionButton}" Click="RemovePointButton_Click" />
-                            <Button x:Name="ApplyPointButton" Content="添加点位" Margin="7,0,0,0"
-                                    Style="{StaticResource PrimaryButton}" Click="ApplyPointButton_Click" />
+                            <Button x:Name="AddPointButton" Content="添加点位" Margin="7,0,0,0"
+                                    Style="{StaticResource PrimaryButton}" Click="AddPointButton_Click" />
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -641,23 +641,31 @@
                     <TextBlock DockPanel.Dock="Left" Text="变化记录" Style="{StaticResource SectionTitle}" />
                     <TextBlock DockPanel.Dock="Left" Margin="8,0,0,0" Style="{StaticResource DetailText}"
                                Text="{Binding Items.Count, ElementName=ChangesGrid, StringFormat={}{0} 条}" />
+                    <CheckBox x:Name="SelectedOnlyCheckBox" DockPanel.Dock="Left" Content="只看选中点位"
+                              Margin="16,0,0,0" Style="{StaticResource EnableCheck}" IsEnabled="False"
+                              ToolTip="在上方选择监听点位，查看它的变化记录；取消勾选可查看全部。"
+                              Click="SelectedOnlyCheckBox_Click" />
                     <TextBlock x:Name="LogStatusText" Margin="12,0,0,0" TextAlignment="Right" Style="{StaticResource DetailText}" />
                 </DockPanel>
                 <Grid Grid.Row="1" Margin="4,0">
                     <DataGrid x:Name="ChangesGrid" Style="{StaticResource MonitorTable}" AutomationProperties.Name="点位变化记录列表">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="时间" Width="1.05*" MinWidth="109" Binding="{Binding TimeText}" ElementStyle="{StaticResource CodeText}" />
-                            <DataGridTextColumn Header="PLC / DB" Width="1.1*" MinWidth="96" Binding="{Binding Target}" ElementStyle="{StaticResource CellText}" />
-                            <DataGridTextColumn Header="点位名称" Width="1.4*" MinWidth="95" Binding="{Binding Name}" ElementStyle="{StaticResource CellText}" />
-                            <DataGridTextColumn Header="地址" Width="1.2*" MinWidth="112" Binding="{Binding Address}" ElementStyle="{StaticResource CodeText}" />
-                            <DataGridTextColumn Header="旧值" Width="1*" MinWidth="61" Binding="{Binding OldValueText}" ElementStyle="{StaticResource CodeText}" />
-                            <DataGridTextColumn Header="新值" Width="1*" MinWidth="61" Binding="{Binding NewValueText}" ElementStyle="{StaticResource LiveValueText}" />
+                            <DataGridTextColumn Header="时间" Width="1.05*" MinWidth="109" Binding="{Binding Record.TimeText}" ElementStyle="{StaticResource CodeText}" />
+                            <DataGridTextColumn Header="PLC / DB" Width="1.1*" MinWidth="96" Binding="{Binding Record.Target}" ElementStyle="{StaticResource CellText}" />
+                            <DataGridTextColumn Header="点位名称" Width="1.4*" MinWidth="95" Binding="{Binding Record.Name}" ElementStyle="{StaticResource CellText}" />
+                            <DataGridTextColumn Header="地址" Width="1.2*" MinWidth="112" Binding="{Binding Record.Address}" ElementStyle="{StaticResource CodeText}" />
+                            <DataGridTextColumn Header="旧值" Width="1*" MinWidth="61" Binding="{Binding Record.OldValueText}" ElementStyle="{StaticResource CodeText}" />
+                            <DataGridTextColumn Header="新值" Width="1*" MinWidth="61" Binding="{Binding Record.NewValueText}" ElementStyle="{StaticResource LiveValueText}" />
                         </DataGrid.Columns>
                     </DataGrid>
-                    <TextBlock Text="暂无变化记录，监听到数值变化后将显示在这里">
+                    <TextBlock>
                         <TextBlock.Style>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource EmptyText}">
+                                <Setter Property="Text" Value="暂无变化记录，监听到数值变化后将显示在这里" />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, ElementName=SelectedOnlyCheckBox}" Value="True">
+                                        <Setter Property="Text" Value="选中点位暂无变化记录" />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding HasItems, ElementName=ChangesGrid}" Value="False">
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>

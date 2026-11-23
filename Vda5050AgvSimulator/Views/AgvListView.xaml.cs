@@ -41,7 +41,7 @@ public partial class AgvListView
 
     private readonly DispatcherTimer _searchTimer;
     private readonly CollectionViewSource _agvViewSource = new();
-    private readonly HashSet<FrameworkElement> _telemetryElements = new();
+    private readonly HashSet<FrameworkElement> _telemetryElements = [];
     private string _searchKeyword = string.Empty;
     private bool _storeEventsSubscribed;
 
@@ -931,5 +931,4 @@ public partial class AgvListView
 
         Growl.SuccessGlobal(hasOfflineAgv ? "所有AGV已上线。" : "所有AGV已下线。");
     }
-
 }

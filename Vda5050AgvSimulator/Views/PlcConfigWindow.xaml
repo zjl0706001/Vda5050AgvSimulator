@@ -749,6 +749,8 @@
                             Style="{StaticResource NormalButtonStyle}"
                             ToolTip="操作全部 PLC，包含筛选隐藏的项。"
                             Click="ToggleAllPlcsButton_Click" />
+                    <Button Content="共享协议" Style="{StaticResource NormalButtonStyle}"
+                            ToolTip="查看所有 PLC 和 DB 块共用的块内偏移表。" Click="OpenSharedProtocolButton_Click" />
                     <Button Content="点位变化记录" Style="{StaticResource NormalButtonStyle}"
                             Click="OpenPointChangeMonitorButton_Click" />
                     <Button Content="复位全部 PLC" Style="{StaticResource MaintenanceButtonStyle}"
@@ -778,14 +780,16 @@
                             <Button x:Name="AddPlcButton" Content="新增" Style="{StaticResource NormalButtonStyle}"
                                     Click="AddPlcButton_Click" />
                             <Button x:Name="BatchAddPlcsButton" Content="批量添加PLC" Style="{StaticResource AccentButtonStyle}"
-                                    ToolTip="按IP范围批量生成，或粘贴自定义IP清单；支持自定义编号、名称、端口和默认DB块。"
+                                    ToolTip="按 IP 范围或清单添加 PLC。可统一指定 DB 块，也可在清单中逐台指定。"
                                     Click="BatchAddPlcsButton_Click" />
                             <Button x:Name="BatchAddNetworkIpButton" Content="批量添加IP"
                                     Style="{StaticResource NormalButtonStyle}"
                                     ToolTip="选择指定网卡，按连续范围或自定义IP清单批量添加辅助IPv4地址。"
                                     Click="BatchAddNetworkIpButton_Click" />
-                            <Button x:Name="RemovePlcButton" Content="删除" Margin="0"
+                            <Button x:Name="RemovePlcButton" Content="删除选中" Margin="0"
                                     Style="{StaticResource MaintenanceButtonStyle}"
+                                    ToolTip="删除选中的已停用 PLC，运行中的 PLC 会保留。"
+                                    ToolTipService.ShowOnDisabled="True"
                                     Click="RemovePlcButton_Click" />
                         </StackPanel>
                         <TextBlock Text="PLC 列表" Style="{StaticResource SectionTitleStyle}" />
@@ -832,9 +836,14 @@
                                 ToolTip="清除搜索和方式筛选。" />
                     </Grid>
 
-                    <TextBlock x:Name="PlcListSummaryTextBlock" Grid.Row="2"
-                               Text="显示 0 / 0 台" Margin="0,12,0,8"
-                               Foreground="{StaticResource MutedTextBrush}" />
+                    <DockPanel Grid.Row="2" Margin="0,8,0,8">
+                        <Button DockPanel.Dock="Right" Content="全选" Style="{StaticResource TableActionStyle}"
+                                Command="{x:Static ApplicationCommands.SelectAll}"
+                                CommandTarget="{Binding ElementName=PlcListDataGrid}"
+                                ToolTip="选中当前筛选结果中的全部 PLC。" />
+                        <TextBlock x:Name="PlcListSummaryTextBlock" Text="显示 0 / 0 台 · 已选 0 台"
+                                   VerticalAlignment="Center" Foreground="{StaticResource MutedTextBrush}" />
+                    </DockPanel>
 
                     <Border Grid.Row="3" Style="{StaticResource TableFrameStyle}">
                         <Grid>
@@ -845,7 +854,7 @@
                                       AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                                       IsReadOnly="True" HeadersVisibility="Column"
                                       SelectionMode="Extended" SelectionUnit="FullRow"
-                                      ToolTip="按住 Ctrl 可逐个多选，按住 Shift 可连续多选 PLC。"
+                                      ToolTip="Ctrl 点选，Shift 连选，Ctrl+A 全选当前列表。"
                                       SelectionChanged="PlcListDataGrid_SelectionChanged">
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn Header="启用" Width="48" CanUserSort="False">
@@ -1160,14 +1169,10 @@
                                             Click="ResetDbBlockButton_Click" />
                                     <Button Content="全局复位配置" Style="{StaticResource NormalButtonStyle}"
                                             Click="OpenDbBlockResetConfigButton_Click" />
-                                    <!-- 批量导入：作用于左侧PLC列表中多选的PLC，统一导入到各自DB1500 -->
-                                    <Button Content="批量导入基础协议" Style="{StaticResource NormalButtonStyle}"
-                                            ToolTip="在左侧PLC列表按 Ctrl/Shift 多选。向选中PLC的DB1500导入基础协议，已有项不覆盖；导入后点击保存配置。"
-                                            Click="ImportBasicProtocolToSelectedPlcsButton_Click" />
                                 </WrapPanel>
 
                                 <Border Grid.Row="1" Style="{StaticResource TableFrameStyle}">
-                                    <DataGrid ItemsSource="{Binding SelectedPlc.DbBlocks}"
+                                    <DataGrid x:Name="PlcDbBlocksDataGrid" ItemsSource="{Binding SelectedPlc.DbBlocks}"
                                               SelectedItem="{Binding SelectedDbBlock, Mode=TwoWay}"
                                               IsSynchronizedWithCurrentItem="False"
                                               AutoGenerateColumns="False"
@@ -1227,7 +1232,7 @@
                                                             <Button Content="查看位值" Style="{StaticResource TableActionStyle}"
                                                                     IsEnabled="{Binding DataContext.CanViewDbBlockBits, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                     Click="ViewDbBlockBitsButton_Click" />
-                                                            <Button Content="配置协议" Style="{StaticResource TableActionStyle}"
+                                                            <Button Content="协议看板" Style="{StaticResource TableActionStyle}"
                                                                     Margin="4,0" Click="OpenProtocolBoardConfigButton_Click" />
                                                             <Button Content="操作面板" Style="{StaticResource TableActionStyle}"
                                                                     Foreground="#204FAE" Background="#EAF2FF" BorderBrush="#C5D8FA"
@@ -1367,7 +1372,7 @@
                                                 <Button Content="管理规则" Style="{StaticResource NormalButtonStyle}"
                                                         Click="ManageGlobalAutoWriteRulesButton_Click" />
                                                 <Button Content="绑定选中" Style="{StaticResource AccentButtonStyle}"
-                                                        ToolTip="把选中的已启用规则绑定到当前 DB 块。"
+                                                        ToolTip="将选中规则绑定到当前 DB 块。全局已禁用的规则以停用状态绑定。"
                                                         Margin="0" Click="BindSelectedGlobalRuleButton_Click" />
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center"

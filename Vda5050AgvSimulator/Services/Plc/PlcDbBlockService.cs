@@ -21,10 +21,12 @@ public class PlcDbBlockService
     private const int MaxS7DbLength = 1 << 21;
 
     private static readonly Regex DbAddressRegex =
-        new(@"^%?DB(?<db>\d+)\.(?:DBX)?(?<byte>\d+)(?:\.(?<bit>[0-7])(?::BOOL)?)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        new(@"^%?DB(?<db>\d+)\.(?:DBX)?(?<byte>\d+)(?:\.(?<bit>[0-7])(?::BOOL)?)?$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex DbAddressTemplateRegex =
-        new(@"^%?DB(?<db>\{DB\}|\*)\.(?:DBX)?(?<byte>\d+)(?:\.(?<bit>[0-7])(?::BOOL)?)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        new(@"^%?DB(?<db>\{DB\}|\*)\.(?:DBX)?(?<byte>\d+)(?:\.(?<bit>[0-7])(?::BOOL)?)?$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex DbOffsetAddressRegex =
         new(@"^%?(?:DBX)?(?<byte>\d+)(?:\.(?<bit>[0-7])(?::BOOL)?)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -191,9 +193,11 @@ public class PlcDbBlockService
 
         if (plc == null)
         {
-            return dict.Values
-                .OrderBy(x => x.DbNumber)
-                .ToList();
+            return
+            [
+                .. dict.Values
+                    .OrderBy(x => x.DbNumber)
+            ];
         }
 
         if (plc.DbBlocks != null)
@@ -216,9 +220,11 @@ public class PlcDbBlockService
 
         AddBlocksFromRules(dict, plc);
 
-        return dict.Values
-            .OrderBy(x => x.DbNumber)
-            .ToList();
+        return
+        [
+            .. dict.Values
+                .OrderBy(x => x.DbNumber)
+        ];
     }
 
     /// <summary>
@@ -231,9 +237,11 @@ public class PlcDbBlockService
 
         if (plc == null)
         {
-            return dict.Values
-                .OrderBy(x => x.DbNumber)
-                .ToList();
+            return
+            [
+                .. dict.Values
+                    .OrderBy(x => x.DbNumber)
+            ];
         }
 
         if (plc.DbBlocks != null)
@@ -271,9 +279,11 @@ public class PlcDbBlockService
 
         AddBlocksFromRules(dict, plc);
 
-        return dict.Values
-            .OrderBy(x => x.DbNumber)
-            .ToList();
+        return
+        [
+            .. dict.Values
+                .OrderBy(x => x.DbNumber)
+        ];
     }
 
     /// <summary>

@@ -907,7 +907,7 @@ public class MqttService
                 return;
             }
 
-            pendingMessages = _pendingMessages.ToList();
+            pendingMessages = [.. _pendingMessages];
             _pendingMessages.Clear();
             _messageFlushScheduled = false;
         }
@@ -915,9 +915,11 @@ public class MqttService
         // UI长时间繁忙时只显示最新一批，避免恢复后一次插入数百条导致再次卡死。
         if (pendingMessages.Count > MaxMqttUiFlushBatchSize)
         {
-            pendingMessages = pendingMessages
-                .Skip(pendingMessages.Count - MaxMqttUiFlushBatchSize)
-                .ToList();
+            pendingMessages =
+            [
+                .. pendingMessages
+                    .Skip(pendingMessages.Count - MaxMqttUiFlushBatchSize)
+            ];
         }
 
         // 按时间正序逐条插到顶部，最终最新消息位于第一行。

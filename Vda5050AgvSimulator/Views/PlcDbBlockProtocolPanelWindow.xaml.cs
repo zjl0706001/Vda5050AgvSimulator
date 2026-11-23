@@ -195,9 +195,9 @@ public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChan
 
         string GetPlcLabel(int id) => duplicateNames.Contains(plcNames[id]) ? $"{plcNames[id]}（{id}）" : plcNames[id];
 
-        // 入口 DB 使用看板当前的点位配置，其余 DB 使用各自已保存的配置。
+        // 当前目标可含未应用的自定义项；其他目标从全局协议生成视图。
         _initialTarget = new PanelTarget(plcId, dbNumber, GetPlcLabel(plcId),
-            rows.Where(row => row != null).Select(row => row.ToProtocolItem()));
+            () => rows.Where(row => row != null).Select(row => row.ToProtocolItem()));
         _selectedTarget = _initialTarget;
         _leftRange = _initialTarget.AgvToPlc;
         _rightRange = _initialTarget.PlcToAgv;
@@ -218,7 +218,8 @@ public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChan
                     continue;
                 }
 
-                targets.Add(new PanelTarget(plc.PlcId, block.DbNumber, GetPlcLabel(plc.PlcId), block.ProtocolItems));
+                targets.Add(new PanelTarget(plc.PlcId, block.DbNumber, GetPlcLabel(plc.PlcId),
+                    () => PlcProtocolTemplate.Basic.GetEffectiveItems(block)));
             }
         }
 
@@ -698,46 +699,50 @@ public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChan
         public event PropertyChangedEventHandler? PropertyChanged;
 
         internal PanelTarget(int plcId, int dbNumber, string plcLabel,
-            IEnumerable<PlcDbBlockProtocolItemModel>? protocolItems)
+            Func<IEnumerable<PlcDbBlockProtocolItemModel>> getItems)
         {
             PlcId = plcId;
             DbNumber = dbNumber;
             DisplayName = $"{plcLabel} / DB{dbNumber}";
 
-            var lowerRange = new List<PointCard>();
-            var upperRange = new List<PointCard>();
-            foreach (var item in protocolItems ?? Enumerable.Empty<PlcDbBlockProtocolItemModel>())
+            // 选择器只创建范围标签；首次查看该目标时再创建卡片和独立的实时值。
+            var cards = new Lazy<(IReadOnlyList<PointCard> Lower, IReadOnlyList<PointCard> Upper)>(
+                () => BuildCards(getItems()));
+            AgvToPlc = new PanelRange(this, "AGV→PLC", () => cards.Value.Lower);
+            PlcToAgv = new PanelRange(this, "PLC→AGV", () => cards.Value.Upper);
+        }
+
+        private (IReadOnlyList<PointCard> Lower, IReadOnlyList<PointCard> Upper) BuildCards(
+            IEnumerable<PlcDbBlockProtocolItemModel> items)
+        {
+            var lower = new List<PointCard>();
+            var upper = new List<PointCard>();
+            foreach (var item in items)
             {
                 if (item == null ||
                     !PlcVirtualServerService.TryGetProtocolByteOffset(item.OffsetAddress, out var byteOffset) ||
-                    byteOffset > LastByteOffset)
-                {
-                    continue;
-                }
+                    byteOffset > LastByteOffset) continue;
 
-                var range = byteOffset < RangeSplit ? lowerRange : upperRange;
                 var point = PlcProtocolBoardRowModel.FromProtocolItem(item);
+                var range = byteOffset < RangeSplit ? lower : upper;
                 range.Add(new PointCard(this, point, GetPointDisplayName(point, byteOffset)));
             }
-
-            AgvToPlc = new PanelRange(this, "AGV→PLC", lowerRange);
-            PlcToAgv = new PanelRange(this, "PLC→AGV", upperRange);
+            return (lower, upper);
         }
     }
 
     public sealed class PanelRange
     {
+        private readonly Func<IReadOnlyList<PointCard>> _getCards;
         public PanelTarget Target { get; }
-
         public string DisplayName { get; }
+        public IReadOnlyList<PointCard> Cards => _getCards();
 
-        public IReadOnlyList<PointCard> Cards { get; }
-
-        internal PanelRange(PanelTarget target, string direction, IReadOnlyList<PointCard> cards)
+        internal PanelRange(PanelTarget target, string direction, Func<IReadOnlyList<PointCard>> getCards)
         {
             Target = target;
             DisplayName = $"{target.DisplayName} · {direction}";
-            Cards = cards;
+            _getCards = getCards;
         }
     }
 

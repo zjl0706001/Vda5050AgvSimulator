@@ -44,8 +44,8 @@ public static class VdaPayloadBuilder
         public VdaEdgeStateModel[] edgeStates { get; set; } = [];
         public AgvVdaErrorModel?[] errors { get; set; } = [];
         [JsonProperty("headerId")] public int HeaderId { get; set; }
-        public object[] information => Array.Empty<object>();
-        public object[] interactionZones => Array.Empty<object>();
+        public object[] information => [];
+        public object[] interactionZones => [];
         public string lastNodeId { get; set; } = "";
         public int lastNodeSequenceId { get; set; }
 
@@ -142,9 +142,12 @@ public static class VdaPayloadBuilder
             }
             else if (runtime.RouteEdges.Count > 0)
             {
-                pendingEdgeStates = runtime.RouteEdges
-                    .FindAll(edge => edge.sequenceId >= firstPendingEdgeSequenceId)
-                    .ConvertAll(CaptureEdgeState).ToArray();
+                pendingEdgeStates =
+                [
+                    .. runtime.RouteEdges
+                        .FindAll(edge => edge.sequenceId >= firstPendingEdgeSequenceId)
+                        .ConvertAll(CaptureEdgeState)
+                ];
             }
         }
 
@@ -187,22 +190,25 @@ public static class VdaPayloadBuilder
 
             edgeStates = pendingEdgeStates,
 
-            errors = agv.VdaErrors.ConvertAll(error => error == null
-                ? null
-                : new AgvVdaErrorModel
-                {
-                    errorType = error.errorType,
-                    errorLevel = error.errorLevel,
-                    errorDescription = error.errorDescription,
-                    errorReferences = error.errorReferences?.ConvertAll(reference =>
-                        reference == null
-                            ? null!
-                            : new AgvVdaErrorReferenceModel
-                            {
-                                referenceKey = reference.referenceKey,
-                                referenceValue = reference.referenceValue
-                            })!
-                }).ToArray(),
+            errors =
+            [
+                .. agv.VdaErrors.ConvertAll(error => error == null
+                    ? null
+                    : new AgvVdaErrorModel
+                    {
+                        errorType = error.errorType,
+                        errorLevel = error.errorLevel,
+                        errorDescription = error.errorDescription,
+                        errorReferences = error.errorReferences?.ConvertAll(reference =>
+                            reference == null
+                                ? null!
+                                : new AgvVdaErrorReferenceModel
+                                {
+                                    referenceKey = reference.referenceKey,
+                                    referenceValue = reference.referenceValue
+                                })!
+                    })
+            ],
 
             lastNodeId = agv.PositionID > 0
                 ? agv.PositionID.ToString()
@@ -277,7 +283,7 @@ public static class VdaPayloadBuilder
 
         if (string.Equals(loadStatus, "UNLOAD", StringComparison.OrdinalIgnoreCase))
         {
-            return Array.Empty<object>();
+            return [];
         }
 
         if (!string.Equals(loadStatus, "LOADED", StringComparison.OrdinalIgnoreCase))

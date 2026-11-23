@@ -474,21 +474,24 @@ public class AgvSimulationService
 
         mergedUpdateNodes.AddRange(updateNodes.Skip(1));
 
-        runtime.Nodes = runtime.Nodes
-            .Take(mergeNodeIndex)
-            .Concat(mergedUpdateNodes)
-            .GroupBy(x => x.sequenceId)
-            .Select(x => x.Last())
-            .OrderBy(x => x.sequenceId)
-            .ToList();
+        runtime.Nodes =
+        [
+            .. runtime.Nodes
+                .Take(mergeNodeIndex)
+                .Concat(mergedUpdateNodes)
+                .GroupBy(x => x.sequenceId)
+                .Select(x => x.Last())
+                .OrderBy(x => x.sequenceId)
+        ];
 
-        runtime.SetSortedEdges(runtime.RouteEdges
-            .Where(x => x.sequenceId < mergeNode.sequenceId)
-            .Concat(updateEdges)
-            .GroupBy(x => x.sequenceId)
-            .Select(x => x.Last())
-            .OrderBy(x => x.sequenceId)
-            .ToList());
+        runtime.SetSortedEdges([
+            .. runtime.RouteEdges
+                .Where(x => x.sequenceId < mergeNode.sequenceId)
+                .Concat(updateEdges)
+                .GroupBy(x => x.sequenceId)
+                .Select(x => x.Last())
+                .OrderBy(x => x.sequenceId)
+        ]);
 
         int newTargetNodeIndex;
 
@@ -1718,16 +1721,18 @@ public class AgvSimulationService
             return [];
         }
 
-        return actions
-            .Select(x => new AgvActionModel
-            {
-                actionId = x.actionId,
-                actionType = x.actionType,
-                actionDescription = x.actionDescription,
-                blockingType = x.blockingType,
-                actionParameters = ToAgvActionParameters(x.actionParameters)
-            })
-            .ToList();
+        return
+        [
+            .. actions
+                .Select(x => new AgvActionModel
+                {
+                    actionId = x.actionId,
+                    actionType = x.actionType,
+                    actionDescription = x.actionDescription,
+                    blockingType = x.blockingType,
+                    actionParameters = ToAgvActionParameters(x.actionParameters)
+                })
+        ];
     }
 
     /// <summary>
@@ -1740,13 +1745,15 @@ public class AgvSimulationService
             return [];
         }
 
-        return parameters
-            .Select(x => new AgvActionParameterModel
-            {
-                key = x.key,
-                value = x.value
-            })
-            .ToList();
+        return
+        [
+            .. parameters
+                .Select(x => new AgvActionParameterModel
+                {
+                    key = x.key,
+                    value = x.value
+                })
+        ];
     }
 
     /// <summary>

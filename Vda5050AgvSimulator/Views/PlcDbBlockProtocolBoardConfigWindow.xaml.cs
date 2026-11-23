@@ -16,7 +16,7 @@ namespace Vda5050AgvSimulator.Views;
 
 /// <summary>
 /// DB块协议看板配置窗口。
-/// 每个DB块维护自己的协议项列表，用于配置“名称 / 数据类型 / 偏移量地址 / 注释”。
+/// 显示共享布局在当前块的工作行，并可单独编辑原有的本块自定义点位。
 /// 同时支持读取当前运行中的虚拟PLC内存值，并允许直接写入修改。
 /// </summary>
 public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChanged
@@ -29,11 +29,16 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private bool _isRefreshing;
 
+    private readonly ObservableCollection<PlcProtocolBoardRowModel> _localRows = [];
+    private bool _openedLocalEditor;
+
+    public bool IsEditingLocal { get; private set; }
+
     public int PlcId => _plcId;
 
     public int DbNumber => _targetDbBlock?.DbNumber ?? 0;
 
-    public ObservableCollection<PlcProtocolBoardRowModel> ProtocolRows { get; } = [];
+    public ObservableCollection<PlcProtocolBoardRowModel> ProtocolRows { get; private set; } = [];
 
     public string[] DataTypes { get; } =
     [
@@ -53,7 +58,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     public string RunningStatusText => IsPlcRunning
         ? "PLC运行中：可读取/写入当前值"
-        : "PLC未运行：只能编辑协议配置，不能读取/写入值";
+        : "PLC未运行：可查看协议及编辑自定义项";
 
     public Brush RunningStatusForeground => IsPlcRunning
         ? new SolidColorBrush(Color.FromRgb(34, 197, 94))
@@ -132,23 +137,49 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private void LoadFromTarget()
     {
-        ProtocolRows.Clear();
-
-        _targetDbBlock.ProtocolItems ??= [];
-
-        foreach (var protocolItem in _targetDbBlock.ProtocolItems)
+        foreach (var item in PlcProtocolTemplate.Basic.GetLocalItems(_targetDbBlock.ProtocolItems))
         {
-            if (protocolItem == null)
-            {
-                continue;
-            }
-
-            ProtocolRows.Add(PlcProtocolBoardRowModel.FromProtocolItem(protocolItem));
+            _localRows.Add(PlcProtocolBoardRowModel.FromProtocolItem(item));
         }
+        ShowRows(false);
+    }
 
-        NormalizeProtocolRows();
+    private ObservableCollection<PlcProtocolBoardRowModel> BuildWorkingRows()
+    {
+        var settings = _localRows.Select(row => row.ToProtocolItem());
+        var effective = PlcProtocolTemplate.Basic.GetEffectiveItems(_targetDbBlock, settings);
+        return new ObservableCollection<PlcProtocolBoardRowModel>(effective.Select(PlcProtocolBoardRowModel.FromProtocolItem));
+    }
 
+    private void ShowRows(bool local)
+    {
+        IsEditingLocal = local;
+        ProtocolRows = local ? _localRows : BuildWorkingRows();
+        foreach (var column in new DataGridColumn[] { EnabledColumn, IdColumn, NameColumn, DataTypeColumn, AddressColumn, RemarkColumn })
+        {
+            column.IsReadOnly = !local;
+        }
+        OnPropertyChanged(nameof(IsEditingLocal));
+        OnPropertyChanged(nameof(ProtocolRows));
         SelectedProtocolRow = ProtocolRows.FirstOrDefault();
+        ModeHintText.Text = local
+            ? "这里仅保存本块的自定义项。与共享项同名、同偏移的设置在本块优先。"
+            : "当前值来自所选 PLC / DB。超出本块长度的共享项显示为停用。";
+    }
+
+    private void LocalModeBox_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ProtocolDataGrid.CommitEdit(DataGridEditingUnit.Cell, true) ||
+            !ProtocolDataGrid.CommitEdit(DataGridEditingUnit.Row, true) ||
+            (IsEditingLocal && !ValidateProtocolRows()))
+        {
+            LocalModeBox.IsChecked = IsEditingLocal;
+            return;
+        }
+        var local = LocalModeBox.IsChecked == true;
+        if (local) _openedLocalEditor = true;
+        ShowRows(local);
+        RefreshValues();
     }
 
     private void RefreshValuesButton_Click(object sender, RoutedEventArgs e)
@@ -169,7 +200,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
         if (panel == null)
         {
-            panel = new PlcDbBlockProtocolPanelWindow(PlcId, DbNumber, ProtocolRows)
+            panel = new PlcDbBlockProtocolPanelWindow(PlcId, DbNumber, IsEditingLocal ? BuildWorkingRows() : ProtocolRows)
             {
                 Topmost = this.Topmost
             };
@@ -247,6 +278,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private void AddProtocolItemButton_Click(object sender, RoutedEventArgs e)
     {
+        if (!IsEditingLocal) return;
         var nextId = GetNextProtocolItemId();
 
         var row = new PlcProtocolBoardRowModel
@@ -255,7 +287,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
             IsEnabled = true,
             SignalName = $"信号-{nextId}",
             DataType = "Bool",
-            OffsetAddress = "DB{DB}.DBX0.0",
+            OffsetAddress = "DBX0.0",
             Remark = string.Empty
         };
 
@@ -264,145 +296,16 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
         SelectedProtocolRow = row;
     }
 
-    private void ImportBasicTemplateButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (ProtocolRows.Count > 0)
-        {
-            var result = MessageBox.Show(
-                "导入基础模板会追加协议项，不会自动删除已有配置。是否继续？",
-                "导入基础模板",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes)
-            {
-                return;
-            }
-        }
-
-        AppendBasicProtocolTemplate(AddTemplateItem);
-
-        SelectedProtocolRow = ProtocolRows.LastOrDefault();
-
-        RefreshValues();
-    }
-
-    /// <summary>
-    /// 公共基础协议模板定义，单DB窗口和PLC批量导入使用同一份模板。
-    /// 由调用方决定去重和写入的目标，避免重复维护两套协议项。
-    /// </summary>
+    /// <summary>供已有调用方枚举内置的双向工站协议。</summary>
     public static void AppendBasicProtocolTemplate(Action<string, string, string, string> addItem)
     {
-        if (addItem == null)
-        {
-            throw new ArgumentNullException(nameof(addItem));
-        }
-
-        #region AGV_TO_PLC
-
-        addItem("LifeBit", "Bool", "DB{DB}.DBX0.0", "系统健康");
-        addItem("Offline", "Bool", "DB{DB}.DBX0.1", "离线模式");
-        addItem("Online", "Bool", "DB{DB}.DBX0.2", "在线模式");
-        addItem("Alarm", "Bool", "DB{DB}.DBX0.3", "故障");
-        addItem("EmergencyStop", "Bool", "DB{DB}.DBX0.4", "急停");
-        addItem("EnterRequest", "Bool", "DB{DB}.DBX0.5", "请求进入");
-        addItem("Entering", "Bool", "DB{DB}.DBX0.6", "正在进入");
-        addItem("ReachedPosition", "Bool", "DB{DB}.DBX0.7", "小车到位");
-        addItem("Leaving", "Bool", "DB{DB}.DBX1.0", "正在离开");
-        addItem("BindComplete", "Bool", "DB{DB}.DBX1.1", "绑定完成");
-        addItem("UnbindComplete", "Bool", "DB{DB}.DBX1.2", "解绑完成");
-        addItem("WritePackID1Done", "Bool", "DB{DB}.DBX1.3", "写入PackID1完成");
-        addItem("WriteGuobiaoPackID1Done", "Bool", "DB{DB}.DBX1.4", "写入PackID1_12位码完成");
-        addItem("WritePackID2Done", "Bool", "DB{DB}.DBX1.5", "写入PackID2完成");
-        addItem("WriteGuobiaoPackID2Done", "Bool", "DB{DB}.DBX1.6", "写入PackID2_12位码完成");
-
-        addItem("AGVID", "Byte", "DB{DB}.DBB2", "AGV小车编号");
-        addItem("ErrorCode", "Byte", "DB{DB}.DBB3", "报错代码");
-
-        addItem("PACKLayers", "Int", "DB{DB}.DBW4", "pack层数：1：第一层；2：第二层；3：第三层");
-        addItem("AGVModuleType", "Int", "DB{DB}.DBW6",
-            "AGV到达公共区域，到位后，请求进站时，发送CheckAGVModuleType信号和AGVModuleType（当前模组类型）进行校验");
-
-        addItem("PackID1", "String[40]", "DB{DB}.DBX8", "Pack码1");
-        addItem("ShippingCode1", "String[40]", "DB{DB}.DBX50", "传输码1");
-        addItem("PackID2", "String[40]", "DB{DB}.DBX92", "Pack码2");
-        addItem("ShippingCode2", "String[40]", "DB{DB}.DBX134", "传输码2");
-
-        addItem("UPComplete", "Bool", "DB{DB}.DBX176.0", "上升完成");
-        addItem("DownComplete", "Bool", "DB{DB}.DBX176.1", "下降完成");
-
-        addItem("Block1LimitpieceStatus", "Int", "DB{DB}.DBW178", "Block1限位片状态");
-        addItem("Block2LimitpieceStatus", "Int", "DB{DB}.DBW180", "Block2限位片状态");
-
-        addItem("AGVBodyAmount", "Byte", "DB{DB}.DBB177", "AGV载体数量，例如涂胶站需要等待入箱模组小车数量，备用，自行修改数据类型");
-
-        #endregion
-
-        #region PLC_TO_AGV
-
-        addItem("LifeBit", "Bool", "DB{DB}.DBX200.0", "系统健康");
-        addItem("Offline", "Bool", "DB{DB}.DBX200.1", "离线模式（非自动状态）");
-        addItem("Online", "Bool", "DB{DB}.DBX200.2", "在线模式（自动状态）");
-        addItem("Alarm", "Bool", "DB{DB}.DBX200.3", "故障");
-        addItem("EmergencyStopOK", "Bool", "DB{DB}.DBX200.4", "急停");
-        addItem("EnterInterlock", "Bool", "DB{DB}.DBX200.5", "进入互锁");
-        addItem("EnterAllowed", "Bool", "DB{DB}.DBX200.6", "允许进入");
-        addItem("LeaveInterlock", "Bool", "DB{DB}.DBX200.7", "离开互锁");
-        addItem("LeaveRequest", "Bool", "DB{DB}.DBX201.0", "请求离开");
-        addItem("Bypass", "Bool", "DB{DB}.DBX201.1", "屏蔽");
-        addItem("RequestWritePackID1", "Bool", "DB{DB}.DBX201.2", "请求写入Pack码1");
-        addItem("RequestWritePackID1", "Bool", "DB{DB}.DBX201.3", "请求写入传输码1");
-        addItem("RequestWritePackID1", "Bool", "DB{DB}.DBX201.4", "请求写入Pack码2");
-        addItem("RequestWritePackID1", "Bool", "DB{DB}.DBX201.5", "请求写入传输码2");
-        addItem("Route", "Int", "DB{DB}.DBW202", "AGV小车执行的路径");
-
-        addItem("PACKLayers", "Int", "DB{DB}.DBW206", "箱体上线工站扫码箱体后，上传MES，记录层数：1：第一层；2：第二层；3：第三层");
-        addItem("CheckAGVModuleType", "Int", "DB{DB}.DBW208", "入箱设备判断箱体类型，输出模组小车类型：1：模组小车类型1；2：模组小车类型2");
-
-        addItem("PackID1", "String[40]", "DB{DB}.DBX210", "Pack码1：24位码");
-        addItem("ShippingCode1", "String[40]", "DB{DB}.DBX252", "传输码1：12位码（总成码）或12位码（PN）");
-        addItem("PackID2", "String[40]", "DB{DB}.DBX294", "Pack码1：24位码");
-        addItem("ShippingCode2", "String[40]", "DB{DB}.DBX336", "传输码2：12位码（总成码）或12位码（PN）");
-
-        addItem("RequestUP", "Bool", "DB{DB}.DBX378.0", "请求上升");
-        addItem("RequestDOWN", "Bool", "DB{DB}.DBX378.1", "请求下降");
-        addItem("Clampingposition", "Bool", "DB{DB}.DBX378.2", "AGV夹紧位置");
-        addItem("HeatStationRequestEmptyPallet", "Bool", "DB{DB}.DBX378.3", "加热请求回流空车");
-        addItem("HeatStationErr", "Bool", "DB{DB}.DBX378.4", "加热库故障");
-
-        addItem("Block1LimitpieceStatus", "Int", "DB{DB}.DBW380", "Block1限位片状态");
-        addItem("Block2LimitpieceStatus", "Int", "DB{DB}.DBW382", "Block2限位片状态");
-        addItem("HeatCycleAgvAmount", "Int", "DB{DB}.DBW384", "加热回流小车数量");
-
-        #endregion
-
-    }
-
-    private void AddTemplateItem(string signalName, string dataType, string offsetAddress, string remark)
-    {
-        var exists = ProtocolRows.Any(x =>
-            x != null &&
-            string.Equals(x.SignalName?.Trim(), signalName, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(x.OffsetAddress?.Trim(), offsetAddress, StringComparison.OrdinalIgnoreCase));
-
-        if (exists)
-        {
-            return;
-        }
-
-        ProtocolRows.Add(new PlcProtocolBoardRowModel
-        {
-            ProtocolItemId = GetNextProtocolItemId(),
-            IsEnabled = true,
-            SignalName = signalName,
-            DataType = dataType,
-            OffsetAddress = offsetAddress,
-            Remark = remark
-        });
+        if (addItem == null) throw new ArgumentNullException(nameof(addItem));
+        PlcProtocolTemplate.Basic.AppendDefinitions(addItem);
     }
 
     private void RemoveProtocolItemButton_Click(object sender, RoutedEventArgs e)
     {
+        if (!IsEditingLocal) return;
         if (SelectedProtocolRow == null)
         {
             MessageBox.Show("请先选择要删除的协议项。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -431,14 +334,15 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private void ClearProtocolItemsButton_Click(object sender, RoutedEventArgs e)
     {
+        if (!IsEditingLocal) return;
         if (ProtocolRows.Count == 0)
         {
             return;
         }
 
         var result = MessageBox.Show(
-            "确定清空当前DB块的所有协议看板配置吗？",
-            "清空协议看板配置",
+            "确定清空当前 DB 块的自定义项，恢复共享协议的默认设置吗？",
+            "清空自定义项",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 
@@ -454,24 +358,22 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
-        ProtocolDataGrid?.CommitEdit(DataGridEditingUnit.Cell, true);
-        ProtocolDataGrid?.CommitEdit(DataGridEditingUnit.Row, true);
-
-        if (!ValidateProtocolRows())
+        if (!ProtocolDataGrid.CommitEdit(DataGridEditingUnit.Cell, true) ||
+            !ProtocolDataGrid.CommitEdit(DataGridEditingUnit.Row, true))
         {
             return;
         }
 
-        NormalizeProtocolRows();
-
-        _targetDbBlock.ProtocolItems ??= [];
-        _targetDbBlock.ProtocolItems.Clear();
-
-        foreach (var row in ProtocolRows.OrderBy(x => x.ProtocolItemId))
+        if (_openedLocalEditor)
         {
-            _targetDbBlock.ProtocolItems.Add(row.ToProtocolItem());
+            if (!ValidateProtocolRows()) return;
+            NormalizeProtocolRows();
+            var local = _localRows.OrderBy(row => row.ProtocolItemId).Select(row => row.ToProtocolItem());
+            var settings = PlcProtocolTemplate.Basic.GetLocalItems(local).ToList();
+            _targetDbBlock.ProtocolItems ??= [];
+            _targetDbBlock.ProtocolItems.Clear();
+            foreach (var item in settings) _targetDbBlock.ProtocolItems.Add(item);
         }
-
 
         Close();
     }
@@ -483,7 +385,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private bool ValidateProtocolRows()
     {
-        var duplicateId = ProtocolRows
+        var duplicateId = _localRows
             .Where(x => x != null)
             .Where(x => x.ProtocolItemId > 0)
             .GroupBy(x => x.ProtocolItemId)
@@ -499,7 +401,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
             return false;
         }
 
-        foreach (var row in ProtocolRows.Where(x => x != null))
+        foreach (var row in _localRows.Where(x => x != null))
         {
             if (row.ProtocolItemId <= 0)
             {
@@ -540,7 +442,7 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private void NormalizeProtocolRows()
     {
-        var usedIds = ProtocolRows
+        var usedIds = _localRows
             .Where(x => x != null)
             .Where(x => x.ProtocolItemId > 0)
             .GroupBy(x => x.ProtocolItemId)
@@ -550,10 +452,10 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
         var nextId = 1;
 
-        foreach (var row in ProtocolRows.Where(x => x != null).ToList())
+        foreach (var row in _localRows.Where(x => x != null).ToList())
         {
             if (row.ProtocolItemId <= 0 ||
-                ProtocolRows.Count(x => x != null && x.ProtocolItemId == row.ProtocolItemId) > 1)
+                _localRows.Count(x => x != null && x.ProtocolItemId == row.ProtocolItemId) > 1)
             {
                 while (usedIds.Contains(nextId))
                 {
@@ -582,13 +484,20 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
 
     private int GetNextProtocolItemId()
     {
-        var maxId = ProtocolRows
+        var maxId = _localRows
             .Where(x => x != null)
             .Select(x => x.ProtocolItemId)
             .DefaultIfEmpty(0)
             .Max();
 
-        return maxId + 1;
+        if (maxId == int.MaxValue)
+        {
+            var id = PlcProtocolTemplate.Basic.Count + 1;
+            var used = _localRows.Select(row => row.ProtocolItemId).ToHashSet();
+            while (used.Contains(id)) id++;
+            return id;
+        }
+        return Math.Max(PlcProtocolTemplate.Basic.Count, maxId) + 1;
     }
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = null)

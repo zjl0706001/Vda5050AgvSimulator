@@ -294,8 +294,8 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             return;
         }
 
-        var triggerTemplates = selection.TriggerTemplates ?? new List<DefaultRuleAddressTemplate>();
-        var writeTemplates = selection.WriteTemplates ?? new List<DefaultRuleAddressTemplate>();
+        var triggerTemplates = selection.TriggerTemplates ?? [];
+        var writeTemplates = selection.WriteTemplates ?? [];
 
         if (triggerTemplates.Count == 0 && writeTemplates.Count == 0)
         {
@@ -482,10 +482,10 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
     private void SelectAllRuleRowsButton_Click(object sender, RoutedEventArgs e) => RuleListDataGrid.SelectAll();
 
     private void EnableAllRulesButton_Click(object sender, RoutedEventArgs e) =>
-        ApplyRuleEnabledBatch(Rules.ToList(), true, "全部规则");
+        ApplyRuleEnabledBatch([.. Rules], true, "全部规则");
 
     private void DisableAllRulesButton_Click(object sender, RoutedEventArgs e) =>
-        ApplyRuleEnabledBatch(Rules.ToList(), false, "全部规则");
+        ApplyRuleEnabledBatch([.. Rules], false, "全部规则");
 
     private void EnableSelectedRulesButton_Click(object sender, RoutedEventArgs e) =>
         ApplyRuleEnabledBatch(GetSelectedRuleRows(), true, "选中规则");
@@ -494,12 +494,13 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         ApplyRuleEnabledBatch(GetSelectedRuleRows(), false, "选中规则");
 
     private List<PlcAutoWriteRuleModel> GetSelectedRuleRows() =>
-        RuleListDataGrid.SelectedItems
+    [
+        .. RuleListDataGrid.SelectedItems
             .OfType<PlcAutoWriteRuleModel>()
             .Where(x => x != null)
             .GroupBy(x => x.RuleId)
             .Select(x => x.First())
-            .ToList();
+    ];
 
     private void ApplyRuleEnabledBatch(IEnumerable<PlcAutoWriteRuleModel> rules, bool enabled, string scope)
     {
@@ -507,7 +508,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             .Where(x => x != null)
             .GroupBy(x => x.RuleId)
             .Select(x => x.First())
-            .ToList() ?? new List<PlcAutoWriteRuleModel>();
+            .ToList() ?? [];
 
         if (targets.Count == 0)
         {
@@ -566,7 +567,9 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             }
 
             if (RuleListDataGrid.Items is IEditableCollectionView
-                { IsEditingItem: false, IsAddingNew: false })
+                {
+                    IsEditingItem: false, IsAddingNew: false
+                })
             {
                 // 刷新行显示时保留用户的多选，避免批量操作后自动丢失选中行。
                 var selectedRowsBeforeRefresh = RuleListDataGrid.SelectedItems.Cast<object>().ToList();
@@ -1107,7 +1110,8 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             dialog.DialogResult = true;
         };
 
-        var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+        var actions = new StackPanel
+            { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
         actions.Children.Add(cancelButton);
         actions.Children.Add(okButton);
         var footer = new Border

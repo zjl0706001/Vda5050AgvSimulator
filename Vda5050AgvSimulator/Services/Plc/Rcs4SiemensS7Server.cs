@@ -53,7 +53,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
     private const byte Real = 0x07;
     private const byte OctetString = 0x09;
 
-    private static readonly byte[] EmptyBytes = Array.Empty<byte>();
+    private static readonly byte[] EmptyBytes = [];
 
     private readonly Dictionary<int, int> _dbLengths = new Dictionary<int, int>();
     private readonly object _networkMemoryLock = new object();
@@ -179,7 +179,8 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
                 }
                 catch (Exception ex)
                 {
-                    _log?.Invoke($"S7 监听中断 {listenAddress?.ToString() ?? "127.0.0.1"}:{port}，{retryDelay} ms 后重试。{DescribeException(ex)}");
+                    _log?.Invoke(
+                        $"S7 监听中断 {listenAddress?.ToString() ?? "127.0.0.1"}:{port}，{retryDelay} ms 后重试。{DescribeException(ex)}");
                 }
                 finally
                 {
@@ -395,7 +396,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                uint[] settings = { 1, 30000, 5000 };
+                uint[] settings = [1, 30000, 5000];
                 var buffer = new byte[12];
                 Buffer.BlockCopy(settings, 0, buffer, 0, buffer.Length);
                 socket.IOControl(IOControlCode.KeepAliveValues, buffer, null);
@@ -518,7 +519,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
                 int sizeCode = Math.Min((int)request[offset + 2], 10);
                 tpduSize = 1 << sizeCode;
-                reply.AddRange(new byte[] { 0xC0, 1, (byte)sizeCode });
+                reply.AddRange([0xC0, 1, (byte)sizeCode]);
             }
             else if (parameter == 0xC1 || parameter == 0xC2)
             {
@@ -532,7 +533,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
         }
 
         reply[0] = (byte)(reply.Count - 1);
-        confirmation = reply.ToArray();
+        confirmation = [.. reply];
         return true;
     }
 
@@ -575,7 +576,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
             // 每条连接按请求顺序处理一个作业，PDU 长度按该连接协商。
             pduSize = Math.Min(requestedPdu, MaxPduSize);
-            byte[] reply = { SetupCommunication, 0, 0, 1, 0, 1, 0, 0 };
+            byte[] reply = [SetupCommunication, 0, 0, 1, 0, 1, 0, 0];
             WriteUInt16BigEndian(reply, 6, pduSize);
             return BuildS7Message(AckData, reference, reply, EmptyBytes);
         }
@@ -612,7 +613,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
     private static bool TryReadVariableItems(ArraySegment<byte> parameter, out VariableItem[] items)
     {
-        items = Array.Empty<VariableItem>();
+        items = [];
         var buffer = parameter.Array;
         int start = parameter.Offset;
         int end = start + parameter.Count;
@@ -662,7 +663,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
             if (status != Success)
             {
-                response.AddRange(new byte[] { status, 0, 0, 0 });
+                response.AddRange([status, 0, 0, 0]);
                 continue;
             }
 
@@ -671,7 +672,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
             var result = Read(memory, (ushort)memoryLength);
             if (!result.IsSuccess || result.Content?.Length != memoryLength)
             {
-                response.AddRange(new byte[] { AddressOutOfRange, 0, 0, 0 });
+                response.AddRange([AddressOutOfRange, 0, 0, 0]);
                 continue;
             }
 
@@ -691,7 +692,9 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
             int lengthField = type.IsBit
                 ? item.Count
-                : UsesBitLength(type.TransportSize) ? payloadLength * 8 : payloadLength;
+                : UsesBitLength(type.TransportSize)
+                    ? payloadLength * 8
+                    : payloadLength;
             response.Add(Success);
             response.Add(type.TransportSize);
             response.Add((byte)(lengthField >> 8));
@@ -703,7 +706,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
             }
         }
 
-        return BuildS7Message(AckData, reference, new byte[] { ReadVar, (byte)items.Length }, response.ToArray());
+        return BuildS7Message(AckData, reference, [ReadVar, (byte)items.Length], [.. response]);
     }
 
     private byte[] WriteVariables(int reference, VariableItem[] items, ArraySegment<byte> data)
@@ -725,7 +728,8 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
                 bool matchesLength = value.Length == type.PayloadLength(item.Count) &&
                                      (type.IsBit
                                          ? value.LengthField == item.Count || value.LengthField == value.Length * 8
-                                         : !UsesBitLength(value.TransportSize) || value.LengthField == value.Length * 8);
+                                         : !UsesBitLength(value.TransportSize) ||
+                                           value.LengthField == value.Length * 8);
                 result = matchesType && matchesLength
                     ? WriteVariable(item, memory, type, data.Array, value)
                     : DataTypeMismatch;
@@ -735,7 +739,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
         }
 
         // Write Var 应答的数据区按请求顺序放置每项的一个返回码。
-        return BuildS7Message(AckData, reference, new byte[] { WriteVar, (byte)items.Length }, status);
+        return BuildS7Message(AckData, reference, [WriteVar, (byte)items.Length], status);
     }
 
     private static bool TryReadWriteData(ArraySegment<byte> data, int count, out WriteDataItem[] items)
@@ -875,7 +879,8 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
                 return ObjectNotFound;
             }
 
-            int memoryLength = type.IsBit ? ((item.BitAddress & 7) + item.Count + 7) / 8 : type.PayloadLength(item.Count);
+            int memoryLength =
+                type.IsBit ? ((item.BitAddress & 7) + item.Count + 7) / 8 : type.PayloadLength(item.Count);
             if (byteOffset + memoryLength > length)
             {
                 return AddressOutOfRange;
@@ -917,7 +922,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
 
         int id = ReadUInt16BigEndian(dataBuffer, dataOffset + 4);
         int index = ReadUInt16BigEndian(dataBuffer, dataOffset + 6);
-        byte[] responseParameter = { 0, 1, 0x12, 8, 0x12, 0x84, 1, parameterBuffer[start + 7], 0, 0, 0, 0 };
+        byte[] responseParameter = [0, 1, 0x12, 8, 0x12, 0x84, 1, parameterBuffer[start + 7], 0, 0, 0, 0];
 
         if ((id == 0x0011 && index == 0) || (id == 0x0111 && index == 1))
         {
@@ -947,7 +952,7 @@ internal sealed class Rcs4SiemensS7Server : SiemensS7Server
         }
 
         WriteUInt16BigEndian(responseParameter, 10, 0xD401);
-        return BuildS7Message(UserData, reference, responseParameter, new byte[] { ObjectNotFound, 0, 0, 0 });
+        return BuildS7Message(UserData, reference, responseParameter, [ObjectNotFound, 0, 0, 0]);
     }
 
     private static byte[] BuildSzlData(int id, int index, int recordLength, params SzlRecord[] records)

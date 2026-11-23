@@ -132,11 +132,13 @@ public class PlcAutoWriteRuleStoreService
 
         lock (_lockObj)
         {
-            return Rules
-                .Where(x => x != null)
-                .OrderBy(x => x.RuleId)
-                .Select(x => x.Clone())
-                .ToList();
+            return
+            [
+                .. Rules
+                    .Where(x => x != null)
+                    .OrderBy(x => x.RuleId)
+                    .Select(x => x.Clone())
+            ];
         }
     }
 
@@ -149,12 +151,14 @@ public class PlcAutoWriteRuleStoreService
 
         lock (_lockObj)
         {
-            return Rules
-                .Where(x => x != null)
-                .Where(x => x.IsEnabled)
-                .OrderBy(x => x.RuleId)
-                .Select(x => x.Clone())
-                .ToList();
+            return
+            [
+                .. Rules
+                    .Where(x => x != null)
+                    .Where(x => x.IsEnabled)
+                    .OrderBy(x => x.RuleId)
+                    .Select(x => x.Clone())
+            ];
         }
     }
 
@@ -664,8 +668,9 @@ public class PlcAutoWriteRuleStoreService
     /// </summary>
     private ObservableCollection<PlcAutoWriteRuleModel> CreateSnapshotCollection()
     {
-        return new ObservableCollection<PlcAutoWriteRuleModel>(
-            Rules
+        return
+        [
+            .. Rules
                 .Where(x => x != null)
                 .OrderBy(x => x.RuleId)
                 .Select(x =>
@@ -673,7 +678,8 @@ public class PlcAutoWriteRuleStoreService
                     NormalizeRule(x);
 
                     return x.Clone();
-                }));
+                })
+        ];
     }
 
     /// <summary>

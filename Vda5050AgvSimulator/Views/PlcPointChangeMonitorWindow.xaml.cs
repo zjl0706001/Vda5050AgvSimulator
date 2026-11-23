@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Vda5050AgvSimulator.Models.Plc;
 using Vda5050AgvSimulator.Services.Plc;
@@ -76,12 +77,14 @@ public partial class PlcPointChangeMonitorWindow : Window
     private readonly DispatcherTimer _timer;
     private readonly List<TargetChoice> _targets;
     private readonly ObservableCollection<WatchPointRow> _points = new();
-    private readonly ObservableCollection<PlcPointChangeRecord> _changes = new();
+    private readonly ObservableCollection<DisplayedChange> _changes = new();
+    private readonly ICollectionView _changeView;
 
     public PlcPointChangeMonitorWindow(IEnumerable<PlcConfigModel> plcs, int preferredPlcId, int preferredDbNumber)
     {
         _targets = BuildTargets(plcs);
 
+        _changeView = CollectionViewSource.GetDefaultView(_changes);
         InitializeComponent();
 
         _timer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
@@ -91,7 +94,7 @@ public partial class PlcPointChangeMonitorWindow : Window
         _timer.Tick += (_, _) => PollPoints();
 
         WatchPointsGrid.ItemsSource = _points;
-        ChangesGrid.ItemsSource = _changes;
+        ChangesGrid.ItemsSource = _changeView;
         TargetPicker.ItemsSource = _targets;
         TargetPicker.SelectedItem = _targets.FirstOrDefault(x => x.PlcId == preferredPlcId && x.DbNumber == preferredDbNumber)
                                     ?? _targets.FirstOrDefault(x => x.PlcId == preferredPlcId)
@@ -143,7 +146,7 @@ public partial class PlcPointChangeMonitorWindow : Window
         var target = _targets.FirstOrDefault(x => x.PlcId == setting.PlcId && x.DbNumber == setting.DbNumber);
         var protocolPoint = target?.ProtocolPoints.FirstOrDefault(point =>
             string.Equals(point.OriginalName, setting.Name, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(point.Address.Trim(), setting.Address, StringComparison.OrdinalIgnoreCase) &&
+            PlcProtocolTemplate.SameAddress(point.Address, setting.Address, setting.DbNumber) &&
             string.Equals(point.DataType, setting.DataType, StringComparison.OrdinalIgnoreCase));
         if (protocolPoint != null && HasChineseCharacters(protocolPoint.Name) &&
             !string.Equals(setting.Name, protocolPoint.Name, StringComparison.Ordinal))
@@ -237,14 +240,25 @@ public partial class PlcPointChangeMonitorWindow : Window
         }
 
         var selected = WatchPointsGrid.SelectedItem as WatchPointRow;
-        ApplyPointButton.Content = selected == null ? "添加点位" : "保存修改";
-        NewPointButton.IsEnabled = selected != null;
+        SavePointButton.IsEnabled = selected != null;
+        SelectedOnlyCheckBox.IsEnabled = selected != null;
+        if (selected == null)
+        {
+            SelectedOnlyCheckBox.IsChecked = false;
+        }
+
+        RefreshChangeFilter();
         RemovePointButton.IsEnabled = selected != null;
         if (selected == null)
         {
             return;
         }
 
+        ShowPointInEditor(selected);
+    }
+
+    private void ShowPointInEditor(WatchPointRow selected)
+    {
         var point = selected.Setting;
         TargetPicker.SelectedItem = _targets.FirstOrDefault(x => x.PlcId == point.PlcId && x.DbNumber == point.DbNumber);
         ProtocolPointPicker.SelectedItem = null;
@@ -254,7 +268,20 @@ public partial class PlcPointChangeMonitorWindow : Window
         PointEnabledCheckBox.IsChecked = point.IsEnabled;
     }
 
-    private void ApplyPointButton_Click(object sender, RoutedEventArgs e)
+    private void AddPointButton_Click(object sender, RoutedEventArgs e)
+    {
+        SaveEditorPoint(null);
+    }
+
+    private void SavePointButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (WatchPointsGrid.SelectedItem is WatchPointRow selected)
+        {
+            SaveEditorPoint(selected);
+        }
+    }
+
+    private void SaveEditorPoint(WatchPointRow? editing)
     {
         if (TargetPicker.SelectedItem is not TargetChoice target)
         {
@@ -271,7 +298,16 @@ public partial class PlcPointChangeMonitorWindow : Window
         var setting = new PlcPointWatchSetting(target.PlcId, target.DbNumber, PointNameBox.Text,
             PointAddressBox.Text, PointTypePicker.Text, PointEnabledCheckBox.IsChecked == true);
         var row = CreateWatchRow(setting);
-        var index = WatchPointsGrid.SelectedItem is WatchPointRow selected ? _points.IndexOf(selected) : -1;
+        var duplicate = editing != null && SameWatchPoint(editing.Setting, row.Setting)
+            ? null
+            : _points.FirstOrDefault(point => !ReferenceEquals(point, editing) && SameWatchPoint(point.Setting, row.Setting));
+        if (duplicate != null)
+        {
+            PointStatusText.Text = $"列表中已有 {duplicate.Target} 的 {duplicate.Name}（{duplicate.Address}）。";
+            return;
+        }
+
+        var index = editing == null ? -1 : _points.IndexOf(editing);
         var settings = _points.Select(point => point.Setting).ToList();
         if (index >= 0)
         {
@@ -287,6 +323,7 @@ public partial class PlcPointChangeMonitorWindow : Window
             return;
         }
 
+        var singlePointMode = SelectedOnlyCheckBox.IsChecked == true;
         if (index >= 0)
         {
             _points[index] = row;
@@ -296,8 +333,23 @@ public partial class PlcPointChangeMonitorWindow : Window
             _points.Add(row);
         }
 
-        WatchPointsGrid.SelectedItem = row;
-        PointStatusText.Text = $"已保存点位 {row.Name}。";
+        if (editing == null && SelectedOnlyCheckBox.IsChecked == true &&
+            WatchPointsGrid.SelectedItem is WatchPointRow focused)
+        {
+            ShowPointInEditor(focused);
+        }
+        else
+        {
+            WatchPointsGrid.SelectedItem = row;
+            WatchPointsGrid.ScrollIntoView(row);
+            if (singlePointMode)
+            {
+                SelectedOnlyCheckBox.IsChecked = true;
+                RefreshChangeFilter();
+            }
+        }
+
+        PointStatusText.Text = editing == null ? $"已添加点位 {row.Name}。" : $"已保存修改 {row.Name}。";
     }
 
     private void RemovePointButton_Click(object sender, RoutedEventArgs e)
@@ -308,6 +360,7 @@ public partial class PlcPointChangeMonitorWindow : Window
             return;
         }
 
+        SelectedOnlyCheckBox.IsChecked = false;
         _points.Remove(selected);
         ResetEditor();
         PointStatusText.Text = $"已删除点位 {selected.Name}。";
@@ -327,10 +380,36 @@ public partial class PlcPointChangeMonitorWindow : Window
         }
     }
 
-    private void NewPointButton_Click(object sender, RoutedEventArgs e)
+    private static bool SameWatchPoint(PlcPointWatchSetting left, PlcPointWatchSetting right)
     {
-        ResetEditor();
-        PointNameBox.Focus();
+        return ReferenceEquals(left, right) ||
+               (left.PlcId == right.PlcId && left.DbNumber == right.DbNumber &&
+                string.Equals(left.DataType, right.DataType, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(AddressSuffix(left.Address), AddressSuffix(right.Address), StringComparison.OrdinalIgnoreCase) &&
+                PlcProtocolTemplate.SameAddress(left.Address, right.Address, left.DbNumber));
+    }
+
+    private static string AddressSuffix(string address)
+    {
+        var index = address.IndexOf(':');
+        return index < 0 ? string.Empty : address.Substring(index + 1).Trim();
+    }
+
+    private void SelectedOnlyCheckBox_Click(object sender, RoutedEventArgs e)
+    {
+        RefreshChangeFilter();
+    }
+
+    private void RefreshChangeFilter()
+    {
+        if (SelectedOnlyCheckBox.IsChecked == true && WatchPointsGrid.SelectedItem is WatchPointRow point)
+        {
+            _changeView.Filter = item => item is DisplayedChange change && SameWatchPoint(change.Point, point.Setting);
+        }
+        else
+        {
+            _changeView.Filter = null;
+        }
     }
 
     private void ResetEditor()
@@ -367,7 +446,7 @@ public partial class PlcPointChangeMonitorWindow : Window
     private void PollPoints()
     {
         var timestamp = DateTimeOffset.Now;
-        var batch = new List<PlcPointChangeRecord>();
+        var batch = new List<DisplayedChange>();
         foreach (var row in _points)
         {
             var point = row.Setting;
@@ -399,7 +478,8 @@ public partial class PlcPointChangeMonitorWindow : Window
             row.SetReadState(current, actualAddress, "正常");
             if (previous != null && !string.Equals(previous, current, StringComparison.Ordinal))
             {
-                batch.Add(new PlcPointChangeRecord(timestamp, row.Target, point, row.Address, previous, current));
+                var record = new PlcPointChangeRecord(timestamp, row.Target, point, row.Address, previous, current);
+                batch.Add(new DisplayedChange(point, record));
             }
         }
 
@@ -409,7 +489,7 @@ public partial class PlcPointChangeMonitorWindow : Window
         }
     }
 
-    private void RecordChanges(DateTimeOffset timestamp, IReadOnlyList<PlcPointChangeRecord> batch)
+    private void RecordChanges(DateTimeOffset timestamp, IReadOnlyList<DisplayedChange> batch)
     {
         foreach (var change in batch)
         {
@@ -423,7 +503,7 @@ public partial class PlcPointChangeMonitorWindow : Window
 
         try
         {
-            PlcPointWatchFileStore.AppendChanges(timestamp, batch);
+            PlcPointWatchFileStore.AppendChanges(timestamp, batch.Select(change => change.Record).ToList());
             LogStatusText.Text = $"最近记录 {timestamp:HH:mm:ss.fff}";
         }
         catch (Exception ex)
@@ -460,12 +540,25 @@ public partial class PlcPointChangeMonitorWindow : Window
         TopmostButton.Content = Topmost ? "取消置顶" : "置顶";
     }
 
+    private sealed class DisplayedChange
+    {
+        internal PlcPointWatchSetting Point { get; }
+        public PlcPointChangeRecord Record { get; }
+
+        internal DisplayedChange(PlcPointWatchSetting point, PlcPointChangeRecord record)
+        {
+            Point = point;
+            Record = record;
+        }
+    }
+
     public sealed class TargetChoice
     {
         public int PlcId { get; }
         public int DbNumber { get; }
         public string DisplayName { get; }
-        public IReadOnlyList<ProtocolPointChoice> ProtocolPoints { get; }
+        private readonly Lazy<IReadOnlyList<ProtocolPointChoice>> _protocolPoints;
+        public IReadOnlyList<ProtocolPointChoice> ProtocolPoints => _protocolPoints.Value;
 
         internal TargetChoice(int plcId, string? plcName, PlcDbBlockModel dbBlock)
         {
@@ -481,9 +574,10 @@ public partial class PlcPointChangeMonitorWindow : Window
             }
 
             DisplayName = $"{label} / DB{DbNumber}";
-            ProtocolPoints = (dbBlock.ProtocolItems ?? Enumerable.Empty<PlcDbBlockProtocolItemModel>())
-                .Where(item => item != null && !string.IsNullOrWhiteSpace(item.OffsetAddress))
-                .Select(item => new ProtocolPointChoice(item, DbNumber)).ToList();
+            _protocolPoints = new Lazy<IReadOnlyList<ProtocolPointChoice>>(() =>
+                PlcProtocolTemplate.Basic.GetEffectiveItems(dbBlock)
+                    .Where(item => item.IsEnabled && !string.IsNullOrWhiteSpace(item.OffsetAddress))
+                    .Select(item => new ProtocolPointChoice(item, DbNumber)).ToList());
         }
     }
 

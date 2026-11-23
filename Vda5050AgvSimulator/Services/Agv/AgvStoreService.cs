@@ -38,7 +38,7 @@ public class AgvStoreService
 
     private const int AgvPropertyRefreshIntervalMs = 50;
     private readonly object _agvPropertyRefreshLock = new();
-    private readonly List<AgvModel> _agvPropertyRefreshSnapshot = new();
+    private readonly List<AgvModel> _agvPropertyRefreshSnapshot = [];
     private bool _agvPropertyRefreshDirty;
     private bool _agvPropertyRefreshPending;
     private long _lastAgvPropertyRefreshAt;
@@ -48,13 +48,14 @@ public class AgvStoreService
     private long _lastAgvStateUpdatedNotifyTime;
 
     private Timer _agvStateUpdatedTimer;
-    private readonly List<AgvModel> _agvUiSnapshot = new();
+    private readonly List<AgvModel> _agvUiSnapshot = [];
 
     /// <summary>
     /// 是否已有一个AGV状态回调排在UI Dispatcher中。
     /// UI忙时只保留一个待执行回调，避免BeginInvoke无限排队。
     /// </summary>
     private bool _agvStateUiDispatchPending;
+
     private bool _agvStateUpdatedTimerPending;
     private bool _agvStateDirty;
 
@@ -203,7 +204,7 @@ public class AgvStoreService
     {
         lock (LockObj)
         {
-            return Agvs.ToList();
+            return [.. Agvs];
         }
     }
 
@@ -592,6 +593,7 @@ public class AgvStoreService
                 {
                     _agvStateUiDispatchPending = false;
                 }
+
                 throw;
             }
         }

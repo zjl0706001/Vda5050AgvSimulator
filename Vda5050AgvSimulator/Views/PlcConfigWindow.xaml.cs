@@ -1194,11 +1194,12 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var addedRuleRefs = new List<PlcDbBlockAutoWriteRuleRefModel>();
         var alreadyBoundCount = 0;
         var unavailableCount = 0;
+        var disabledBindingCount = 0;
         dbBlock.AutoWriteRuleList ??= [];
 
         foreach (var selectedRule in selectedRules)
         {
-            if (!currentGlobalRules.TryGetValue(selectedRule.RuleId, out var rule) || !rule.IsEnabled)
+            if (selectedRule.RuleId <= 0 || !currentGlobalRules.TryGetValue(selectedRule.RuleId, out var rule))
             {
                 unavailableCount++;
                 continue;
@@ -1211,22 +1212,38 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             }
 
             var ruleRef = dbBlock.AddRuleRef(rule.RuleId, rule.RuleName);
+            if (!rule.IsEnabled)
+            {
+                ruleRef.IsEnabled = false;
+                disabledBindingCount++;
+            }
+
             addedRuleRefs.Add(ruleRef);
             EnsureRuleDbBlock(plc, dbBlock, rule);
         }
 
         if (addedRuleRefs.Count > 0)
         {
-            dbBlock.AutoWriteEnabled = true;
+            if (addedRuleRefs.Count > disabledBindingCount)
+            {
+                dbBlock.AutoWriteEnabled = true;
+            }
+
             RefreshAllDbBlockRuleNames(plc);
             SelectedDbBlockRuleRef = addedRuleRefs.Last();
             OnPropertyChanged(nameof(SelectedDbBlock));
         }
 
-        var summary = $"DB{dbBlock.DbNumber} 本次绑定 {addedRuleRefs.Count} 条规则。";
+        var disabledNote = disabledBindingCount > 0 ? $"，其中 {disabledBindingCount} 条为停用绑定" : string.Empty;
+        var summary = $"DB{dbBlock.DbNumber} 新增绑定 {addedRuleRefs.Count} 条{disabledNote}。";
+        if (addedRuleRefs.Count > 0)
+        {
+            summary += "点击“保存配置”保存绑定。";
+        }
+
         if (alreadyBoundCount > 0 || unavailableCount > 0)
         {
-            Growl.WarningGlobal($"{summary} 跳过已绑定 {alreadyBoundCount} 条、未启用或已删除 {unavailableCount} 条。");
+            Growl.WarningGlobal($"{summary} 跳过已绑定 {alreadyBoundCount} 条、已失效 {unavailableCount} 条。");
             return;
         }
 
@@ -1626,7 +1643,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
     /// <summary>
     /// 批量新增PLC时每一行的自定义参数。
-    /// 自定义清单支持：IP[,名称[,代理端口[,内部端口]]]；直连模式支持：IP[,名称[,直连端口]]。
+    /// 清单的最后一列可覆盖本批默认 DB 块，空列沿用默认值。
     /// </summary>
     private sealed class BatchPlcInput
     {
@@ -1634,6 +1651,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         public string PlcName { get; set; } = string.Empty;
         public int? ProxyPort { get; set; }
         public int? ListenPort { get; set; }
+        public List<(int DbNumber, int Length)> DbBlocks { get; set; }
     }
 
     /// <summary>
@@ -1688,7 +1706,9 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var plcTypeBox = CreateBatchTextBox("S1200");
         var proxyPortBox = CreateBatchTextBox("102");
         var portStartBox = CreateBatchTextBox("1101");
-        var dbPresetCombo = CreateBatchComboBox(["不添加DB块", "仅DB1500", "DB1500 + DB2090"], 2);
+        const int customDbPresetIndex = 3;
+        var dbPresetCombo = CreateBatchComboBox(["不添加DB块", "仅DB1500", "DB1500 + DB2090", "自定义 DB 块"], 2);
+        var customDbBox = CreateBatchTextBox(string.Empty);
         var rackBox = CreateBatchTextBox("0");
         var slotBox = CreateBatchTextBox("1");
         var connectTimeoutBox = CreateBatchTextBox("3000");
@@ -1709,6 +1729,19 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         Grid.SetRow(portStartField, 1);
         Grid.SetColumn(portStartField, 2);
         connectionGrid.Children.Add(portStartField);
+
+        var dbListField = CreateBatchFieldPanel("本批默认 DB 块清单", customDbBox);
+        dbListField.Children.Add(CreateBatchHint("例如 DB313; DB1500:1024。冒号后为字节数，省略时为 512 字节。"));
+        dbListField.Visibility = Visibility.Collapsed;
+        Grid.SetRow(dbListField, 2);
+        Grid.SetColumnSpan(dbListField, 3);
+        connectionGrid.Children.Add(dbListField);
+        dbPresetCombo.SelectionChanged += (_, _) =>
+        {
+            dbListField.Visibility = dbPresetCombo.SelectedIndex == customDbPresetIndex
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        };
 
         var communicationGrid = CreateBatchFormGrid(3);
         AddBatchField(communicationGrid, 0, 0, "Rack", rackBox);
@@ -1740,15 +1773,17 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         fillExampleButton.Click += (_, _) =>
         {
             customIpListBox.Text = connectionModeCombo.SelectedIndex == 1
-                ? "# 格式：IP,名称,直连端口（端口可省略）\r\n192.168.1.101,PLC-101,102\r\n192.168.1.102,PLC-102,103"
-                : "# 格式：IP,名称,代理端口,内部端口（名称和端口可省略）\r\n192.168.1.101,PLC-101,102,1101\r\n192.168.1.102,PLC-102,102,1102";
+                ? "# IP,名称,直连端口,DB块\r\n192.168.1.101,PLC-101,102,DB313;DB1500:1024\r\n192.168.1.102,PLC-102,103"
+                : "# IP,名称,代理端口,内部端口,DB块\r\n192.168.1.101,PLC-101,102,1101,DB313;DB1500:1024\r\n192.168.1.102,PLC-102,102,1102";
         };
 
         void RefreshCustomFormatText()
         {
-            customFormatText.Text = connectionModeCombo.SelectedIndex == 1
-                ? "每行填写 IP[,名称[,直连端口]]。直连 IP 须已绑定到本机。"
-                : "每行填写 IP[,名称[,代理端口[,内部端口]]]。内部端口须唯一。";
+            var columns = connectionModeCombo.SelectedIndex == 1
+                ? "IP,名称,直连端口,DB块。直连 IP 须已绑定到本机。"
+                : "IP,名称,代理端口,内部端口,DB块。内部端口须唯一。";
+            customFormatText.Text = columns + "除 IP 外均可省略，跳过中间列时保留逗号。"
+                + "DB 列留空沿用默认值，填“无”跳过创建，多个块用分号隔开。";
         }
 
         var left = new StackPanel();
@@ -1903,12 +1938,13 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     }
 
                     var parts = line.Split(',');
-                    var maxParts = isDirect ? 3 : 4;
+                    var maxParts = isDirect ? 4 : 5;
                     if (parts.Length > maxParts)
                     {
                         MessageBox.Show(dialog,
                             $"第 {lineIndex + 1} 行字段过多。" +
-                            (isDirect ? "直连格式：IP[,名称[,直连端口]]。" : "代理格式：IP[,名称[,代理端口[,内部端口]]]。"),
+                            (isDirect ? "直连格式为 IP,名称,直连端口,DB块。" : "代理格式为 IP,名称,代理端口,内部端口,DB块。") +
+                            "同一行的多个 DB 块用分号隔开。",
                             "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -1927,6 +1963,19 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         IpAddress = parsedIp.ToString(),
                         PlcName = parts.Length >= 2 ? parts[1].Trim() : string.Empty
                     };
+
+                    if (parts.Length == maxParts && !string.IsNullOrWhiteSpace(parts[maxParts - 1]))
+                    {
+                        if (!TryParseBatchDbBlocks(parts[maxParts - 1], out var rowDbBlocks, out var rowDbError))
+                        {
+                            MessageBox.Show(dialog, $"第 {lineIndex + 1} 行的 DB 块设置有误。{rowDbError}",
+                                "批量添加 PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            customIpListBox.Focus();
+                            return;
+                        }
+
+                        input.DbBlocks = rowDbBlocks;
+                    }
 
                     if (isDirect)
                     {
@@ -1994,6 +2043,22 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 }
             }
 
+            var defaultDbText = dbPresetCombo.SelectedIndex switch
+            {
+                0 => "无",
+                1 => "DB1500",
+                2 => "DB1500;DB2090",
+                _ => customDbBox.Text
+            };
+            List<(int DbNumber, int Length)> defaultDbBlocks = [];
+            if (inputs.Any(input => input.DbBlocks == null) &&
+                !TryParseBatchDbBlocks(defaultDbText, out defaultDbBlocks, out var defaultDbError))
+            {
+                MessageBox.Show(dialog, defaultDbError, "批量添加 PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
+                customDbBox.Focus();
+                return;
+            }
+
             for (var index = 0; index < inputs.Count; index++)
             {
                 var effectiveListenPort = inputs[index].ListenPort ?? (portStart + index);
@@ -2056,15 +2121,15 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     plc.Port = input.ListenPort ?? (portStart + index);
                 }
 
-                switch (dbPresetCombo.SelectedIndex)
+                foreach (var (dbNumber, length) in input.DbBlocks ?? defaultDbBlocks)
                 {
-                    case 1:
-                        AddOrExpandDbBlock(plc, 1500, 512, "DB1500", "批量添加时自动创建的默认工站交互DB块。");
-                        break;
-                    case 2:
-                        AddOrExpandDbBlock(plc, 1500, 512, "DB1500", "批量添加时自动创建的默认工站交互DB块。");
-                        AddOrExpandDbBlock(plc, 2090, 512, "DB2090", "批量添加时自动创建的默认读取信号DB块。");
-                        break;
+                    var remark = dbNumber switch
+                    {
+                        1500 => "批量添加时自动创建的默认工站交互DB块。",
+                        2090 => "批量添加时自动创建的默认读取信号DB块。",
+                        _ => "批量添加时创建的自定义DB块。"
+                    };
+                    AddOrExpandDbBlock(plc, dbNumber, length, $"DB{dbNumber}", remark);
                 }
 
                 createdPlcs.Add(plc);
@@ -2122,7 +2187,11 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 }
             }
 
-            var previousSelectedPlc = SelectedPlc;
+            if (!TrySavePlcBatch(Plcs.Concat(createdPlcs).ToList()))
+            {
+                return;
+            }
+
             if (createdPlcs.Any(plc => !MatchesPlcFilter(plc)))
             {
                 ClearPlcFilter();
@@ -2135,21 +2204,6 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             SelectedPlc = createdPlcs.LastOrDefault();
             OnPropertyChanged(nameof(Plcs));
-
-            if (!SaveCurrentPlcsToStore(false))
-            {
-                foreach (var plc in createdPlcs)
-                {
-                    Plcs.Remove(plc);
-                }
-
-                SelectedPlc = previousSelectedPlc != null && Plcs.Contains(previousSelectedPlc)
-                    ? previousSelectedPlc
-                    : Plcs.FirstOrDefault();
-                OnPropertyChanged(nameof(Plcs));
-                RefreshPlcServerUi();
-                return;
-            }
 
             RefreshPlcServerUi();
             Growl.SuccessGlobal($"批量添加完成：成功添加 {createdPlcs.Count} 台PLC，编号 {createdPlcs.First().PlcId} 至 {createdPlcs.Last().PlcId}。新PLC默认停用。 ");
@@ -3424,6 +3478,59 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         return int.TryParse(text?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value) && value > 0;
     }
 
+    private static bool TryParseBatchDbBlocks(string text, out List<(int DbNumber, int Length)> blocks, out string error)
+    {
+        blocks = null;
+        error = string.Empty;
+        if (text?.Trim() == "无")
+        {
+            blocks = [];
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            error = "请填写 DB 块号，例如 DB313 或 DB313;DB1500:1024。";
+            return false;
+        }
+
+        var parsed = new List<(int DbNumber, int Length)>();
+        var numbers = new HashSet<int>();
+        foreach (var entry in text.Split(new[] { ';', '；', ',', '，', '、', '+' }))
+        {
+            var parts = entry.Trim().Replace('：', ':').Split(':');
+            var numberText = parts[0].Trim();
+            if (numberText.StartsWith("DB", StringComparison.OrdinalIgnoreCase))
+            {
+                numberText = numberText.Substring(2).Trim();
+            }
+
+            if (!ushort.TryParse(numberText, NumberStyles.None, CultureInfo.InvariantCulture, out var number) || number == 0)
+            {
+                error = $"“{entry.Trim()}”的 DB 块号无效，请填写 1 至 65535。";
+                return false;
+            }
+
+            var length = 512;
+            if (parts.Length > 2 || (parts.Length == 2 && !TryParseBatchPositiveInt(parts[1], out length)))
+            {
+                error = $"DB{number} 的长度无效，请用“块号:正整数字节数”，例如 DB{number}:512。";
+                return false;
+            }
+
+            if (!numbers.Add(number))
+            {
+                error = $"DB{number} 重复，请为每个块号只填写一项。";
+                return false;
+            }
+
+            parsed.Add((number, length));
+        }
+
+        blocks = parsed;
+        return true;
+    }
+
     private static bool TryParseBatchNonNegativeInt(string text, out int value)
     {
         return int.TryParse(text?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value) && value >= 0;
@@ -3492,47 +3599,80 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
     private void RemovePlcButton_Click(object sender, RoutedEventArgs e)
     {
-        var plc = SelectedPlc;
-        if (plc == null || !PlcListView.Contains(plc))
+        var selected = PlcListDataGrid.SelectedItems.OfType<PlcConfigModel>()
+            .Where(plc => PlcListView.Contains(plc))
+            .OrderBy(plc => plc.PlcId)
+            .ToList();
+        if (selected.Count == 0)
         {
-            Growl.WarningGlobal("请先选择要删除的PLC。");
+            Growl.WarningGlobal("请先在列表中选择要删除的 PLC。");
             return;
         }
 
-        if (PlcVirtualServerService.Instance.IsPlcRunning(plc.PlcId))
+        var server = PlcVirtualServerService.Instance;
+        var byRunningState = selected.ToLookup(plc => server.IsPlcRunning(plc.PlcId));
+        var toDelete = byRunningState[false].ToList();
+        if (toDelete.Count == 0)
         {
-            Growl.WarningGlobal($"请先停用 {plc.PlcName}，再删除配置。");
+            Growl.WarningGlobal("选中的 PLC 均在运行，请先停用需要删除的设备。");
             return;
         }
 
-        var result = MessageBox.Show(
-            $"确定删除 {plc.PlcName} 的配置吗？",
-            "删除PLC",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
+        var running = byRunningState[true].ToList();
+        var keepNote = running.Count == 0 ? string.Empty
+            : $"\r\n\r\n运行中保留 {running.Count} 台：\r\n{FormatPlcDeletePreview(running)}";
+        var result = MessageBox.Show(this,
+            $"已选 {selected.Count} 台，确定删除以下 {toDelete.Count} 台已停用 PLC 的配置吗？\r\n\r\n" +
+            FormatPlcDeletePreview(toDelete) + keepNote,
+            "删除选中的 PLC", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
 
         if (result != MessageBoxResult.Yes)
         {
             return;
         }
 
+        // 只从确认过的待删除项中剔除状态变化的设备，不扩大删除范围。
+        toDelete.RemoveAll(plc => !PlcListView.Contains(plc) || server.IsPlcRunning(plc.PlcId));
+        if (toDelete.Count == 0)
+        {
+            Growl.WarningGlobal("设备状态已变化，本次可删除的 PLC 为 0 台。");
+            RefreshPlcServerUi();
+            return;
+        }
+
         var visibleItems = PlcListDataGrid.Items;
-        var previousIndex = visibleItems.IndexOf(plc);
+        var firstIndex = toDelete.Min(plc => visibleItems.IndexOf(plc));
+        var deleted = new HashSet<PlcConfigModel>(toDelete);
+        var remaining = Plcs.Where(plc => !deleted.Contains(plc)).ToList();
+        if (!TrySavePlcBatch(remaining))
+        {
+            return;
+        }
 
-        Plcs.Remove(plc);
+        foreach (var plc in toDelete)
+        {
+            Plcs.Remove(plc);
+        }
 
-        SelectedPlc = visibleItems.Count > 0
-            ? (PlcConfigModel)visibleItems[
-                Math.Max(0, Math.Min(previousIndex, visibleItems.Count - 1))]
-            : null;
+        if (PlcListDataGrid.SelectedItem == null)
+        {
+            SelectedPlc = visibleItems.Count > 0
+                ? (PlcConfigModel)visibleItems[Math.Max(0, Math.Min(firstIndex, visibleItems.Count - 1))]
+                : null;
+        }
 
         OnPropertyChanged(nameof(Plcs));
-
-        SaveCurrentPlcsToStore(false);
-
-        Growl.SuccessGlobal($"已删除 {plc.PlcName} 的配置。");
-
         RefreshPlcServerUi();
+        var skipped = selected.Count - toDelete.Count;
+        var skipNote = skipped > 0 ? $"，跳过 {skipped} 台" : string.Empty;
+        Growl.SuccessGlobal($"已删除 {toDelete.Count} 台 PLC 的配置{skipNote}。");
+    }
+
+    private static string FormatPlcDeletePreview(IReadOnlyList<PlcConfigModel> rows)
+    {
+        const int previewLimit = 8;
+        var names = string.Join("\r\n", rows.Take(previewLimit).Select(plc => $"{plc.PlcName}（ID {plc.PlcId}）"));
+        return rows.Count > previewLimit ? names + $"\r\n另有 {rows.Count - previewLimit} 台。" : names;
     }
 
     private void UseProxyEndpointForDirectButton_Click(object sender, RoutedEventArgs e)
@@ -4217,136 +4357,9 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             $"失败 {failedMessages.Count} 个。");
     }
 
-    /// <summary>
-    /// 向左侧PLC列表中多选的PLC，分别导入基础协议到 DB1500。
-    /// - 没有DB1500时自动创建，已有DB1500则保留原设置；
-    /// - 不修改其他DB块、不清空原有协议项；
-    /// - 同名称、同地址的协议项不会重复导入；
-    /// - 只修改当前窗口中的配置，点击“保存配置”时才持久化并重载运行中的PLC。
-    /// </summary>
-    private void ImportBasicProtocolToSelectedPlcsButton_Click(object sender, RoutedEventArgs e)
+    private void OpenSharedProtocolButton_Click(object sender, RoutedEventArgs e)
     {
-        var selectedPlcs = PlcListDataGrid.SelectedItems
-            .OfType<PlcConfigModel>()
-            .Where(plc => plc != null && Plcs.Contains(plc))
-            .Distinct()
-            .OrderBy(plc => plc.PlcId)
-            .ToList();
-
-        if (selectedPlcs.Count == 0)
-        {
-            MessageBox.Show(this,
-                "请先在左侧PLC列表中选择需要导入的PLC。\r\n按住 Ctrl 或 Shift 可多选。",
-                "批量导入基础协议", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
-        var confirm = MessageBox.Show(this,
-            $"确定向选中的 {selectedPlcs.Count} 台PLC导入基础协议模板吗？\r\n\r\n" +
-            "导入位置：每台PLC的 DB1500（缺少时自动创建）。\r\n" +
-            "已有同名、同地址的协议项将跳过，原有协议项不会被覆盖。\r\n" +
-            "其他DB块及PLC连接参数不受影响。\r\n\r\n" +
-            "导入后请点击【保存配置】，运行中的PLC将在保存时重载。",
-            "批量导入基础协议", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-        if (confirm != MessageBoxResult.Yes)
-        {
-            return;
-        }
-
-        var createdDbCount = 0;
-        var importedItemCount = 0;
-        var skippedItemCount = 0;
-        var updatedPlcCount = 0;
-
-        foreach (var plc in selectedPlcs)
-        {
-            plc.DbBlocks ??= [];
-
-            var dbBlock = plc.DbBlocks.FirstOrDefault(db => db != null && db.DbNumber == 1500);
-            if (dbBlock == null)
-            {
-                dbBlock = new PlcDbBlockModel
-                {
-                    DbNumber = 1500,
-                    Length = 512,
-                    IsEnabled = true,
-                    BlockName = "DB1500",
-                    Remark = "默认工站交互DB块。"
-                };
-                plc.DbBlocks.Add(dbBlock);
-                createdDbCount++;
-            }
-            else if (dbBlock.Length < 512)
-            {
-                // 基础协议会使用到DB384之后，现有DB1500空间不足时仅扩容，不缩容。
-                dbBlock.Length = 512;
-            }
-
-            dbBlock.ProtocolItems ??= [];
-
-            // 去重规则与单DB窗口中的基础模板导入保持一致：信号名 + 地址。
-            // 模板中部分信号名称会重复，但偏移地址不同，这些属于独立协议项。
-            string GetProtocolKey(string signalName, string offsetAddress) =>
-                (signalName?.Trim() ?? string.Empty) + "\u001F" +
-                (offsetAddress?.Trim() ?? string.Empty);
-
-            var existingKeys = new HashSet<string>(
-                dbBlock.ProtocolItems
-                    .Where(item => item != null)
-                    .Select(item => GetProtocolKey(item.SignalName, item.OffsetAddress)),
-                StringComparer.OrdinalIgnoreCase);
-
-            var nextItemId = dbBlock.ProtocolItems
-                .Where(item => item != null)
-                .Select(item => item.ProtocolItemId)
-                .DefaultIfEmpty(0)
-                .Max() + 1;
-
-            var importedForThisPlc = 0;
-
-            PlcDbBlockProtocolBoardConfigWindow.AppendBasicProtocolTemplate(
-                (signalName, dataType, offsetAddress, remark) =>
-                {
-                    if (!existingKeys.Add(GetProtocolKey(signalName, offsetAddress)))
-                    {
-                        skippedItemCount++;
-                        return;
-                    }
-
-                    var item = new PlcProtocolBoardRowModel
-                    {
-                        ProtocolItemId = nextItemId++,
-                        IsEnabled = true,
-                        SignalName = signalName,
-                        DataType = dataType,
-                        OffsetAddress = offsetAddress,
-                        Remark = remark
-                    }.ToProtocolItem();
-
-                    dbBlock.ProtocolItems.Add(item);
-                    importedItemCount++;
-                    importedForThisPlc++;
-                });
-
-            if (importedForThisPlc > 0)
-            {
-                updatedPlcCount++;
-            }
-        }
-
-        OnPropertyChanged(nameof(SelectedPlc));
-        OnPropertyChanged(nameof(SelectedDbBlock));
-
-        MessageBox.Show(this,
-            $"批量导入完成。\r\n\r\n" +
-            $"选中PLC：{selectedPlcs.Count} 台\r\n" +
-            $"新增DB1500：{createdDbCount} 个\r\n" +
-            $"新增协议项：{importedItemCount} 条\r\n" +
-            $"跳过重复项：{skippedItemCount} 条\r\n" +
-            $"有新增协议项的PLC：{updatedPlcCount} 台\r\n\r\n" +
-            "请点击【保存配置】以持久化修改。",
-            "批量导入基础协议", MessageBoxButton.OK, MessageBoxImage.Information);
+        new PlcProtocolTemplateImportWindow { Owner = this }.ShowDialog();
     }
 
     private void OpenDbBlockResetConfigButton_Click(object sender, RoutedEventArgs e)
@@ -4946,20 +4959,25 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
     /// 保存当前PLC配置。
     /// 保存前自动把所有已启用PLC的IP添加到电脑网卡。
     /// </summary>
-    private bool SaveCurrentPlcsToStore(bool requireEnabledPlc)
+    private bool SaveCurrentPlcsToStore(bool requireEnabledPlc, IList<PlcConfigModel> plcsToSave = null)
     {
-        if (!ValidatePlcs(requireEnabledPlc))
+        plcsToSave ??= Plcs;
+        if (!ValidatePlcs(plcsToSave, requireEnabledPlc))
         {
             return false;
         }
 
-        ResultPlcs = Plcs
+        var snapshot = plcsToSave
             .Where(x => x != null)
             .Select(x =>
             {
                 NormalizePlc(x);
-
-                return x.Clone();
+                var copy = x.Clone();
+                foreach (var block in copy.DbBlocks)
+                {
+                    PlcProtocolTemplate.Basic.CompactSavedCopy(block);
+                }
+                return copy;
             })
             .ToList();
 
@@ -4969,7 +4987,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
              * 先确保本机网卡具有PLC监听IP，
              * 再保存配置和启动/重载虚拟PLC。
              */
-            EnsureEnabledPlcIpAddresses(ResultPlcs);
+            EnsureEnabledPlcIpAddresses(snapshot);
         }
         catch (Exception ex)
         {
@@ -4985,9 +5003,33 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return false;
         }
 
-        PlcStoreService.Instance.ReplaceAll(ResultPlcs);
+        // 批量操作传入原列表对象的子集或超集。校验和网卡处理耗时，提交前再核对移除项。
+        if (!ReferenceEquals(plcsToSave, Plcs) && Plcs.Except(plcsToSave)
+                .Any(plc => plc != null && PlcVirtualServerService.Instance.IsPlcRunning(plc.PlcId)))
+        {
+            Growl.WarningGlobal("有待删除的 PLC 已开始运行，本次删除已取消。");
+            return false;
+        }
+
+        PlcStoreService.Instance.ReplaceAll(snapshot);
+        ResultPlcs = snapshot;
 
         return true;
+    }
+
+    // 批量增删先保存候选列表，成功后再更新界面集合。
+    private bool TrySavePlcBatch(IList<PlcConfigModel> plcsToSave)
+    {
+        try
+        {
+            return SaveCurrentPlcsToStore(false, plcsToSave);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, "保存 PLC 配置失败。\r\n" + ex.Message,
+                "PLC 配置", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
     }
 
     private void RefreshPlcServerUi()
@@ -5038,11 +5080,13 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
         var hasSelectedPlc = SelectedPlc != null && PlcListView.Contains(SelectedPlc);
         var canEditSelectedPlc = hasSelectedPlc && CanEditSelectedPlc;
-        RemovePlcButton.IsEnabled = canEditSelectedPlc;
+        var selectedRows = PlcListDataGrid.SelectedItems;
+        RemovePlcButton.IsEnabled = selectedRows.OfType<PlcConfigModel>()
+            .Any(plc => !PlcVirtualServerService.Instance.IsPlcRunning(plc.PlcId));
         PlcDetailEditPanel.IsEnabled = hasSelectedPlc;
 
         var visibleCount = PlcListDataGrid.Items.Count;
-        PlcListSummaryTextBlock.Text = $"显示 {visibleCount} / {Plcs.Count} 台";
+        PlcListSummaryTextBlock.Text = $"显示 {visibleCount} / {Plcs.Count} 台 · 已选 {selectedRows.Count} 台";
         PlcListEmptyTextBlock.Visibility = visibleCount == 0 ? Visibility.Visible : Visibility.Collapsed;
         PlcListEmptyTextBlock.Text = Plcs.Count == 0 ? "点击「新增」添加 PLC" : "没有匹配的 PLC";
         ClearPlcFilterButton.IsEnabled = PlcSearchText.Length > 0 || PlcModeFilterIndex != 0;
@@ -5085,7 +5129,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         int dbNumber,
         int length,
         string blockName,
-        string remark)
+        string remark,
+        bool enableBlock = true)
     {
         if (plc == null)
         {
@@ -5102,7 +5147,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             {
                 DbNumber = dbNumber,
                 Length = length,
-                IsEnabled = true,
+                IsEnabled = enableBlock,
                 BlockName = blockName,
                 Remark = remark
             };
@@ -5112,7 +5157,10 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return;
         }
 
-        target.IsEnabled = true;
+        if (enableBlock)
+        {
+            target.IsEnabled = true;
+        }
 
         if (target.Length < length)
         {
@@ -5130,9 +5178,9 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         }
     }
 
-    private bool ValidatePlcs(bool requireEnabledPlc)
+    private bool ValidatePlcs(IList<PlcConfigModel> plcsToSave, bool requireEnabledPlc)
     {
-        if (Plcs.Count == 0)
+        if (plcsToSave.Count == 0)
         {
             if (requireEnabledPlc)
             {
@@ -5143,18 +5191,18 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return true;
         }
 
-        foreach (var plc in Plcs.Where(x => x != null))
+        foreach (var plc in plcsToSave.Where(x => x != null))
         {
             NormalizePlc(plc);
         }
 
-        if (requireEnabledPlc && Plcs.All(x => x == null || !x.IsEnabled))
+        if (requireEnabledPlc && plcsToSave.All(x => x == null || !x.IsEnabled))
         {
             MessageBox.Show("启动PLC模拟服务前，至少需要启用一台PLC。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
-        var duplicatePlcId = Plcs
+        var duplicatePlcId = plcsToSave
             .Where(x => x != null)
             .GroupBy(x => x.PlcId)
             .FirstOrDefault(x => x.Count() > 1);
@@ -5165,7 +5213,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return false;
         }
 
-        var duplicateListeningEndPoint = Plcs
+        var duplicateListeningEndPoint = plcsToSave
             .Where(x => x != null)
             .Where(x => x.IsEnabled)
             .GroupBy(x => x.GetListeningEndPoint())
@@ -5181,7 +5229,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return false;
         }
 
-        var duplicateExternalEndpoint = Plcs
+        var duplicateExternalEndpoint = plcsToSave
             .Where(x => x != null)
             .Where(x => x.IsEnabled)
             .GroupBy(x => x.ConnectionMode == PlcConnectionMode.Direct
@@ -5199,7 +5247,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return false;
         }
 
-        foreach (var plc in Plcs)
+        foreach (var plc in plcsToSave)
         {
             if (plc == null)
             {
@@ -6216,7 +6264,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     continue;
                 }
 
-                EnsureAddressDbBlock(plc, dbBlock.DbNumber, trigger.ReadAddress);
+                EnsureAddressDbBlock(plc, dbBlock.DbNumber, trigger.ReadAddress, enableBlock: rule.IsEnabled);
             }
         }
 
@@ -6234,7 +6282,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     continue;
                 }
 
-                EnsureAddressDbBlock(plc, dbBlock.DbNumber, writeItem.WriteAddress);
+                EnsureAddressDbBlock(plc, dbBlock.DbNumber, writeItem.WriteAddress, enableBlock: rule.IsEnabled);
             }
         }
     }
@@ -6308,7 +6356,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         EnsureAddressDbBlock(plc, fallbackDbNumber, address);
     }
 
-    private void EnsureAddressDbBlock(PlcConfigModel plc, int dbNumber, string address)
+    private void EnsureAddressDbBlock(PlcConfigModel plc, int dbNumber, string address, bool enableBlock = true)
     {
         if (plc == null || dbNumber <= 0)
         {
@@ -6328,7 +6376,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             dbNumber,
             requiredLength,
             $"DB{dbNumber}",
-            "根据当前DB块绑定的全局自动写入规则地址自动补充。");
+            "根据当前DB块绑定的全局自动写入规则地址自动补充。",
+            enableBlock);
     }
 
     private int GetNextPlcId()
@@ -6436,14 +6485,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             if (panel == null)
             {
-                // 主窗口不包含子窗口的数据表格及协议行集合，
-                // 直接将当前DB块的协议配置转换为操作面板需要的行集合。
-                dbBlock.ProtocolItems ??= [];
-                var rows = new ObservableCollection<PlcProtocolBoardRowModel>(
-                    dbBlock.ProtocolItems
-                        .Where(item => item != null)
-                        .OrderBy(item => item.ProtocolItemId)
-                        .Select(PlcProtocolBoardRowModel.FromProtocolItem));
+                var rows = PlcProtocolTemplate.Basic.GetEffectiveItems(dbBlock)
+                    .Select(PlcProtocolBoardRowModel.FromProtocolItem);
 
                 panel = new PlcDbBlockProtocolPanelWindow(plc.PlcId, dbBlock.DbNumber, rows)
                 {
