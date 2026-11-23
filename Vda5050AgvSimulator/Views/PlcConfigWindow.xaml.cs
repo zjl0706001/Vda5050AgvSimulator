@@ -24,7 +24,7 @@ using Growl = HandyControl.Controls.Growl;
 namespace Vda5050AgvSimulator.Views;
 
 /// <summary>
-/// 多PLC配置窗口。
+/// 多PLC配置页面。
 /// 负责PLC列表配置、DB块配置、自动写入规则配置、保存配置、启用/停用PLC虚拟服务。
 /// </summary>
 public partial class PlcConfigWindow : INotifyPropertyChanged
@@ -45,12 +45,6 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
     /// 现场不是24位网段时在这里修改。
     /// </summary>
     private const string PlcLocalSubnetMask = "255.255.255.0";
-
-    /// <summary>
-    /// 当前已打开的子弹窗。
-    /// 同一时间只允许存在一个子弹窗，避免多个窗口同时打开导致句柄、焦点、悬浮异常。
-    /// </summary>
-    private Window _currentPopupWindow;
 
     /// <summary>
     /// 注意：必须是public，否则XAML ItemsSource="{Binding Plcs}" 绑定不到。
@@ -307,12 +301,19 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         SyncPlcEnabledStateWithRunningService();
 
         _plcConnectionTimer.Tick += (_, _) => RefreshPlcConnectionCounts();
-        Loaded += (_, _) =>
+        IsVisibleChanged += (_, _) =>
         {
-            RefreshPlcConnectionCounts();
-            _plcConnectionTimer.Start();
+            if (IsVisible)
+            {
+                RefreshPlcConnectionCounts();
+                _plcConnectionTimer.Start();
+            }
+            else
+            {
+                _plcConnectionTimer.Stop();
+            }
         };
-        Closed += (_, _) => _plcConnectionTimer.Stop();
+        Unloaded += (_, _) => _plcConnectionTimer.Stop();
 
         RefreshPlcServerUi();
     }
@@ -729,110 +730,48 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         return DisableBindingsForGloballyDisabledRules();
     }
 
-    /// <summary>
-    /// 判断是否已有子弹窗打开。
-    /// 有则激活当前弹窗，并阻止继续打开新弹窗。
-    /// </summary>
-    private bool TryActivateCurrentPopupWindow()
+    public void CloseTools()
     {
-        var popupWindow = _currentPopupWindow;
+        _plcConnectionTimer.Stop();
+        ToolHost.CloseAll();
+    }
 
-        if (popupWindow == null || !Application.Current.Windows.OfType<Window>().Contains(popupWindow))
-        {
-            popupWindow = Application.Current.Windows
-                .OfType<Window>()
-                .FirstOrDefault(x =>
-                    x != null &&
-                    x != this &&
-                    IsManagedPopupWindow(x) &&
-                    (x.Owner == this || x is PlcDbBlockProtocolBoardConfigWindow));
-        }
+    private bool TrySelectTool<T>(Func<T, bool> predicate = null) where T : PlcToolPage
+    {
+        var pages = ToolHost.Pages.OfType<T>();
+        var page = predicate == null ? pages.FirstOrDefault() : pages.FirstOrDefault(predicate);
+        if (page == null) return false;
 
-        if (popupWindow == null)
-        {
-            _currentPopupWindow = null;
-            return false;
-        }
-
-        _currentPopupWindow = popupWindow;
-
-        ActivatePopupWindow(popupWindow);
-
-        Growl.WarningGlobal("请先关闭当前已打开的弹窗。");
-
+        ToolHost.Open(page);
         return true;
     }
 
-    /// <summary>
-    /// 注册当前子弹窗。
-    /// 子弹窗关闭后自动释放，允许再次打开其它弹窗。
-    /// 注意：协议看板窗口不设置Owner，避免当前PLC配置页面最小化时一起最小化。
-    /// </summary>
-    private void RegisterCurrentPopupWindow(Window window)
+    private void CloseDbTools(int plcId, int? dbNumber = null)
     {
-        if (window == null)
+        bool Matches(int toolPlcId, int toolDbNumber) =>
+            toolPlcId == plcId && (!dbNumber.HasValue || toolDbNumber == dbNumber.Value);
+
+        var matchingPages = ToolHost.Pages.Where(page => page switch
         {
-            return;
-        }
-
-        if (window.Owner == null && window is not PlcDbBlockProtocolBoardConfigWindow)
-        {
-            window.Owner = this;
-        }
-
-        _currentPopupWindow = window;
-
-        window.Closed += (_, _) =>
-        {
-            if (ReferenceEquals(_currentPopupWindow, window))
-            {
-                _currentPopupWindow = null;
-            }
-        };
-    }
-
-    /// <summary>
-    /// 判断是否属于当前页面统一管理的子弹窗。
-    /// </summary>
-    private bool IsManagedPopupWindow(Window window)
-    {
-        return window is PlcGlobalAutoWriteRuleWindow ||
-               window is PlcDbBlockResetConfigWindow ||
-               window is PlcDbBlockProtocolBoardConfigWindow ||
-               window is DbBlockBitsWindow;
-    }
-
-    /// <summary>
-    /// 激活并置顶当前子弹窗。
-    /// </summary>
-    private void ActivatePopupWindow(Window window)
-    {
-        if (window == null)
-        {
-            return;
-        }
-
-        if (window.WindowState == WindowState.Minimized)
-        {
-            window.WindowState = WindowState.Normal;
-        }
-
-        window.Activate();
-        window.Focus();
+            DbBlockBitsWindow bits => Matches(bits.PlcId, bits.DbNumber),
+            PlcAutoWriteRuleMonitorWindow monitor => Matches(monitor.PlcId, monitor.DbNumber),
+            PlcDbBlockProtocolBoardConfigWindow board => Matches(board.PlcId, board.DbNumber),
+            PlcDbBlockProtocolPanelWindow panel => Matches(panel.PlcId, panel.DbNumber),
+            _ => false
+        }).ToList();
+        foreach (var page in matchingPages) page.Close();
     }
 
     private void ManageGlobalAutoWriteRulesButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            if (TryActivateCurrentPopupWindow())
+            if (TrySelectTool<PlcGlobalAutoWriteRuleWindow>())
             {
                 return;
             }
 
             var window = new PlcGlobalAutoWriteRuleWindow();
-
-            RegisterCurrentPopupWindow(window);
 
             void RefreshAfterRuleEdit()
             {
@@ -848,7 +787,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             window.RulesApplied += (_, _) => RefreshAfterRuleEdit();
             window.Closed += (_, _) => RefreshAfterRuleEdit();
 
-            window.Show();
+            ToolHost.Open(window);
         }
         catch (Exception ex)
         {
@@ -881,7 +820,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             rule.IsEnabled = storedRule.IsEnabled;
             PublishGlobalRuleEnabledStates();
-            if (_currentPopupWindow is PlcGlobalAutoWriteRuleWindow editor)
+            if (ToolHost.Pages.OfType<PlcGlobalAutoWriteRuleWindow>().FirstOrDefault() is { } editor)
             {
                 editor.SyncRuleEnabled(rule.RuleId, rule.IsEnabled);
             }
@@ -999,7 +938,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 }
 
                 rule.IsEnabled = savedRule.IsEnabled;
-                if (_currentPopupWindow is PlcGlobalAutoWriteRuleWindow editor)
+                if (ToolHost.Pages.OfType<PlcGlobalAutoWriteRuleWindow>().FirstOrDefault() is { } editor)
                 {
                     editor.SyncRuleEnabled(rule.RuleId, rule.IsEnabled);
                 }
@@ -1699,7 +1638,11 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
     /// </summary>
     private void ShowBatchAddPlcsDialog()
     {
-        var dialog = CreateBatchDialog("批量添加 PLC");
+        const string title = "批量添加 PLC";
+        if (TrySelectTool<PlcToolPage>(page => page.Title == title)) return;
+
+        var dialog = CreateBatchPage(title);
+        var owner = Window.GetWindow(this);
         var idStartBox = CreateBatchTextBox(GetNextPlcId().ToString(CultureInfo.InvariantCulture));
         var nameTemplateBox = CreateBatchTextBox("PLC-{id}");
         var connectionModeCombo = CreateBatchComboBox(["端口代理", "直连"], 0);
@@ -1840,7 +1783,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             if (!int.TryParse(idStartBox.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture,
                     out var startId) || startId <= 0)
             {
-                MessageBox.Show(dialog, "PLC起始编号必须是大于0的整数。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "PLC起始编号必须是大于0的整数。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 idStartBox.Focus();
                 return;
@@ -1848,7 +1791,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             if (string.IsNullOrWhiteSpace(nameTemplateBox.Text))
             {
-                MessageBox.Show(dialog, "名称模板不能为空。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "名称模板不能为空。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 nameTemplateBox.Focus();
                 return;
@@ -1856,7 +1799,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             if (string.IsNullOrWhiteSpace(plcTypeBox.Text))
             {
-                MessageBox.Show(dialog, "PLC类型不能为空。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "PLC类型不能为空。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 plcTypeBox.Focus();
                 return;
@@ -1867,7 +1810,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             if (!TryParseBatchPositiveInt(portStartBox.Text, out var portStart) || portStart > 65535)
             {
-                MessageBox.Show(dialog, "端口起始值必须在1至65535之间。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "端口起始值必须在1至65535之间。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 portStartBox.Focus();
                 return;
@@ -1876,7 +1819,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             var commonProxyPort = 102;
             if (!isDirect && (!TryParseBatchPositiveInt(proxyPortBox.Text, out commonProxyPort) || commonProxyPort > 65535))
             {
-                MessageBox.Show(dialog, "代理端口必须在1至65535之间。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "代理端口必须在1至65535之间。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 proxyPortBox.Focus();
                 return;
@@ -1888,7 +1831,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 !TryParseBatchPositiveInt(receiveTimeoutBox.Text, out var receiveTimeout) ||
                 !TryParseBatchPositiveInt(pollIntervalBox.Text, out var pollInterval))
             {
-                MessageBox.Show(dialog, "Rack、Slot必须是非负整数；超时和轮询间隔必须是大于0的整数。", "批量添加PLC",
+                MessageBox.Show(owner, "Rack、Slot必须是非负整数；超时和轮询间隔必须是大于0的整数。", "批量添加PLC",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -1899,7 +1842,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 if (!int.TryParse(countBox.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture,
                         out var count) || count < 1 || count > 500)
                 {
-                    MessageBox.Show(dialog, "连续生成数量必须在1至500之间。", "批量添加PLC", MessageBoxButton.OK,
+                    MessageBox.Show(owner, "连续生成数量必须在1至500之间。", "批量添加PLC", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     countBox.Focus();
                     return;
@@ -1908,7 +1851,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 if (!IPAddress.TryParse(startIpBox.Text.Trim(), out var startAddress) ||
                     startAddress.AddressFamily != AddressFamily.InterNetwork)
                 {
-                    MessageBox.Show(dialog, "起始IP必须是有效的IPv4地址。", "批量添加PLC", MessageBoxButton.OK,
+                    MessageBox.Show(owner, "起始IP必须是有效的IPv4地址。", "批量添加PLC", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     startIpBox.Focus();
                     return;
@@ -1918,7 +1861,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 {
                     if (!TryIncrementIpv4Address(startAddress, index, out var ipAddress))
                     {
-                        MessageBox.Show(dialog, "IP递增超出IPv4地址范围，请调整起始IP或添加数量。", "批量添加PLC",
+                        MessageBox.Show(owner, "IP递增超出IPv4地址范围，请调整起始IP或添加数量。", "批量添加PLC",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -1941,7 +1884,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     var maxParts = isDirect ? 4 : 5;
                     if (parts.Length > maxParts)
                     {
-                        MessageBox.Show(dialog,
+                        MessageBox.Show(owner,
                             $"第 {lineIndex + 1} 行字段过多。" +
                             (isDirect ? "直连格式为 IP,名称,直连端口,DB块。" : "代理格式为 IP,名称,代理端口,内部端口,DB块。") +
                             "同一行的多个 DB 块用分号隔开。",
@@ -1953,7 +1896,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     if (!IPAddress.TryParse(ipAddress, out var parsedIp) ||
                         parsedIp.AddressFamily != AddressFamily.InterNetwork)
                     {
-                        MessageBox.Show(dialog, $"第 {lineIndex + 1} 行IP地址无效：{ipAddress}", "批量添加PLC",
+                        MessageBox.Show(owner, $"第 {lineIndex + 1} 行IP地址无效：{ipAddress}", "批量添加PLC",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -1968,7 +1911,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     {
                         if (!TryParseBatchDbBlocks(parts[maxParts - 1], out var rowDbBlocks, out var rowDbError))
                         {
-                            MessageBox.Show(dialog, $"第 {lineIndex + 1} 行的 DB 块设置有误。{rowDbError}",
+                            MessageBox.Show(owner, $"第 {lineIndex + 1} 行的 DB 块设置有误。{rowDbError}",
                                 "批量添加 PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                             customIpListBox.Focus();
                             return;
@@ -1984,7 +1927,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         {
                             if (!TryParseBatchPositiveInt(parts[2], out var parsedPort) || parsedPort > 65535)
                             {
-                                MessageBox.Show(dialog, $"第 {lineIndex + 1} 行直连端口无效：{parts[2]}",
+                                MessageBox.Show(owner, $"第 {lineIndex + 1} 行直连端口无效：{parts[2]}",
                                     "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
@@ -2002,7 +1945,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         {
                             if (!TryParseBatchPositiveInt(parts[2], out var parsedProxyPort) || parsedProxyPort > 65535)
                             {
-                                MessageBox.Show(dialog, $"第 {lineIndex + 1} 行代理端口无效：{parts[2]}",
+                                MessageBox.Show(owner, $"第 {lineIndex + 1} 行代理端口无效：{parts[2]}",
                                     "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
@@ -2014,7 +1957,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         {
                             if (!TryParseBatchPositiveInt(parts[3], out var parsedInternalPort) || parsedInternalPort > 65535)
                             {
-                                MessageBox.Show(dialog, $"第 {lineIndex + 1} 行内部端口无效：{parts[3]}",
+                                MessageBox.Show(owner, $"第 {lineIndex + 1} 行内部端口无效：{parts[3]}",
                                     "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
@@ -2029,7 +1972,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     inputs.Add(input);
                     if (inputs.Count > 500)
                     {
-                        MessageBox.Show(dialog, "一次最多添加500台PLC。", "批量添加PLC", MessageBoxButton.OK,
+                        MessageBox.Show(owner, "一次最多添加500台PLC。", "批量添加PLC", MessageBoxButton.OK,
                             MessageBoxImage.Warning);
                         return;
                     }
@@ -2037,7 +1980,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
                 if (inputs.Count == 0)
                 {
-                    MessageBox.Show(dialog, "自定义IP清单为空，请至少填写一个IPv4地址。", "批量添加PLC",
+                    MessageBox.Show(owner, "自定义IP清单为空，请至少填写一个IPv4地址。", "批量添加PLC",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -2054,7 +1997,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             if (inputs.Any(input => input.DbBlocks == null) &&
                 !TryParseBatchDbBlocks(defaultDbText, out defaultDbBlocks, out var defaultDbError))
             {
-                MessageBox.Show(dialog, defaultDbError, "批量添加 PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(owner, defaultDbError, "批量添加 PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                 customDbBox.Focus();
                 return;
             }
@@ -2064,7 +2007,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 var effectiveListenPort = inputs[index].ListenPort ?? (portStart + index);
                 if (effectiveListenPort < 1 || effectiveListenPort > 65535)
                 {
-                    MessageBox.Show(dialog,
+                    MessageBox.Show(owner,
                         $"第 {index + 1} 台PLC计算得到的监听端口 {effectiveListenPort} 超出1至65535范围，请调整端口起始值或自定义端口。",
                         "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                     portStartBox.Focus();
@@ -2074,7 +2017,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             if ((long)startId + inputs.Count - 1 > int.MaxValue)
             {
-                MessageBox.Show(dialog, "PLC编号超出整数范围。", "批量添加PLC", MessageBoxButton.OK,
+                MessageBox.Show(owner, "PLC编号超出整数范围。", "批量添加PLC", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }
@@ -2085,7 +2028,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 var plcId = startId + index;
                 if (existingIds.Contains(plcId))
                 {
-                    MessageBox.Show(dialog, $"PLC编号 {plcId} 已存在，请调整起始编号。", "批量添加PLC",
+                    MessageBox.Show(owner, $"PLC编号 {plcId} 已存在，请调整起始编号。", "批量添加PLC",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -2141,7 +2084,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 .FirstOrDefault(group => group.Count() > 1);
             if (duplicateName != null)
             {
-                MessageBox.Show(dialog, $"生成的PLC名称重复：{duplicateName.Key}。请在名称模板中加入 {{id}} 或 {{index}}。",
+                MessageBox.Show(owner, $"生成的PLC名称重复：{duplicateName.Key}。请在名称模板中加入 {{id}} 或 {{index}}。",
                     "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -2170,7 +2113,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 var listeningEndpoint = plc.GetListeningEndPoint();
                 if (listeningEndpoint != null && !occupiedEndpoints.Add(listeningEndpoint.ToString()))
                 {
-                    MessageBox.Show(dialog, $"PLC {plc.PlcName} 的监听端点 {listeningEndpoint} 与现有配置或本批次其他PLC冲突。",
+                    MessageBox.Show(owner, $"PLC {plc.PlcName} 的监听端点 {listeningEndpoint} 与现有配置或本批次其他PLC冲突。",
                         "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -2180,7 +2123,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     var proxyEndpoint = plc.GetProxyEndPoint();
                     if (proxyEndpoint != null && !occupiedEndpoints.Add(proxyEndpoint.ToString()))
                     {
-                        MessageBox.Show(dialog, $"PLC {plc.PlcName} 的代理端点 {proxyEndpoint} 与现有配置或本批次其他PLC冲突。",
+                        MessageBox.Show(owner, $"PLC {plc.PlcName} 的代理端点 {proxyEndpoint} 与现有配置或本批次其他PLC冲突。",
                             "批量添加PLC", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -2211,7 +2154,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         };
 
         RefreshSummary();
-        dialog.ShowDialog();
+        ToolHost.Open(dialog);
     }
 
     /// <summary>
@@ -2224,7 +2167,11 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var isAdministrator = networkAddressService.IsAdministrator();
         var isAdding = false;
         var isDeleting = false;
-        var dialog = CreateBatchDialog("批量添加网卡 IPv4 地址");
+        const string title = "批量添加网卡 IPv4 地址";
+        if (TrySelectTool<PlcToolPage>(page => page.Title == title)) return;
+
+        var dialog = CreateBatchPage(title);
+        var owner = Window.GetWindow(this);
         dialog.Closing += (_, e) => e.Cancel = isAdding || isDeleting;
         var adapterCombo = new ComboBox
         {
@@ -2610,7 +2557,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 addressPreview += $"\r\n另有 {selectedAddresses.Length - 10} 个地址。";
             }
 
-            var confirm = MessageBox.Show(dialog,
+            var confirm = MessageBox.Show(owner,
                 $"从网卡「{adapterName}」删除选中的 IPv4 地址吗？共 {selectedAddresses.Length} 个。\r\n" +
                 $"InterfaceIndex {target.InterfaceIndex}\r\n\r\n{addressPreview}",
                 "删除网卡 IPv4 地址", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
@@ -2642,6 +2589,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     {
                         result = (BatchIpv4DeleteState.Failed, ex.Message);
                     }
+
+                    if (dialog.Workspace == null) return;
 
                     results.Add(result.State);
                     if (result.State is BatchIpv4DeleteState.Removed or BatchIpv4DeleteState.AlreadyAbsent)
@@ -2676,13 +2625,15 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     detailText += $"\r\n另有 {details.Count - 20} 条记录。";
                 }
 
-                MessageBox.Show(dialog, message + "\r\n\r\n" + detailText, "删除结果", MessageBoxButton.OK,
+                MessageBox.Show(owner, message + "\r\n\r\n" + detailText, "删除结果", MessageBoxButton.OK,
                     failed > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
+                if (dialog.Workspace == null) return;
+
                 RefreshSelectedAdapterIpv4Addresses();
-                MessageBox.Show(dialog, "批量删除 IPv4 地址时发生异常：\r\n" + ex.Message,
+                MessageBox.Show(owner, "批量删除 IPv4 地址时发生异常：\r\n" + ex.Message,
                     "删除网卡 IPv4 地址", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -2707,14 +2658,14 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             var adapterId = target?.AdapterId;
             if (string.IsNullOrWhiteSpace(adapterId))
             {
-                MessageBox.Show(dialog, "请先选择目标网卡。", "批量添加网卡IP", MessageBoxButton.OK,
+                MessageBox.Show(owner, "请先选择目标网卡。", "批量添加网卡IP", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }
 
             if (!networkAddressService.IsAdministrator())
             {
-                MessageBox.Show(dialog, "添加网卡IP需要管理员权限，请以管理员身份重新运行模拟器。", "权限不足",
+                MessageBox.Show(owner, "添加网卡IP需要管理员权限，请以管理员身份重新运行模拟器。", "权限不足",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -2724,7 +2675,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 parsedDefaultMask.AddressFamily != AddressFamily.InterNetwork ||
                 !IsValidBatchIpv4SubnetMask(parsedDefaultMask))
             {
-                MessageBox.Show(dialog, "默认子网掩码无效，请输入连续的IPv4子网掩码，例如 255.255.255.0。",
+                MessageBox.Show(owner, "默认子网掩码无效，请输入连续的IPv4子网掩码，例如 255.255.255.0。",
                     "批量添加网卡IP", MessageBoxButton.OK, MessageBoxImage.Warning);
                 maskBox.Focus();
                 return;
@@ -2736,7 +2687,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 if (!int.TryParse(countBox.Text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture,
                         out var count) || count < 1 || count > 1024)
                 {
-                    MessageBox.Show(dialog, "连续生成数量必须在1至1024之间。", "批量添加网卡IP", MessageBoxButton.OK,
+                    MessageBox.Show(owner, "连续生成数量必须在1至1024之间。", "批量添加网卡IP", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     countBox.Focus();
                     return;
@@ -2745,7 +2696,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 if (!IPAddress.TryParse(startIpBox.Text.Trim(), out var startAddress) ||
                     startAddress.AddressFamily != AddressFamily.InterNetwork)
                 {
-                    MessageBox.Show(dialog, "起始IP必须是有效的IPv4地址。", "批量添加网卡IP", MessageBoxButton.OK,
+                    MessageBox.Show(owner, "起始IP必须是有效的IPv4地址。", "批量添加网卡IP", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     startIpBox.Focus();
                     return;
@@ -2755,7 +2706,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 {
                     if (!TryIncrementIpv4Address(startAddress, index, out var ipAddress))
                     {
-                        MessageBox.Show(dialog, "IP递增超出IPv4地址范围，请调整起始IP或添加数量。",
+                        MessageBox.Show(owner, "IP递增超出IPv4地址范围，请调整起始IP或添加数量。",
                             "批量添加网卡IP", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -2778,7 +2729,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     var parts = line.Split(',');
                     if (parts.Length > 2)
                     {
-                        MessageBox.Show(dialog, $"第 {lineIndex + 1} 行格式错误。格式应为：IP 或 IP,子网掩码。",
+                        MessageBox.Show(owner, $"第 {lineIndex + 1} 行格式错误。格式应为：IP 或 IP,子网掩码。",
                             "批量添加网卡IP", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -2787,7 +2738,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     if (!IPAddress.TryParse(ipText, out var parsedIp) ||
                         parsedIp.AddressFamily != AddressFamily.InterNetwork)
                     {
-                        MessageBox.Show(dialog, $"第 {lineIndex + 1} 行IP地址无效：{ipText}", "批量添加网卡IP",
+                        MessageBox.Show(owner, $"第 {lineIndex + 1} 行IP地址无效：{ipText}", "批量添加网卡IP",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -2799,7 +2750,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         parsedLineMask.AddressFamily != AddressFamily.InterNetwork ||
                         !IsValidBatchIpv4SubnetMask(parsedLineMask))
                     {
-                        MessageBox.Show(dialog, $"第 {lineIndex + 1} 行子网掩码无效：{lineMask}",
+                        MessageBox.Show(owner, $"第 {lineIndex + 1} 行子网掩码无效：{lineMask}",
                             "批量添加网卡IP", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
@@ -2810,7 +2761,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     {
                         if (!string.Equals(previousInput.SubnetMask, normalizedMask, StringComparison.OrdinalIgnoreCase))
                         {
-                            MessageBox.Show(dialog, $"IP {normalizedIp} 重复出现，但子网掩码不一致。",
+                            MessageBox.Show(owner, $"IP {normalizedIp} 重复出现，但子网掩码不一致。",
                                 "批量添加网卡IP", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
@@ -2826,7 +2777,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
                     if (uniqueInputs.Count > 1024)
                     {
-                        MessageBox.Show(dialog, "一次最多添加1024个IP。", "批量添加网卡IP", MessageBoxButton.OK,
+                        MessageBox.Show(owner, "一次最多添加1024个IP。", "批量添加网卡IP", MessageBoxButton.OK,
                             MessageBoxImage.Warning);
                         return;
                     }
@@ -2835,7 +2786,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 inputs.AddRange(uniqueInputs.Values);
                 if (inputs.Count == 0)
                 {
-                    MessageBox.Show(dialog, "自定义IP清单为空，请至少填写一个IPv4地址。", "批量添加网卡IP",
+                    MessageBox.Show(owner, "自定义IP清单为空，请至少填写一个IPv4地址。", "批量添加网卡IP",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -2843,7 +2794,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
             var adapterDisplayName = selectedAdapter.Content?.ToString() ?? adapterId;
             var confirmResult = MessageBox.Show(
-                dialog,
+                owner,
                 $"确定向以下网卡批量添加 {inputs.Count} 个辅助IP吗？\r\n\r\n" +
                 $"网卡：{adapterDisplayName}\r\n" +
                 $"默认子网掩码：{defaultMask}\r\n\r\n" +
@@ -2907,6 +2858,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                     return (AddedCount: addedCount, SkippedCount: skippedCount, FailedCount: failedCount, Details: details);
                 });
 
+                if (dialog.Workspace == null) return;
+
                 RefreshAdapterOptions(target);
                 var resultText =
                     $"批量添加完成。\r\n成功新增：{batchResult.AddedCount} 个\r\n" +
@@ -2922,7 +2875,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                         detailText += "\r\n……其余明细已省略。";
                     }
 
-                    MessageBox.Show(dialog, resultText + "\r\n\r\n明细：\r\n" + detailText,
+                    MessageBox.Show(owner, resultText + "\r\n\r\n明细：\r\n" + detailText,
                         "批量添加结果", MessageBoxButton.OK,
                         batchResult.FailedCount > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
                 }
@@ -2936,26 +2889,25 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             }
             catch (Exception ex)
             {
-                MessageBox.Show(dialog, "批量添加网卡IP时发生异常：\r\n" + ex.Message, "批量添加网卡IP",
+                if (dialog.Workspace == null) return;
+
+                MessageBox.Show(owner, "批量添加网卡IP时发生异常：\r\n" + ex.Message, "批量添加网卡IP",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 isAdding = false;
-                if (dialog.IsVisible)
-                {
-                    refreshAdapterButton.IsEnabled = true;
-                    adapterGrid.IsEnabled = true;
-                    ipTable.IsEnabled = true;
-                    RefreshSummary();
-                }
+                refreshAdapterButton.IsEnabled = true;
+                adapterGrid.IsEnabled = true;
+                ipTable.IsEnabled = true;
+                RefreshSummary();
             }
         };
 
 
         RefreshAdapterOptions();
         RefreshSummary();
-        dialog.ShowDialog();
+        ToolHost.Open(dialog);
     }
 
     private static IPInterfaceProperties ReadBatchIpv4Interface(BatchIpv4Adapter target)
@@ -3120,19 +3072,11 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         return oneCount is >= 1 and <= 32;
     }
 
-    private Window CreateBatchDialog(string title)
+    private PlcToolPage CreateBatchPage(string title)
     {
-        var dialog = new Window
+        var dialog = new PlcToolPage
         {
             Title = title,
-            Width = 1020,
-            Height = 750,
-            MinWidth = 660,
-            MinHeight = 550,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this,
-            ResizeMode = ResizeMode.CanResizeWithGrip,
-            ShowInTaskbar = false,
             Background = CreateBatchBrush(242, 245, 250),
             Foreground = Foreground,
             FontFamily = FontFamily,
@@ -3145,7 +3089,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         return dialog;
     }
 
-    private void SetBatchDialogContent(Window dialog, string subtitle, string iconGeometry,
+    private void SetBatchDialogContent(PlcToolPage dialog, string subtitle, string iconGeometry,
         FrameworkElement left, FrameworkElement right, TextBlock summaryText, Button addButton)
     {
         var borderBrush = (Brush)FindResource("PanelBorderBrush");
@@ -3219,7 +3163,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             Grid.SetRow(right, compact ? 1 : 0);
         }
 
-        ArrangeColumns(dialog.Width);
+        ArrangeColumns(ActualWidth);
         dialog.SizeChanged += (_, e) =>
         {
             if (e.WidthChanged)
@@ -3238,7 +3182,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
         var cancelButton = CreateBatchButton("取消", "NormalButtonStyle", 82);
         cancelButton.Margin = new Thickness(0, 0, 8, 0);
-        cancelButton.IsCancel = true;
+        cancelButton.Click += (_, _) => dialog.Close();
         var actions = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
         actions.Children.Add(cancelButton);
         actions.Children.Add(addButton);
@@ -3621,7 +3565,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var running = byRunningState[true].ToList();
         var keepNote = running.Count == 0 ? string.Empty
             : $"\r\n\r\n运行中保留 {running.Count} 台：\r\n{FormatPlcDeletePreview(running)}";
-        var result = MessageBox.Show(this,
+        var result = MessageBox.Show(Window.GetWindow(this),
             $"已选 {selected.Count} 台，确定删除以下 {toDelete.Count} 台已停用 PLC 的配置吗？\r\n\r\n" +
             FormatPlcDeletePreview(toDelete) + keepNote,
             "删除选中的 PLC", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
@@ -3651,6 +3595,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
         foreach (var plc in toDelete)
         {
+            CloseDbTools(plc.PlcId);
             Plcs.Remove(plc);
         }
 
@@ -4120,6 +4065,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return;
         }
 
+        CloseDbTools(SelectedPlc.PlcId, SelectedDbBlock.DbNumber);
         SelectedPlc.DbBlocks.Remove(SelectedDbBlock);
 
         SelectedDbBlock = SelectedPlc.DbBlocks.FirstOrDefault();
@@ -4359,7 +4305,10 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
     private void OpenSharedProtocolButton_Click(object sender, RoutedEventArgs e)
     {
-        new PlcProtocolTemplateImportWindow { Owner = this }.ShowDialog();
+        if (!TrySelectTool<PlcProtocolTemplateImportWindow>())
+        {
+            ToolHost.Open(new PlcProtocolTemplateImportWindow());
+        }
     }
 
     private void OpenDbBlockResetConfigButton_Click(object sender, RoutedEventArgs e)
@@ -4383,31 +4332,18 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
         try
         {
-            if (TryActivateCurrentPopupWindow())
-            {
-                return;
-            }
+            if (TrySelectTool<PlcDbBlockResetConfigWindow>()) return;
 
-            var window = new PlcDbBlockResetConfigWindow(SelectedDbBlock)
+            var page = new PlcDbBlockResetConfigWindow(SelectedDbBlock);
+            page.Closed += (_, _) =>
             {
-                Owner = this
+                if (page.Result != true) return;
+
+                OnPropertyChanged(nameof(SelectedDbBlock));
+                OnPropertyChanged(nameof(SelectedPlc));
+                Growl.SuccessGlobal("全局 PLC 复位配置已更新。");
             };
-
-            RegisterCurrentPopupWindow(window);
-
-            var result = window.ShowDialog();
-
-            if (result != true)
-            {
-                return;
-            }
-
-            SelectedDbBlock = SelectedDbBlock;
-
-            OnPropertyChanged(nameof(SelectedDbBlock));
-            OnPropertyChanged(nameof(SelectedPlc));
-
-            Growl.SuccessGlobal($"DB{SelectedDbBlock.DbNumber} 复位配置已更新，请点击保存配置持久化。");
+            ToolHost.Open(page);
         }
         catch (Exception ex)
         {
@@ -4444,7 +4380,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
         try
         {
-            if (TryActivateCurrentPopupWindow())
+            if (TrySelectTool<PlcDbBlockProtocolBoardConfigWindow>(page =>
+                    page.PlcId == SelectedPlc.PlcId && page.DbNumber == SelectedDbBlock.DbNumber))
             {
                 return;
             }
@@ -4453,15 +4390,13 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 SelectedPlc.PlcId,
                 SelectedDbBlock);
 
-            RegisterCurrentPopupWindow(window);
-
             window.Closed += (_, _) =>
             {
                 OnPropertyChanged(nameof(SelectedDbBlock));
                 OnPropertyChanged(nameof(SelectedPlc));
             };
 
-            window.Show();
+            ToolHost.Open(window);
         }
         catch (Exception ex)
         {
@@ -4478,25 +4413,20 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
 
     private void OpenPointChangeMonitorButton_Click(object sender, RoutedEventArgs e)
     {
-        var existing = Application.Current.Windows.OfType<PlcPointChangeMonitorWindow>().FirstOrDefault();
-        if (existing != null)
+        if (TrySelectTool<PlcPointChangeMonitorWindow>())
         {
-            ActivatePopupWindow(existing);
             return;
         }
 
         try
         {
             var window = new PlcPointChangeMonitorWindow(Plcs, SelectedPlc?.PlcId ?? 0,
-                SelectedDbBlock?.DbNumber ?? 0)
-            {
-                Topmost = this.Topmost
-            };
-            window.Show();
+                SelectedDbBlock?.DbNumber ?? 0);
+            ToolHost.Open(window);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "打开点位变化记录失败，" + ex.Message, "异常",
+            MessageBox.Show(Window.GetWindow(this), "打开点位变化记录失败，" + ex.Message, "异常",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -4507,33 +4437,30 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var dbBlock = SelectedDbBlock;
         if (plc == null || dbBlock == null)
         {
-            MessageBox.Show(this, "请先选择PLC和DB块。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(Window.GetWindow(this), "请先选择PLC和DB块。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!dbBlock.IsEnabled || !PlcVirtualServerService.Instance.IsPlcRunning(plc.PlcId))
         {
-            MessageBox.Show(this, "请先启用当前DB块并启动PLC模拟服务。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(Window.GetWindow(this), "请先启用当前DB块并启动PLC模拟服务。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        var existing = Application.Current.Windows
-            .OfType<PlcAutoWriteRuleMonitorWindow>()
-            .FirstOrDefault(window => window.PlcId == plc.PlcId && window.DbNumber == dbBlock.DbNumber);
-        if (existing != null)
+        if (TrySelectTool<PlcAutoWriteRuleMonitorWindow>(page =>
+                page.PlcId == plc.PlcId && page.DbNumber == dbBlock.DbNumber))
         {
-            ActivatePopupWindow(existing);
             return;
         }
 
         try
         {
             var window = new PlcAutoWriteRuleMonitorWindow(plc, dbBlock, SelectedDbBlockRuleRef?.RuleId);
-            window.Show();
+            ToolHost.Open(window);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "打开规则点位监视失败：" + ex.Message, "异常", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Window.GetWindow(this), "打开规则点位监视失败：" + ex.Message, "异常", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -4570,7 +4497,8 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             return;
         }
 
-        if (TryActivateCurrentPopupWindow())
+        if (TrySelectTool<DbBlockBitsWindow>(page =>
+                page.PlcId == SelectedPlc.PlcId && page.DbNumber == dbBlock.DbNumber))
         {
             return;
         }
@@ -4601,9 +4529,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 length,
                 bytes);
 
-            RegisterCurrentPopupWindow(window);
-
-            window.Show();
+            ToolHost.Open(window);
         }
         catch (Exception ex)
         {
@@ -4950,11 +4876,6 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         OnPropertyChanged(nameof(SelectedDbBlock));
     }
 
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
     /// <summary>
     /// 保存当前PLC配置。
     /// 保存前自动把所有已启用PLC的IP添加到电脑网卡。
@@ -5026,7 +4947,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "保存 PLC 配置失败。\r\n" + ex.Message,
+            MessageBox.Show(Window.GetWindow(this), "保存 PLC 配置失败。\r\n" + ex.Message,
                 "PLC 配置", MessageBoxButton.OK, MessageBoxImage.Error);
             return false;
         }
@@ -6463,7 +6384,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var plc = SelectedPlc;
         if (plc == null)
         {
-            MessageBox.Show(this, "请先选择PLC。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(Window.GetWindow(this), "请先选择PLC。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -6471,7 +6392,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var dbBlock = (sender as FrameworkElement)?.DataContext as PlcDbBlockModel ?? SelectedDbBlock;
         if (dbBlock == null)
         {
-            MessageBox.Show(this, "请先选择DB块。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(Window.GetWindow(this), "请先选择DB块。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -6480,7 +6401,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         try
         {
             // 同一个PLC的同一个DB块仅复用一个已经打开的操作面板。
-            var panel = Application.Current.Windows.OfType<PlcDbBlockProtocolPanelWindow>()
+            var panel = ToolHost.Pages.OfType<PlcDbBlockProtocolPanelWindow>()
                 .FirstOrDefault(window => window.PlcId == plc.PlcId && window.DbNumber == dbBlock.DbNumber);
 
             if (panel == null)
@@ -6488,25 +6409,17 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
                 var rows = PlcProtocolTemplate.Basic.GetEffectiveItems(dbBlock)
                     .Select(PlcProtocolBoardRowModel.FromProtocolItem);
 
-                panel = new PlcDbBlockProtocolPanelWindow(plc.PlcId, dbBlock.DbNumber, rows)
-                {
-                    Topmost = this.Topmost
-                };
-                panel.Show();
+                panel = new PlcDbBlockProtocolPanelWindow(plc.PlcId, dbBlock.DbNumber, rows);
+                ToolHost.Open(panel);
                 return;
             }
 
             panel.SelectInitialTarget();
-            if (panel.WindowState == WindowState.Minimized)
-            {
-                panel.WindowState = WindowState.Normal;
-            }
-
-            panel.Activate();
+            ToolHost.Open(panel);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "打开DB块操作面板失败：\r\n" + ex,
+            MessageBox.Show(Window.GetWindow(this), "打开DB块操作面板失败：\r\n" + ex,
                 "异常", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

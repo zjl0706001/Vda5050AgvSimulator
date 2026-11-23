@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Vda5050AgvSimulator.Services.Agv;
+using Vda5050AgvSimulator.Models.Agv;
 using Vda5050AgvSimulator.ViewModels;
+using Vda5050AgvSimulator.Views;
 using Forms = System.Windows.Forms;
 using Drawing = System.Drawing;
 
@@ -16,13 +18,11 @@ public partial class MainWindow
 
     private bool _isRealExit;
 
-    private const double StackedWorkspaceWidth = 930;
-    private const double SplitterSize = 12;
-
-    private bool _isWorkspaceStacked;
-    private GridLength _wideDetailsWidth = new GridLength(372);
-    private GridLength _stackedFleetHeight = new GridLength(1, GridUnitType.Star);
-    private GridLength _stackedDetailsHeight = new GridLength(1.12, GridUnitType.Star);
+    private readonly AgvListView _fleet;
+    private readonly MqttConfigView _mqtt;
+    private AgvOperationView? _operations;
+    private OrderView? _orders;
+    private PlcConfigWindow? _plc;
 
     public MainWindow()
     {
@@ -36,6 +36,16 @@ public partial class MainWindow
 
         DataContext = new MainViewModel();
 
+        _mqtt = new MqttConfigView();
+        ConnectionFooter.DataContext = _mqtt;
+        _fleet = new AgvListView();
+        var store = AgvStoreService.Instance;
+        VehicleSelection.ItemsSource = store.Agvs;
+        VehicleSelection.SelectedItem = store.SelectedAgv;
+        store.SelectedAgvChanged += CurrentVehicle_Changed;
+
+        NavigationMenu.PageSelected += Navigate;
+        Navigate("fleet");
         InitTrayIcon();
 
         Closing += MainWindow_Closing;
@@ -43,58 +53,44 @@ public partial class MainWindow
         Closed += MainWindow_Closed;
     }
 
-    private void WorkspaceGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    private void Navigate(string page)
     {
-        if (!e.WidthChanged || DetailsPanel == null)
+        PageContent.Content = page switch
         {
-            return;
-        }
+            "fleet" => _fleet,
+            "operations" => _operations ??= new AgvOperationView(),
+            "orders" => _orders ??= new OrderView(),
+            "mqtt" => _mqtt,
+            "plc" => _plc ??= new PlcConfigWindow(),
+            _ => throw new ArgumentOutOfRangeException(nameof(page))
+        };
+        PageTitle.Text = NavigationMenu.SelectedPageTitle;
+        VehiclePicker.Visibility = page is "operations" or "orders" ? Visibility.Visible : Visibility.Collapsed;
+    }
 
-        var stacked = e.NewSize.Width < StackedWorkspaceWidth;
-        if (stacked == _isWorkspaceStacked)
+    private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (!e.WidthChanged) return;
+        var compact = e.NewSize.Width < 900;
+        NavigationMenu.Compact = compact;
+        SidebarColumn.Width = new GridLength(compact ? 64 : 200);
+        ProductLabel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        ConnectionFooter.Visibility = ProductLabel.Visibility;
+    }
+
+    private void OpenMqttPage(object sender, RoutedEventArgs e) => NavigationMenu.SelectPage("mqtt");
+
+    private void CurrentVehicle_Changed(object sender, AgvModel vehicle)
+    {
+        VehicleSelection.SelectedItem = AgvStoreService.Instance.SelectedAgv;
+    }
+
+    private void VehicleSelection_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (VehicleSelection.SelectedItem is AgvModel vehicle && vehicle != AgvStoreService.Instance.SelectedAgv)
         {
-            return;
+            AgvStoreService.Instance.SetSelectedAgv(vehicle);
         }
-
-        _isWorkspaceStacked = stacked;
-        if (stacked)
-        {
-            _wideDetailsWidth = DetailsColumn.Width;
-            FleetColumn.MinWidth = 0;
-            SplitterColumn.Width = new GridLength(0);
-            DetailsColumn.MinWidth = 0;
-            DetailsColumn.Width = new GridLength(0);
-
-            FleetRow.MinHeight = 104;
-            FleetRow.Height = _stackedFleetHeight;
-            SplitterRow.Height = new GridLength(SplitterSize);
-            DetailsRow.MinHeight = 144;
-            DetailsRow.Height = _stackedDetailsHeight;
-
-            Grid.SetColumn(DetailsPanel, 0);
-            Grid.SetRow(DetailsPanel, 2);
-            ColumnSplitter.Visibility = Visibility.Collapsed;
-            RowSplitter.Visibility = Visibility.Visible;
-            return;
-        }
-
-        _stackedFleetHeight = FleetRow.Height;
-        _stackedDetailsHeight = DetailsRow.Height;
-        FleetRow.MinHeight = 0;
-        FleetRow.Height = new GridLength(1, GridUnitType.Star);
-        SplitterRow.Height = new GridLength(0);
-        DetailsRow.MinHeight = 0;
-        DetailsRow.Height = new GridLength(0);
-
-        FleetColumn.MinWidth = 370;
-        SplitterColumn.Width = new GridLength(SplitterSize);
-        DetailsColumn.MinWidth = 310;
-        DetailsColumn.Width = _wideDetailsWidth;
-
-        Grid.SetColumn(DetailsPanel, 2);
-        Grid.SetRow(DetailsPanel, 0);
-        ColumnSplitter.Visibility = Visibility.Visible;
-        RowSplitter.Visibility = Visibility.Collapsed;
     }
 
     /// <summary>
@@ -239,6 +235,9 @@ public partial class MainWindow
     /// </summary>
     private void MainWindow_Closed(object sender, EventArgs e)
     {
+        AgvStoreService.Instance.SelectedAgvChanged -= CurrentVehicle_Changed;
+        _plc?.CloseTools();
+        NavigationMenu.Dispose();
         if (_notifyIcon == null) return;
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();

@@ -35,6 +35,15 @@ public partial class OrderView
         IsVisibleChanged += OrderView_IsVisibleChanged;
     }
 
+    private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (!e.WidthChanged) return;
+        var wide = e.NewSize.Width >= 700;
+        DockPanel.SetDock(RoutePanel, wide ? Dock.Left : Dock.Top);
+        RoutePanel.Width = wide ? e.NewSize.Width / 2 - RoutePanel.Margin.Left - RoutePanel.Margin.Right : double.NaN;
+        OrderMetrics.Columns = wide ? 4 : 2;
+    }
+
     private void OrderView_Loaded(object sender, RoutedEventArgs e)
     {
         if (!_listening)

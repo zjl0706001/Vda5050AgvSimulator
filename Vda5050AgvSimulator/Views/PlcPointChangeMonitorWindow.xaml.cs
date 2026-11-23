@@ -16,7 +16,7 @@ using Vda5050AgvSimulator.Services.Plc;
 
 namespace Vda5050AgvSimulator.Views;
 
-public partial class PlcPointChangeMonitorWindow : Window
+public partial class PlcPointChangeMonitorWindow : PlcToolPage
 {
     private const int SampleIntervalMs = 300;
     private const int DisplayedRecordLimit = 1000;
@@ -103,7 +103,6 @@ public partial class PlcPointChangeMonitorWindow : Window
         PointTypePicker.Text = "Bool";
 
         LoadWatchPoints();
-        Loaded += (_, _) => UpdateTopmostButton();
         Closed += (_, _) => _timer.Stop();
     }
 
@@ -529,16 +528,7 @@ public partial class PlcPointChangeMonitorWindow : Window
         }
     }
 
-    private void TopmostButton_Click(object sender, RoutedEventArgs e)
-    {
-        Topmost = !Topmost;
-        UpdateTopmostButton();
-    }
 
-    private void UpdateTopmostButton()
-    {
-        TopmostButton.Content = Topmost ? "取消置顶" : "置顶";
-    }
 
     private sealed class DisplayedChange
     {

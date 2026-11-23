@@ -1,22 +1,14 @@
-﻿<Window x:Class="Vda5050AgvSimulator.Views.PlcConfigWindow"
+﻿<UserControl x:Class="Vda5050AgvSimulator.Views.PlcConfigWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:plc="clr-namespace:Vda5050AgvSimulator.Models.Plc"
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
-        Title="PLC 配置"
-        Width="1320"
-        Height="840"
-        MinWidth="1060"
-        MinHeight="680"
-        WindowStartupLocation="CenterScreen"
-        Topmost="False"
-        ShowInTaskbar="True"
         FontFamily="Microsoft YaHei UI"
         FontSize="13"
         Foreground="#172B4D"
         Background="#F2F5FA">
 
-    <Window.Resources>
+    <UserControl.Resources>
         <SolidColorBrush x:Key="PanelBorderBrush" Color="#DCE5F0" />
         <SolidColorBrush x:Key="MutedTextBrush" Color="#536580" />
         <SolidColorBrush x:Key="AccentBrush" Color="#245EDB" />
@@ -66,7 +58,7 @@
                         <MultiBinding Converter="{StaticResource PlcGlobalRuleEnabledConverter}">
                             <Binding Path="RuleId" />
                             <Binding Path="DataContext.GlobalRuleEnabledStates"
-                                     RelativeSource="{RelativeSource AncestorType={x:Type Window}}" />
+                                     RelativeSource="{RelativeSource AncestorType={x:Type views:PlcConfigWindow}}" />
                         </MultiBinding>
                     </DataTrigger.Binding>
                     <Setter Property="IsEnabled" Value="False" />
@@ -554,7 +546,7 @@
         <Style x:Key="PlcEditableFieldsStyle" TargetType="Panel">
             <Setter Property="DataContext" Value="{Binding SelectedPlc}" />
             <Setter Property="IsEnabled"
-                    Value="{Binding DataContext.CanEditSelectedPlc, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    Value="{Binding DataContext.CanEditSelectedPlc, RelativeSource={RelativeSource AncestorType={x:Type views:PlcConfigWindow}}}" />
         </Style>
 
         <Style x:Key="PlcPortProxyFieldsStyle" TargetType="Grid">
@@ -715,9 +707,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </Window.Resources>
+    </UserControl.Resources>
 
-    <Grid Margin="10" UseLayoutRounding="True">
+    <views:PlcToolHost x:Name="ToolHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <TabItem Header="设备配置">
+            <ScrollViewer x:Name="DeviceViewport" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <Border MinWidth="1050" Width="{Binding ViewportWidth, ElementName=DeviceViewport}" Padding="10">
+                    <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -941,7 +937,7 @@
                                                                       Converter="{StaticResource PlcConnectionCountConverter}">
                                                             <Binding Path="PlcId" />
                                                             <Binding Path="DataContext.PlcConnectionCounts"
-                                                                     RelativeSource="{RelativeSource AncestorType={x:Type Window}}" />
+                                                                     RelativeSource="{RelativeSource AncestorType={x:Type views:PlcConfigWindow}}" />
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
@@ -1230,7 +1226,7 @@
                                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                                                     HorizontalAlignment="Center">
                                                             <Button Content="查看位值" Style="{StaticResource TableActionStyle}"
-                                                                    IsEnabled="{Binding DataContext.CanViewDbBlockBits, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    IsEnabled="{Binding DataContext.CanViewDbBlockBits, RelativeSource={RelativeSource AncestorType={x:Type views:PlcConfigWindow}}}"
                                                                     Click="ViewDbBlockBitsButton_Click" />
                                                             <Button Content="协议看板" Style="{StaticResource TableActionStyle}"
                                                                     Margin="4,0" Click="OpenProtocolBoardConfigButton_Click" />
@@ -1569,7 +1565,7 @@
                                                                                       ConverterParameter="status">
                                                                             <Binding Path="RuleId" />
                                                                             <Binding Path="DataContext.GlobalRuleEnabledStates"
-                                                                                     RelativeSource="{RelativeSource AncestorType={x:Type Window}}" />
+                                                                                     RelativeSource="{RelativeSource AncestorType={x:Type views:PlcConfigWindow}}" />
                                                                         </MultiBinding>
                                                                     </TextBlock.Text>
                                                                 </TextBlock>
@@ -1613,7 +1609,6 @@
         <Border Grid.Row="2" Style="{StaticResource PageCardStyle}" Padding="18,10" Margin="0,16,0,0">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Content="关闭" Style="{StaticResource NormalButtonStyle}" Click="CancelButton_Click" />
                     <Button Content="保存配置" MinWidth="82" Margin="0"
                             Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click" />
                 </StackPanel>
@@ -1623,5 +1618,9 @@
                            VerticalAlignment="Center" Margin="0,0,12,0" />
             </DockPanel>
         </Border>
-    </Grid>
-</Window>
+                    </Grid>
+                </Border>
+            </ScrollViewer>
+        </TabItem>
+    </views:PlcToolHost>
+</UserControl>

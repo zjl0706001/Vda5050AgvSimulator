@@ -39,6 +39,13 @@ public partial class AgvOperationView
         IsVisibleChanged += AgvOperationView_IsVisibleChanged;
     }
 
+    private void CommandPanels_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (!e.WidthChanged) return;
+        var panel = (WrapPanel)sender;
+        panel.ItemWidth = e.NewSize.Width >= 700 ? e.NewSize.Width / 2 : e.NewSize.Width;
+    }
+
     private void AgvOperationView_Loaded(object sender, RoutedEventArgs e)
     {
         if (_listening)

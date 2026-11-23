@@ -4,7 +4,7 @@ using Vda5050AgvSimulator.Services.Plc;
 namespace Vda5050AgvSimulator.Views;
 
 /// <summary>只读的全局点位表。方向筛选只改变列表显示。</summary>
-public partial class PlcProtocolTemplateImportWindow : Window
+public partial class PlcProtocolTemplateImportWindow : PlcToolPage
 {
     public PlcProtocolTemplateImportWindow()
     {
@@ -13,6 +13,8 @@ public partial class PlcProtocolTemplateImportWindow : Window
         DirectionBox.SelectionChanged += (_, _) => ShowDirection();
         ShowDirection();
     }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
     private void ShowDirection()
     {

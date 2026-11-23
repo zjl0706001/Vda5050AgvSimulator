@@ -287,23 +287,14 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             return;
         }
 
-        var selection = ShowDefaultTemplateSelectDialog();
+        ShowTemplatePicker(SelectedRule);
+    }
 
-        if (selection == null)
-        {
-            return;
-        }
-
-        var triggerTemplates = selection.TriggerTemplates ?? [];
-        var writeTemplates = selection.WriteTemplates ?? [];
-
-        if (triggerTemplates.Count == 0 && writeTemplates.Count == 0)
-        {
-            return;
-        }
-
-        SelectedRule.Triggers ??= [];
-        SelectedRule.WriteItems ??= [];
+    private void AddTemplates(PlcAutoWriteRuleModel rule,
+        List<DefaultRuleAddressTemplate> triggerTemplates, List<DefaultRuleAddressTemplate> writeTemplates)
+    {
+        rule.Triggers ??= [];
+        rule.WriteItems ??= [];
 
         PlcAutoWriteTriggerModel lastAddedTrigger = null;
         PlcAutoWriteItemModel lastAddedWriteItem = null;
@@ -315,7 +306,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
                 continue;
             }
 
-            var triggerId = GetNextTriggerId(SelectedRule);
+            var triggerId = GetNextTriggerId(rule);
 
             var trigger = new PlcAutoWriteTriggerModel
             {
@@ -329,7 +320,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
                 Remark = template.DisplayText
             };
 
-            SelectedRule.Triggers.Add(trigger);
+            rule.Triggers.Add(trigger);
 
             lastAddedTrigger = trigger;
         }
@@ -341,7 +332,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
                 continue;
             }
 
-            var writeId = GetNextWriteItemId(SelectedRule);
+            var writeId = GetNextWriteItemId(rule);
 
             var writeItem = new PlcAutoWriteItemModel
             {
@@ -355,11 +346,12 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
                 Remark = template.DisplayText
             };
 
-            SelectedRule.WriteItems.Add(writeItem);
+            rule.WriteItems.Add(writeItem);
 
             lastAddedWriteItem = writeItem;
         }
 
+        SelectedRule = rule;
         if (lastAddedTrigger != null)
         {
             SelectedTrigger = lastAddedTrigger;
@@ -512,7 +504,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
 
         if (targets.Count == 0)
         {
-            MessageBox.Show(this, "请先选择要操作的规则。", "自动写入规则",
+            MessageBox.Show(Window.GetWindow(this), "请先选择要操作的规则。", "自动写入规则",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -586,13 +578,13 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
 
             var state = enabled ? "启用" : "禁用";
             var detail = pendingCount > 0 ? $"\r\n有 {pendingCount} 条新增规则尚未保存，需点击‘保存’才会持久化。" : string.Empty;
-            MessageBox.Show(this,
+            MessageBox.Show(Window.GetWindow(this),
                 $"{scope}共 {targets.Count} 条，已{state}；界面变更 {changedUi} 条，其中 {changedSaved} 条已保存规则的开关发生变化。{detail}",
                 "批量设置完成", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "批量修改规则启用状态失败：\r\n" + ex.Message,
+            MessageBox.Show(Window.GetWindow(this), "批量修改规则启用状态失败：\r\n" + ex.Message,
                 "自动写入规则", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -673,7 +665,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         if (grids.Any(grid => !grid.CommitEdit(DataGridEditingUnit.Cell, true) ||
                               !grid.CommitEdit(DataGridEditingUnit.Row, true)))
         {
-            MessageBox.Show(this, "请修正表格中标出的输入项后再保存。", "全局自动写入规则",
+            MessageBox.Show(Window.GetWindow(this), "请修正表格中标出的输入项后再保存。", "全局自动写入规则",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -1011,7 +1003,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             .Max() + 1;
     }
 
-    private DefaultTemplateSelection ShowDefaultTemplateSelectDialog()
+    private void ShowTemplatePicker(PlcAutoWriteRuleModel rule)
     {
         var templates = CreateDefaultRuleAddressTemplates()
             .Where(item => item != null && string.Equals(item.DataType, "Bool", StringComparison.OrdinalIgnoreCase))
@@ -1025,31 +1017,12 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
 
         if (triggerTemplates.Count == 0 && writeTemplates.Count == 0)
         {
-            MessageBox.Show(this, "没有可用的 Bool 默认模板。", "默认模板", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return null;
+            MessageBox.Show(Window.GetWindow(this), "没有可用的 Bool 默认模板。", "默认模板", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
         }
 
-        DefaultTemplateSelection selectedTemplates = null;
-        var dialog = new Window
-        {
-            Title = "选择自动写入模板",
-            Owner = this,
-            Width = 1120,
-            Height = 640,
-            MinWidth = 930,
-            MinHeight = 470,
-            ResizeMode = ResizeMode.CanResize,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            ShowInTaskbar = false,
-            FontFamily = FontFamily,
-            FontSize = FontSize,
-            Foreground = Foreground,
-            Background = (System.Windows.Media.Brush)FindResource("RulePageBrush"),
-            UseLayoutRounding = true,
-            SnapsToDevicePixels = true
-        };
-
-        var root = new Grid();
+        var editor = Content;
+        var root = new Grid { Background = (System.Windows.Media.Brush)FindResource("RulePageBrush") };
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -1057,7 +1030,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         var header = new StackPanel();
         header.Children.Add(new TextBlock
         {
-            Text = dialog.Title,
+            Text = "选择自动写入模板",
             FontSize = 20,
             FontWeight = FontWeights.SemiBold
         });
@@ -1087,7 +1060,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         root.Children.Add(content);
 
         var cancelButton = CreateTemplateButton("取消", "NormalButtonStyle");
-        cancelButton.IsCancel = true;
+        cancelButton.Click += (_, _) => Content = editor;
         var okButton = CreateTemplateButton("添加选中模板", "PrimaryButtonStyle");
         okButton.MinWidth = 124;
         okButton.Margin = new Thickness(0);
@@ -1097,17 +1070,14 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
             var checkedWrites = writeTemplates.Where(item => item.IsSelected).ToList();
             if (checkedTriggers.Count == 0 && checkedWrites.Count == 0)
             {
-                MessageBox.Show(dialog, "请至少勾选一个触发条件或写入动作。", "默认模板",
+                MessageBox.Show(Window.GetWindow(this), "请至少勾选一个触发条件或写入动作。", "默认模板",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            selectedTemplates = new DefaultTemplateSelection
-            {
-                TriggerTemplates = checkedTriggers,
-                WriteTemplates = checkedWrites
-            };
-            dialog.DialogResult = true;
+            Content = editor;
+            if (Rules.Contains(rule))
+                AddTemplates(rule, checkedTriggers, checkedWrites);
         };
 
         var actions = new StackPanel
@@ -1123,8 +1093,7 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         Grid.SetRow(footer, 2);
         root.Children.Add(footer);
 
-        dialog.Content = root;
-        return dialog.ShowDialog() == true ? selectedTemplates : null;
+        Content = root;
     }
 
     private Border CreateDefaultTemplateSidePanel(string title, List<DefaultRuleAddressTemplate> templates)
@@ -1352,13 +1321,6 @@ public partial class PlcGlobalAutoWriteRuleWindow : INotifyPropertyChanged
         #endregion
 
         return items;
-    }
-
-    private sealed class DefaultTemplateSelection
-    {
-        public List<DefaultRuleAddressTemplate> TriggerTemplates { get; set; }
-
-        public List<DefaultRuleAddressTemplate> WriteTemplates { get; set; }
     }
 
     private sealed class DefaultRuleAddressTemplate : INotifyPropertyChanged

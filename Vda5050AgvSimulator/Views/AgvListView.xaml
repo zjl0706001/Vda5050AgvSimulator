@@ -196,7 +196,8 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer x:Name="AgvPageScrollViewer"
+    <Grid Background="{StaticResource AgvPageBrush}">
+        <ScrollViewer x:Name="AgvPageScrollViewer"
                   Background="{StaticResource AgvPageBrush}"
                   VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
                   CanContentScroll="False" PanningMode="VerticalOnly">
@@ -271,9 +272,7 @@
                     </DockPanel>
 
                     <!-- 统计信息 -->
-                    <Border Grid.Row="0"
-                            Grid.Column="1"
-                            Background="#FFFFFF"
+                    <Border Background="#FFFFFF"
                             BorderBrush="#E0EAF7"
                             BorderThickness="1"
                             CornerRadius="9"
@@ -704,107 +703,95 @@
                            Foreground="{StaticResource AgvMutedBrush}" />
             </Border>
 
-            <Popup x:Name="BatchPositionPopup"
-                   PlacementTarget="{Binding ElementName=BatchPositionButton}"
-                   Placement="Bottom" StaysOpen="True" AllowsTransparency="True"
-                   PopupAnimation="Fade">
-                <Border Width="378" MaxWidth="{Binding ActualWidth, ElementName=AgvListRoot, FallbackValue=378}"
-                        Padding="16" Background="{StaticResource AgvSurfaceBrush}"
-                        BorderBrush="{StaticResource AgvBorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <StackPanel>
-                        <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Content="×" Margin="6,0,0,0"
-                                    Style="{StaticResource AgvCardActionStyle}" FontSize="16"
-                                    AutomationProperties.Name="关闭" Click="BatchPositionCancelButton_Click" />
-                            <TextBlock Text="批量修改地标" VerticalAlignment="Center" TextWrapping="Wrap"
-                                       FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource AgvTextBrush}" />
-                        </DockPanel>
-
-                        <Grid Margin="0,15,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="起始 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <TextBox x:Name="BatchStartAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
-                                         Padding="7,0" VerticalContentAlignment="Center"
-                                         AutomationProperties.Name="起始 AGV ID" hc:InfoElement.Placeholder="例如 1" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="结束 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <TextBox x:Name="BatchEndAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
-                                         Padding="7,0" VerticalContentAlignment="Center"
-                                         AutomationProperties.Name="结束 AGV ID" hc:InfoElement.Placeholder="例如 20" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Margin="0,10,0,0">
-                                <TextBlock Text="起始地标" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <TextBox x:Name="BatchStartPositionIdTextBox" Margin="0,4,0,0" MinHeight="32"
-                                         Padding="7,0" VerticalContentAlignment="Center"
-                                         AutomationProperties.Name="起始地标" hc:InfoElement.Placeholder="例如 1001" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,10,0,0">
-                                <TextBlock Text="地标递增" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <TextBox x:Name="BatchPositionStepTextBox" Margin="0,4,0,0" MinHeight="32"
-                                         Padding="7,0" Text="0" VerticalContentAlignment="Center"
-                                         AutomationProperties.Name="地标递增" hc:InfoElement.Placeholder="例如 1" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="2" Margin="0,10,0,0">
-                                <TextBlock Text="车头角度（°）" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <TextBox x:Name="BatchAngleTextBox" Margin="0,4,0,0" MinHeight="32"
-                                         Padding="7,0" VerticalContentAlignment="Center"
-                                         AutomationProperties.Name="车头角度" hc:InfoElement.Placeholder="例如 270" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,10,0,0">
-                                <TextBlock Text="带载状态" Style="{StaticResource AgvMetricLabelStyle}" />
-                                <ComboBox x:Name="BatchLoadStatusComboBox" Margin="0,4,0,0" MinHeight="32"
-                                          SelectedIndex="0" SelectedValuePath="Tag"
-                                          AutomationProperties.Name="带载状态" VerticalContentAlignment="Center">
-                                    <ComboBoxItem Content="保持原状态" />
-                                    <ComboBoxItem Content="空载" Tag="UNLOAD" />
-                                    <ComboBoxItem Content="带载" Tag="LOADED" />
-                                </ComboBox>
-                            </StackPanel>
-                        </Grid>
-
-                        <TextBlock Margin="0,11,0,0" TextWrapping="Wrap" FontSize="12"
-                                   Foreground="{StaticResource AgvMutedBrush}"
-                                   Text="按 AGV ID 升序设置地标，坐标从地图读取。递增为 0 时，所选车辆使用同一个地标。" />
-                        <WrapPanel Margin="0,13,0,0" HorizontalAlignment="Right">
-                            <Button Content="取消" Margin="0,0,8,0" Style="{StaticResource AgvToolbarButtonStyle}"
-                                    Click="BatchPositionCancelButton_Click" />
-                            <Button Content="确认修改" Style="{StaticResource AgvPrimaryButtonStyle}"
-                                    Click="BatchPositionConfirmButton_Click" />
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
-            </Popup>
-
-            <Popup x:Name="AddAgvPopup"
-                   PlacementTarget="{Binding ElementName=AddAgvButton}"
-                   Placement="Bottom" StaysOpen="True" AllowsTransparency="True"
-                   PopupAnimation="Fade">
-                <views:AddAgvPopupView x:Name="AddAgvPopupView"
-                                       CloseRequested="AddAgvPopupView_CloseRequested"
-                                       AddRequested="AddAgvPopupView_AddRequested"
-                                       PopupDragDelta="AddAgvPopupView_PopupDragDelta" />
-            </Popup>
-
-            <Popup x:Name="EditAgvPopup"
-                   PlacementTarget="{Binding ElementName=AgvCardListBox}"
-                   Placement="Center" StaysOpen="True" AllowsTransparency="True"
-                   PopupAnimation="Fade">
-                <views:EditAgvPopupView x:Name="EditAgvPopupView"
-                                        CloseRequested="EditAgvPopupView_CloseRequested"
-                                        SaveRequested="EditAgvPopupView_SaveRequested"
-                                        PopupDragDelta="EditAgvPopupView_PopupDragDelta" />
-            </Popup>
         </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="BatchPositionEditor" Visibility="Collapsed" Margin="16"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Border Padding="22" VerticalAlignment="Top" MaxWidth="680" HorizontalAlignment="Left"
+                    Background="{StaticResource AgvSurfaceBrush}" BorderBrush="{StaticResource AgvBorderBrush}"
+                    BorderThickness="1" CornerRadius="8">
+                <StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Content="返回车队" Margin="6,0,0,0"
+                                Style="{StaticResource AgvCardActionStyle}" Click="BatchPositionCancelButton_Click" />
+                        <TextBlock Text="批量修改地标" VerticalAlignment="Center" TextWrapping="Wrap"
+                                   FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource AgvTextBrush}" />
+                    </DockPanel>
+
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="起始 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <TextBox x:Name="BatchStartAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                     Padding="7,0" VerticalContentAlignment="Center"
+                                     AutomationProperties.Name="起始 AGV ID" hc:InfoElement.Placeholder="例如 1" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="结束 AGV ID" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <TextBox x:Name="BatchEndAgvIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                     Padding="7,0" VerticalContentAlignment="Center"
+                                     AutomationProperties.Name="结束 AGV ID" hc:InfoElement.Placeholder="例如 20" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                            <TextBlock Text="起始地标" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <TextBox x:Name="BatchStartPositionIdTextBox" Margin="0,4,0,0" MinHeight="32"
+                                     Padding="7,0" VerticalContentAlignment="Center"
+                                     AutomationProperties.Name="起始地标" hc:InfoElement.Placeholder="例如 1001" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,10,0,0">
+                            <TextBlock Text="地标递增" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <TextBox x:Name="BatchPositionStepTextBox" Margin="0,4,0,0" MinHeight="32"
+                                     Padding="7,0" Text="0" VerticalContentAlignment="Center"
+                                     AutomationProperties.Name="地标递增" hc:InfoElement.Placeholder="例如 1" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                            <TextBlock Text="车头角度（°）" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <TextBox x:Name="BatchAngleTextBox" Margin="0,4,0,0" MinHeight="32"
+                                     Padding="7,0" VerticalContentAlignment="Center"
+                                     AutomationProperties.Name="车头角度" hc:InfoElement.Placeholder="例如 270" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,10,0,0">
+                            <TextBlock Text="带载状态" Style="{StaticResource AgvMetricLabelStyle}" />
+                            <ComboBox x:Name="BatchLoadStatusComboBox" Margin="0,4,0,0" MinHeight="32"
+                                      SelectedIndex="0" SelectedValuePath="Tag"
+                                      AutomationProperties.Name="带载状态" VerticalContentAlignment="Center">
+                                <ComboBoxItem Content="保持原状态" />
+                                <ComboBoxItem Content="空载" Tag="UNLOAD" />
+                                <ComboBoxItem Content="带载" Tag="LOADED" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Margin="0,11,0,0" TextWrapping="Wrap" FontSize="12"
+                               Foreground="{StaticResource AgvMutedBrush}"
+                               Text="按 AGV ID 升序设置地标，坐标从地图读取。递增为 0 时，所选车辆使用同一个地标。" />
+                    <TextBlock x:Name="BatchValidationText" TextWrapping="Wrap"
+                               Foreground="{StaticResource AgvDangerBrush}" />
+                    <WrapPanel Margin="0,13,0,0" HorizontalAlignment="Right">
+                        <Button Content="取消" Margin="0,0,8,0" Style="{StaticResource AgvToolbarButtonStyle}"
+                                Click="BatchPositionCancelButton_Click" />
+                        <Button Content="确认修改" Style="{StaticResource AgvPrimaryButtonStyle}"
+                                Click="BatchPositionConfirmButton_Click" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <views:AddAgvPopupView x:Name="AddAgvEditor" Margin="16" Visibility="Collapsed"
+                               CloseRequested="AgvEditor_CloseRequested"
+                               AddRequested="AddAgvEditor_AddRequested" />
+        <views:EditAgvPopupView x:Name="EditAgvEditor" Margin="16" Visibility="Collapsed"
+                                CloseRequested="AgvEditor_CloseRequested"
+                                SaveRequested="EditAgvEditor_SaveRequested" />
+    </Grid>
 </UserControl>

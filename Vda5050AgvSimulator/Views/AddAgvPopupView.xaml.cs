@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Vda5050AgvSimulator.Models.Agv;
 
 namespace Vda5050AgvSimulator.Views;
@@ -14,13 +13,12 @@ public partial class AddAgvPopupView : UserControl
 
     public event EventHandler<AddAgvRequestModel>? AddRequested;
 
-    public event DragDeltaEventHandler? PopupDragDelta;
-
     public AddAgvRequestModel Request
     {
         get => _request;
         set
         {
+            ValidationText.Text = string.Empty;
             _request = CloneRequest(value);
             DataContext = _request;
         }
@@ -37,37 +35,37 @@ public partial class AddAgvPopupView : UserControl
     {
         if (_request.DeviceID <= 0)
         {
-            MessageBox.Show("设备ID必须大于 0", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("设备ID必须大于 0");
             return;
         }
 
         if (_request.AGVCount <= 0)
         {
-            MessageBox.Show("设备数量必须大于 0", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("设备数量必须大于 0");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_request.DeviceType))
         {
-            MessageBox.Show("设备类型不能为空", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("设备类型不能为空");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_request.LocalIP))
         {
-            MessageBox.Show("本地IP不能为空", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("本地IP不能为空");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_request.RemoteIP))
         {
-            MessageBox.Show("远程IP不能为空", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("远程IP不能为空");
             return;
         }
 
         if (_request.Equantity < 0 || _request.Equantity > 100)
         {
-            MessageBox.Show("电量范围必须在 0 ~ 100 之间", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("电量范围必须在 0 ~ 100 之间");
             return;
         }
 
@@ -89,9 +87,9 @@ public partial class AddAgvPopupView : UserControl
         Request = new AddAgvRequestModel();
     }
 
-    private void HeaderDragThumb_DragDelta(object sender, DragDeltaEventArgs e)
+    internal void ShowValidationError(string message)
     {
-        PopupDragDelta?.Invoke(this, e);
+        ValidationText.Text = message;
     }
 
     private static AddAgvRequestModel CloneRequest(AddAgvRequestModel? source)

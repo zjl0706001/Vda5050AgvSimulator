@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -103,8 +102,6 @@ public partial class EditAgvPopupView : INotifyPropertyChanged
 
     public event EventHandler<AgvEditedEventArgs>? SaveRequested;
 
-    public event DragDeltaEventHandler? PopupDragDelta;
-
     public EditAgvPopupView()
     {
         InitializeComponent();
@@ -121,6 +118,7 @@ public partial class EditAgvPopupView : INotifyPropertyChanged
     {
         // ArgumentNullException.ThrowIfNull(agv);
 
+        ValidationText.Text = string.Empty;
         _sourceAgv = agv;
 
         var editingAgv = CloneAgv(agv);
@@ -235,43 +233,43 @@ public partial class EditAgvPopupView : INotifyPropertyChanged
 
         if (_sourceAgv == null)
         {
-            MessageBox.Show("没有找到需要修改的AGV。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("没有找到需要修改的AGV。");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(EditingAgv.LocalIP))
         {
-            MessageBox.Show("本地IP不能为空。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("本地IP不能为空。");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(EditingAgv.RemoteIP))
         {
-            MessageBox.Show("远程IP不能为空。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("远程IP不能为空。");
             return;
         }
 
         if (EditingAgv.LocalPort < 0 || EditingAgv.LocalPort > 65535)
         {
-            MessageBox.Show("本地端口必须在 0 - 65535 之间。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("本地端口必须在 0 - 65535 之间。");
             return;
         }
 
         if (EditingAgv.RemotePort < 0 || EditingAgv.RemotePort > 65535)
         {
-            MessageBox.Show("远程端口必须在 0 - 65535 之间。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("远程端口必须在 0 - 65535 之间。");
             return;
         }
 
         if (EditingAgv.Equantity is < 0 or > 100)
         {
-            MessageBox.Show("电量必须在 0 - 100 之间。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("电量必须在 0 - 100 之间。");
             return;
         }
 
         if (EditingAgv.Speed < 0)
         {
-            MessageBox.Show("运行速度不能小于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("运行速度不能小于 0。");
             return;
         }
 
@@ -280,13 +278,13 @@ public partial class EditAgvPopupView : INotifyPropertyChanged
             || EditingAgv.Angle < 0
             || EditingAgv.Angle > 360)
         {
-            MessageBox.Show("角度必须在 0 - 360 之间。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError("角度必须在 0 - 360 之间。");
             return;
         }
 
         if (!ApplyMapPointToAgv(EditingAgv, out var mapMessage))
         {
-            MessageBox.Show(mapMessage, "地图点位错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowValidationError(mapMessage);
             return;
         }
 
@@ -305,9 +303,9 @@ public partial class EditAgvPopupView : INotifyPropertyChanged
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private void HeaderDragThumb_DragDelta(object sender, DragDeltaEventArgs e)
+    internal void ShowValidationError(string message)
     {
-        PopupDragDelta?.Invoke(this, e);
+        ValidationText.Text = message;
     }
 
     private static AgvModel CloneAgv(AgvModel? source)

@@ -1,20 +1,15 @@
-<Window x:Class="Vda5050AgvSimulator.Views.PlcPointChangeMonitorWindow"
+<views:PlcToolPage x:Class="Vda5050AgvSimulator.Views.PlcPointChangeMonitorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="点位变化记录"
-        Width="1050"
-        Height="650"
-        MinWidth="820"
-        MinHeight="480"
-        WindowStartupLocation="CenterScreen"
-        ShowInTaskbar="True"
         Background="#F0F3F6"
         Foreground="#142740"
         FontFamily="Microsoft YaHei UI, Microsoft YaHei, Segoe UI"
         FontSize="13"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
-    <Window.Resources>
+    <views:PlcToolPage.Resources>
         <SolidColorBrush x:Key="Ink" Color="#142740" />
         <SolidColorBrush x:Key="Muted" Color="#4D5F76" />
         <SolidColorBrush x:Key="Line" Color="#D5DBE4" />
@@ -22,7 +17,6 @@
         <SolidColorBrush x:Key="AccentWash" Color="#E0E9F5" />
         <SolidColorBrush x:Key="Soft" Color="#F1F4F7" />
 
-        <PathGeometry x:Key="PinIcon" Figures="M5,2.5 L12,2.5 M6,2.7 L6,6.7 L3.8,9.5 L3.8,10 L13.2,10 L13.2,9.5 L11,6.7 L11,2.7 M8.5,10 L8.5,15" />
 
         <Style x:Key="PanelBorder" TargetType="Border">
             <Setter Property="Background" Value="White" />
@@ -114,16 +108,6 @@
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#07346F" />
                 </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="PinButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
-            <Setter Property="Tag" Value="{StaticResource PinIcon}" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Topmost, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentWash}" />
-                    <Setter Property="Foreground" Value="#083C80" />
-                    <Setter Property="BorderBrush" Value="#7998C1" />
-                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -477,7 +461,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-    </Window.Resources>
+    </views:PlcToolPage.Resources>
 
     <Grid Margin="12">
         <Grid.RowDefinitions>
@@ -494,8 +478,6 @@
                     <Button x:Name="ToggleMonitorButton" Content="开始监听" Style="{StaticResource ListenButton}" Click="ToggleMonitorButton_Click" />
                     <Button Content="日志目录" Tag="{StaticResource FolderIcon}" Style="{StaticResource ActionButton}"
                             Margin="6,0,0,0" Click="OpenLogDirectoryButton_Click" />
-                    <Button x:Name="TopmostButton" Content="置顶" Style="{StaticResource PinButton}"
-                            Margin="6,0,0,0" Click="TopmostButton_Click" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Border Width="36" Height="36" Background="#163E71" CornerRadius="8">
@@ -677,4 +659,4 @@
             </Grid>
         </Border>
     </Grid>
-</Window>
+</views:PlcToolPage>

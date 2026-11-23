@@ -114,9 +114,14 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
         {
             Interval = TimeSpan.FromMilliseconds(800)
         };
-        _refreshTimer.Tick += (_, _) => RefreshValues();
+        _refreshTimer.Tick += (_, _) =>
+        {
+            if (IsVisible)
+                RefreshValues();
+        };
 
         InitializeComponent();
+        Title = $"PLC {PlcId} / DB{DbNumber} 协议看板";
 
         DataContext = this;
 
@@ -195,26 +200,20 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
             return;
         }
 
-        var panel = Application.Current.Windows.OfType<PlcDbBlockProtocolPanelWindow>()
-            .FirstOrDefault(window => window.PlcId == PlcId && window.DbNumber == DbNumber);
+        if (Workspace == null)
+            return;
 
+        var panel = Workspace.Pages.OfType<PlcDbBlockProtocolPanelWindow>()
+            .FirstOrDefault(page => page.PlcId == PlcId && page.DbNumber == DbNumber);
         if (panel == null)
         {
-            panel = new PlcDbBlockProtocolPanelWindow(PlcId, DbNumber, IsEditingLocal ? BuildWorkingRows() : ProtocolRows)
-            {
-                Topmost = this.Topmost
-            };
-            panel.Show();
-            return;
+            panel = new PlcDbBlockProtocolPanelWindow(PlcId, DbNumber, IsEditingLocal ? BuildWorkingRows() : ProtocolRows);
         }
-
-        panel.SelectInitialTarget();
-        if (panel.WindowState == WindowState.Minimized)
+        else
         {
-            panel.WindowState = WindowState.Normal;
+            panel.SelectInitialTarget();
         }
-
-        panel.Activate();
+        Workspace.Open(panel);
     }
 
     private void RefreshValues()
@@ -505,10 +504,4 @@ public partial class PlcDbBlockProtocolBoardConfigWindow : INotifyPropertyChange
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private void TopmostButton_Click(object sender, RoutedEventArgs e)
-    {
-        Topmost = !Topmost;
-
-        TopmostButton.Content = Topmost ? "取消置顶" : "置顶";
-    }
 }

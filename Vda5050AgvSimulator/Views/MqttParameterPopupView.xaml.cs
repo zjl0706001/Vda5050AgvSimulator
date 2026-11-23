@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using Vda5050AgvSimulator.Helpers;
 using Vda5050AgvSimulator.Models.Mqtt;
 using Vda5050AgvSimulator.Services.Agv;
@@ -10,15 +9,25 @@ namespace Vda5050AgvSimulator.Views;
 
 public partial class MqttParameterPopupView
 {
-    private const string GrowlToken = "MqttConfigGrowl";
+    internal const string FeedbackToken = "MqttConfigGrowl";
 
     private MqttConfigModel _config = new();
 
-    public event EventHandler? CloseRequested;
+    public event EventHandler? RevertRequested;
 
     public event EventHandler<MqttConfigModel>? SaveRequested;
 
-    public event DragDeltaEventHandler? PopupDragDelta;
+    public void SetEditingEnabled(bool enabled)
+    {
+        ParameterFields.IsEnabled = enabled;
+        ParameterActions.IsEnabled = enabled;
+        ParameterActions.ToolTip = enabled ? null : "断开连接后可修改 MQTT 参数";
+    }
+
+    private void BrokerPassword_Changed(object sender, RoutedEventArgs e)
+    {
+        _config.Password = BrokerPassword.Password;
+    }
 
     /// <summary>
     /// 当前MQTT配置，设置时会克隆一份配置并刷新绑定数据。
@@ -29,11 +38,12 @@ public partial class MqttParameterPopupView
         {
             _config = CloneConfig(value);
             DataContext = _config;
+            BrokerPassword.Password = _config.Password ?? string.Empty;
         }
     }
 
     /// <summary>
-    /// 初始化MQTT参数配置弹窗。
+    /// 初始化 MQTT 参数编辑页。
     /// </summary>
     public MqttParameterPopupView()
     {
@@ -47,28 +57,27 @@ public partial class MqttParameterPopupView
     {
         if (!ValidateConfig(_config, out var validateMessage))
         {
-            ShowPopupWarning(validateMessage);
+            ShowWarning(validateMessage);
             return;
         }
 
-        SaveRequested?.Invoke(this, CloneConfig(_config));
-        ShowPopupSuccess("配置已保存。");
+        try
+        {
+            SaveRequested?.Invoke(this, CloneConfig(_config));
+            ShowSuccess("配置已保存。");
+        }
+        catch (Exception ex)
+        {
+            ShowError($"保存 MQTT 配置失败：{ex.Message}");
+        }
     }
 
     /// <summary>
-    /// 点击取消按钮，通知外部关闭弹窗。
+    /// 还原当前已保存的参数。
     /// </summary>
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-        CloseRequested?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
-    /// 点击关闭按钮，通知外部关闭弹窗。
-    /// </summary>
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        CloseRequested?.Invoke(this, EventArgs.Empty);
+        RevertRequested?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -78,15 +87,7 @@ public partial class MqttParameterPopupView
     {
         Config = new MqttConfigModel();
 
-        ShowPopupSuccess("已恢复默认配置。");
-    }
-
-    /// <summary>
-    /// 拖动弹窗头部时，将拖动偏移量通知给外部Popup。
-    /// </summary>
-    private void HeaderDragThumb_DragDelta(object sender, DragDeltaEventArgs e)
-    {
-        PopupDragDelta?.Invoke(this, e);
+        ShowSuccess("已恢复默认配置。");
     }
 
     /// <summary>
@@ -100,7 +101,7 @@ public partial class MqttParameterPopupView
         }
         catch (Exception ex)
         {
-            ShowPopupError($"MQTT连接测试异常：{ex.Message}");
+            ShowError($"MQTT连接测试异常：{ex.Message}");
 
             TestConnectionButton.IsEnabled = true;
             TestConnectionButton.Content = "测试连接";
@@ -114,7 +115,7 @@ public partial class MqttParameterPopupView
     {
         if (!ValidateConfig(_config, out var validateMessage))
         {
-            ShowPopupWarning(validateMessage);
+            ShowWarning(validateMessage);
             return;
         }
 
@@ -137,18 +138,18 @@ public partial class MqttParameterPopupView
 
             if (testMqttService.IsConnected)
             {
-                ShowPopupSuccess(
+                ShowSuccess(
                     $"MQTT连接测试成功！\r\n服务端：{testConfig.ServerIp}:{testConfig.ServerPort}\r\n用户名：{testConfig.Username}\r\nClientId：{testConfig.ClientId}");
             }
             else
             {
-                ShowPopupWarning(
+                ShowWarning(
                     $"MQTT连接测试失败。\r\n服务端：{testConfig.ServerIp}:{testConfig.ServerPort}\r\n用户名：{testConfig.Username}\r\n\r\n请检查：\r\n1. Mosquitto是否启动\r\n2. IP和端口是否正确\r\n3. 用户名密码是否正确\r\n4. mosquitto.conf 是否使用了正确的 password_file");
             }
         }
         catch (Exception ex)
         {
-            ShowPopupError(
+            ShowError(
                 $"MQTT连接测试异常：\r\n{ex.Message}\r\n\r\n服务端：{testConfig.ServerIp}:{testConfig.ServerPort}");
         }
         finally
@@ -171,27 +172,27 @@ public partial class MqttParameterPopupView
     }
 
     /// <summary>
-    /// 显示Popup内部警告提示。
+    /// 显示页内警告提示。
     /// </summary>
-    private static void ShowPopupWarning(string message)
+    private static void ShowWarning(string message)
     {
-        GrowlHelper.Warning(message, GrowlToken);
+        GrowlHelper.Warning(message, FeedbackToken);
     }
 
     /// <summary>
-    /// 显示Popup内部成功提示。
+    /// 显示页内成功提示。
     /// </summary>
-    private static void ShowPopupSuccess(string message)
+    private static void ShowSuccess(string message)
     {
-        GrowlHelper.Success(message, GrowlToken);
+        GrowlHelper.Success(message, FeedbackToken);
     }
 
     /// <summary>
-    /// 显示Popup内部异常提示。
+    /// 显示页内异常提示。
     /// </summary>
-    private static void ShowPopupError(string message)
+    private static void ShowError(string message)
     {
-        GrowlHelper.Error(message, GrowlToken);
+        GrowlHelper.Error(message, FeedbackToken);
     }
 
     /// <summary>
@@ -325,7 +326,9 @@ public partial class MqttParameterPopupView
             FactSheetPublishTopic = source.FactSheetPublishTopic,
 
             StatePublishIntervalMs = source.StatePublishIntervalMs,
+            SimulationMaxParallelism = source.SimulationMaxParallelism,
             VisualizationPublishIntervalMs = source.VisualizationPublishIntervalMs,
+            MovingVisualizationPublishIntervalMs = source.MovingVisualizationPublishIntervalMs,
             ConnectionPublishIntervalMs = source.ConnectionPublishIntervalMs,
 
             Qos = source.Qos,
@@ -337,7 +340,7 @@ public partial class MqttParameterPopupView
 
             FactSheetConfig = new FactSheetConfigModel
             {
-                AgvKinematic = source.FactSheetConfig.AgvKinematic,
+                AgvKinematic = source.FactSheetConfig?.AgvKinematic ?? 0,
                 AgvClass = source.FactSheetConfig?.AgvClass ?? 0,
                 MaxLoadMass = source.FactSheetConfig?.MaxLoadMass ?? 0
             }

@@ -69,6 +69,7 @@ public partial class DbBlockBitsWindow : INotifyPropertyChanged
 
         DataContext = this;
 
+        Title = $"{_plcName} / DB{DbNumber} 位值";
         TitleText = _plcName + " / DB" + DbNumber + " 位值查看，长度 " + _length + " 字节";
 
         LastRefreshText = "自动刷新间隔：" + RefreshIntervalMs + "ms";
@@ -107,7 +108,8 @@ public partial class DbBlockBitsWindow : INotifyPropertyChanged
 
     private void RefreshTimer_Tick(object sender, EventArgs e)
     {
-        RefreshRows(false);
+        if (IsVisible)
+            RefreshRows(false);
     }
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -283,10 +285,4 @@ public partial class DbBlockBitsWindow : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private void TopmostButton_Click(object sender, RoutedEventArgs e)
-    {
-        Topmost = !Topmost;
-
-        TopmostButton.Content = Topmost ? "取消置顶" : "置顶";
-    }
 }

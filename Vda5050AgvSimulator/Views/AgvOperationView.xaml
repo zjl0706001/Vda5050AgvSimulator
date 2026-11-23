@@ -5,11 +5,11 @@
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              UseLayoutRounding="True">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="OpText" Color="#172338" />
-        <SolidColorBrush x:Key="OpMuted" Color="#52637A" />
-        <SolidColorBrush x:Key="OpAccent" Color="#225ADB" />
+        <SolidColorBrush x:Key="OpText" Color="#1F1F1F" />
+        <SolidColorBrush x:Key="OpMuted" Color="#595959" />
+        <SolidColorBrush x:Key="OpAccent" Color="#1677FF" />
         <SolidColorBrush x:Key="OpDanger" Color="#AE3532" />
-        <SolidColorBrush x:Key="OpBorder" Color="#DCE4EE" />
+        <SolidColorBrush x:Key="OpBorder" Color="#E5E7EB" />
         <SolidColorBrush x:Key="OpNeutralFill" Color="#E9EFF7" />
         <SolidColorBrush x:Key="OpOnlineText" Color="#126549" />
         <SolidColorBrush x:Key="OpOnlineFill" Color="#DEF2E8" />
@@ -17,15 +17,15 @@
         <SolidColorBrush x:Key="OpOfflineFill" Color="#FBE8E4" />
 
         <Style x:Key="OpSection" TargetType="Border">
-            <Setter Property="Padding" Value="11" />
-            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Margin" Value="6" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{StaticResource OpBorder}" />
             <Setter Property="Background" Value="White" />
             <Setter Property="CornerRadius" Value="9" />
         </Style>
         <Style x:Key="OpSectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="16" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{StaticResource OpText}" />
         </Style>
@@ -35,7 +35,7 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
         <Style x:Key="OpMetricValue" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="18" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{StaticResource OpText}" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
@@ -90,14 +90,14 @@
             <Setter Property="BorderBrush" Value="{StaticResource OpAccent}" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#184ABD" />
-                    <Setter Property="BorderBrush" Value="#184ABD" />
+                    <Setter Property="Background" Value="#0958D9" />
+                    <Setter Property="BorderBrush" Value="#0958D9" />
                 </Trigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="ButtonSelected" TargetType="Button" BasedOn="{StaticResource ButtonStandard}">
             <Setter Property="Foreground" Value="{StaticResource OpAccent}" />
-            <Setter Property="Background" Value="#E9F1FF" />
+            <Setter Property="Background" Value="#E6F4FF" />
             <Setter Property="BorderBrush" Value="#B8CDF7" />
         </Style>
         <Style x:Key="ButtonDanger" TargetType="Button" BasedOn="{StaticResource ButtonStandard}">
@@ -113,10 +113,10 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                   CanContentScroll="False" PanningMode="VerticalOnly">
-        <StackPanel Margin="9,8,9,1">
-            <Border Style="{StaticResource OpSection}" Background="#F1F6FD" BorderBrush="#DBE6F5">
+        <WrapPanel Margin="2" MaxWidth="1250" SizeChanged="CommandPanels_SizeChanged">
+            <Border Style="{StaticResource OpSection}">
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -253,6 +253,6 @@
                     </UniformGrid>
                 </StackPanel>
             </Border>
-        </StackPanel>
+        </WrapPanel>
     </ScrollViewer>
 </UserControl>

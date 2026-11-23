@@ -15,7 +15,7 @@ using Vda5050AgvSimulator.Services.Plc;
 
 namespace Vda5050AgvSimulator.Views;
 
-public partial class PlcAutoWriteRuleMonitorWindow : Window
+public partial class PlcAutoWriteRuleMonitorWindow : PlcToolPage
 {
     private static readonly Regex ExecutionMarkerName = new(
         @"^规则\s*(?<id>[0-9]+)\s*本轮已执行$",
@@ -49,7 +49,12 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
             Interval = TimeSpan.FromMilliseconds(300)
         };
         _timer.Tick += (_, _) => RefreshValues();
-        Loaded += (_, _) => ReloadTargets(selectedRuleId);
+        void InitializeTargets(object sender, RoutedEventArgs args)
+        {
+            Loaded -= InitializeTargets;
+            ReloadTargets(selectedRuleId);
+        }
+        Loaded += InitializeTargets;
         Closed += (_, _) => _timer.Stop();
     }
 
@@ -374,11 +379,6 @@ public partial class PlcAutoWriteRuleMonitorWindow : Window
         ReloadTargets((RulesGrid.SelectedItem as RuleRow)?.RuleId);
     }
 
-    private void TopmostButton_Click(object sender, RoutedEventArgs e)
-    {
-        Topmost = !Topmost;
-        TopmostButton.Content = Topmost ? "取消置顶" : "置顶";
-    }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {

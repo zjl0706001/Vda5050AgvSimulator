@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using HandyControl.Controls;
 using Microsoft.Win32;
-using Vda5050AgvSimulator.Helpers;
 using Vda5050AgvSimulator.Models.Agv;
 using Vda5050AgvSimulator.Services.Agv;
 using MessageBox = System.Windows.MessageBox;
@@ -114,7 +113,10 @@ public partial class AgvListView
     {
         SelectedAgv = AgvCardListBox.SelectedItem as AgvModel;
 
-        AgvStoreService.Instance.SetSelectedAgv(SelectedAgv);
+        if (!ReferenceEquals(SelectedAgv, AgvStoreService.Instance.SelectedAgv))
+        {
+            AgvStoreService.Instance.SetSelectedAgv(SelectedAgv);
+        }
     }
 
     /// <summary>
@@ -184,7 +186,13 @@ public partial class AgvListView
         AgvStoreService.Instance.SelectedAgvUpdated += AgvStoreService_SelectedAgvUpdated;
         AgvStoreService.Instance.AgvStateUpdated += AgvStoreService_AgvStateUpdated;
         _storeEventsSubscribed = true;
+        var currentAgv = AgvStoreService.Instance.SelectedAgv;
+        if (currentAgv != null && !currentAgv.DeviceID.ToString().Contains(SearchIdTextBox.Text.Trim()))
+        {
+            SearchIdTextBox.Clear();
+        }
         SearchAgvById();
+        AgvCardListBox.SelectedItem = currentAgv;
         RefreshStatistics();
     }
 
@@ -217,19 +225,17 @@ public partial class AgvListView
     }
 
     /// <summary>
-    /// 打开添加AGV弹窗，并居中显示。
+    /// 打开添加AGV表单。
     /// </summary>
     private void AddAgvButton_Click(object sender, RoutedEventArgs e)
     {
-        AddAgvPopupView.Request = new AddAgvRequestModel();
+        AddAgvEditor.Request = new AddAgvRequestModel();
 
-        AddAgvPopup.IsOpen = true;
-
-        Dispatcher.BeginInvoke(new Action(() => { PopupHelper.CenterPopupInScreen(AddAgvPopup, this); }));
+        ShowAgvPage(AddAgvEditor);
     }
 
     /// <summary>
-    /// 打开批量修改AGV地标弹窗。
+    /// 打开批量修改AGV地标表单。
     /// </summary>
     private void BatchPositionButton_Click(object sender, RoutedEventArgs e)
     {
@@ -252,17 +258,16 @@ public partial class AgvListView
         BatchAngleTextBox.Text = "0";
         BatchLoadStatusComboBox.SelectedIndex = 0;
 
-        BatchPositionPopup.IsOpen = true;
-
-        Dispatcher.BeginInvoke(new Action(() => { PopupHelper.CenterPopupInScreen(BatchPositionPopup, this); }));
+        BatchValidationText.Text = string.Empty;
+        ShowAgvPage(BatchPositionEditor);
     }
 
     /// <summary>
-    /// 关闭批量修改AGV地标弹窗。
+    /// 关闭批量修改AGV地标表单。
     /// </summary>
     private void BatchPositionCancelButton_Click(object sender, RoutedEventArgs e)
     {
-        BatchPositionPopup.IsOpen = false;
+        ShowAgvPage(AgvPageScrollViewer);
     }
 
     /// <summary>
@@ -272,55 +277,55 @@ public partial class AgvListView
     {
         if (!int.TryParse(BatchStartAgvIdTextBox.Text?.Trim(), out var startDeviceId))
         {
-            MessageBox.Show("起始AGV ID必须是整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "起始AGV ID必须是整数。";
             return;
         }
 
         if (!int.TryParse(BatchEndAgvIdTextBox.Text?.Trim(), out var endDeviceId))
         {
-            MessageBox.Show("结束AGV ID必须是整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "结束AGV ID必须是整数。";
             return;
         }
 
         if (!int.TryParse(BatchStartPositionIdTextBox.Text?.Trim(), out var startPositionId))
         {
-            MessageBox.Show("起始地标必须是整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "起始地标必须是整数。";
             return;
         }
 
         if (!int.TryParse(BatchPositionStepTextBox.Text?.Trim(), out var step))
         {
-            MessageBox.Show("地标递增必须是整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "地标递增必须是整数。";
             return;
         }
 
         if (!double.TryParse(BatchAngleTextBox.Text?.Trim(), out var angle))
         {
-            MessageBox.Show("角度必须是数字。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "角度必须是数字。";
             return;
         }
 
         if (startDeviceId <= 0 || endDeviceId <= 0)
         {
-            MessageBox.Show("AGV ID必须大于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "AGV ID必须大于 0。";
             return;
         }
 
         if (startPositionId < 0)
         {
-            MessageBox.Show("起始地标不能小于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "起始地标不能小于 0。";
             return;
         }
 
         if (step < 0)
         {
-            MessageBox.Show("地标递增不能小于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "地标递增不能小于 0。";
             return;
         }
 
         if (double.IsNaN(angle) || angle < 0 || angle > 360)
         {
-            MessageBox.Show("角度必须在 0 - 360 之间。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = "角度必须在 0 - 360 之间。";
             return;
         }
 
@@ -339,14 +344,13 @@ public partial class AgvListView
 
         if (updatedCount < 0)
         {
-            MessageBox.Show(updateMessage, "批量修改失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = updateMessage;
             return;
         }
 
         if (updatedCount <= 0)
         {
-            MessageBox.Show(string.IsNullOrWhiteSpace(updateMessage) ? "没有找到符合范围的AGV。" : updateMessage, "提示",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
+            BatchValidationText.Text = string.IsNullOrWhiteSpace(updateMessage) ? "没有找到符合范围的AGV。" : updateMessage;
             return;
         }
 
@@ -371,7 +375,7 @@ public partial class AgvListView
 
         AgvStoreService.Instance.NotifyAgvStateUpdated();
 
-        BatchPositionPopup.IsOpen = false;
+        ShowAgvPage(AgvPageScrollViewer);
 
         var loadStatusMessage = loadStatus switch
         {
@@ -509,7 +513,7 @@ public partial class AgvListView
     }
 
     /// <summary>
-    /// 处理AGV卡片点击，单击选中，双击打开编辑弹窗。
+    /// 处理AGV卡片点击，单击选中，双击打开编辑表单。
     /// </summary>
     private void AgvCardBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
@@ -529,7 +533,7 @@ public partial class AgvListView
 
         if (e.ClickCount == 2)
         {
-            OpenEditAgvPopup(agv);
+            OpenAgvEditor(agv);
         }
 
         e.Handled = true;
@@ -540,7 +544,7 @@ public partial class AgvListView
         if ((sender as FrameworkElement)?.DataContext is AgvModel agv)
         {
             AgvCardListBox.SelectedItem = agv;
-            OpenEditAgvPopup(agv);
+            OpenAgvEditor(agv);
             e.Handled = true;
         }
     }
@@ -581,24 +585,18 @@ public partial class AgvListView
     }
 
     /// <summary>
-    /// 打开编辑AGV弹窗，并居中显示。
+    /// 打开编辑AGV表单。
     /// </summary>
-    private void OpenEditAgvPopup(AgvModel agv)
+    private void OpenAgvEditor(AgvModel agv)
     {
         if (agv == null)
         {
             return;
         }
 
-        // 先关闭旧Popup，避免连续双击不同AGV时保留旧的显示状态。
-        EditAgvPopup.IsOpen = false;
+        EditAgvEditor.SetAgv(agv);
 
-        // 先加载编辑副本，再显示弹窗。
-        EditAgvPopupView.SetAgv(agv);
-
-        EditAgvPopup.IsOpen = true;
-
-        Dispatcher.BeginInvoke(new Action(() => { PopupHelper.CenterPopupInScreen(EditAgvPopup, this); }));
+        ShowAgvPage(EditAgvEditor);
     }
 
     /// <summary>
@@ -646,18 +644,23 @@ public partial class AgvListView
         e.Handled = true;
     }
 
-    /// <summary>
-    /// 关闭添加AGV弹窗。
-    /// </summary>
-    private void AddAgvPopupView_CloseRequested(object sender, EventArgs e)
+    private void ShowAgvPage(FrameworkElement page)
     {
-        AddAgvPopup.IsOpen = false;
+        AgvPageScrollViewer.Visibility = page == AgvPageScrollViewer ? Visibility.Visible : Visibility.Collapsed;
+        AddAgvEditor.Visibility = page == AddAgvEditor ? Visibility.Visible : Visibility.Collapsed;
+        EditAgvEditor.Visibility = page == EditAgvEditor ? Visibility.Visible : Visibility.Collapsed;
+        BatchPositionEditor.Visibility = page == BatchPositionEditor ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void AgvEditor_CloseRequested(object sender, EventArgs e)
+    {
+        ShowAgvPage(AgvPageScrollViewer);
     }
 
     /// <summary>
     /// 根据添加请求批量创建AGV。
     /// </summary>
-    private void AddAgvPopupView_AddRequested(object sender, AddAgvRequestModel request)
+    private void AddAgvEditor_AddRequested(object sender, AddAgvRequestModel request)
     {
         if (request == null)
         {
@@ -666,13 +669,13 @@ public partial class AgvListView
 
         if (request.DeviceID <= 0)
         {
-            MessageBox.Show("设备ID必须大于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            AddAgvEditor.ShowValidationError("设备ID必须大于 0。");
             return;
         }
 
         if (request.AGVCount <= 0)
         {
-            MessageBox.Show("设备数量必须大于 0。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            AddAgvEditor.ShowValidationError("设备数量必须大于 0。");
             return;
         }
 
@@ -727,29 +730,13 @@ public partial class AgvListView
 
         RefreshStatistics();
 
-        AddAgvPopup.IsOpen = false;
-    }
-
-    /// <summary>
-    /// 拖动添加AGV弹窗，并限制弹窗不超出屏幕工作区。
-    /// </summary>
-    private void AddAgvPopupView_PopupDragDelta(object sender, DragDeltaEventArgs e)
-    {
-        PopupHelper.MovePopupInScreen(AddAgvPopup, this, e.HorizontalChange, e.VerticalChange);
-    }
-
-    /// <summary>
-    /// 关闭编辑AGV弹窗。
-    /// </summary>
-    private void EditAgvPopupView_CloseRequested(object sender, EventArgs e)
-    {
-        EditAgvPopup.IsOpen = false;
+        ShowAgvPage(AgvPageScrollViewer);
     }
 
     /// <summary>
     /// 保存编辑后的AGV，并刷新列表和统计信息。
     /// </summary>
-    private void EditAgvPopupView_SaveRequested(object sender, AgvEditedEventArgs e)
+    private void EditAgvEditor_SaveRequested(object sender, AgvEditedEventArgs e)
     {
         if (e == null)
         {
@@ -760,7 +747,7 @@ public partial class AgvListView
 
         if (!replaced)
         {
-            MessageBox.Show("设备ID已存在，不能重复。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            EditAgvEditor.ShowValidationError("设备ID已存在，不能重复。");
             return;
         }
 
@@ -779,17 +766,9 @@ public partial class AgvListView
         // 通知地图、详情页和其他订阅者刷新坐标与角度。
         AgvStoreService.Instance.NotifyAgvStateUpdated();
 
-        EditAgvPopup.IsOpen = false;
+        ShowAgvPage(AgvPageScrollViewer);
 
         Growl.SuccessGlobal($"AGV {e.EditedAgv.DeviceID} 参数修改成功。");
-    }
-
-    /// <summary>
-    /// 拖动编辑AGV弹窗，并限制弹窗不超出屏幕工作区。
-    /// </summary>
-    private void EditAgvPopupView_PopupDragDelta(object sender, DragDeltaEventArgs e)
-    {
-        PopupHelper.MovePopupInScreen(EditAgvPopup, this, e.HorizontalChange, e.VerticalChange);
     }
 
     /// <summary>

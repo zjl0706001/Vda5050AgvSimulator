@@ -18,7 +18,7 @@ using Vda5050AgvSimulator.Services.Plc;
 
 namespace Vda5050AgvSimulator.Views;
 
-public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChanged
+public partial class PlcDbBlockProtocolPanelWindow : PlcToolPage, INotifyPropertyChanged
 {
     private const int RangeSplit = 200;
     private const int LastByteOffset = 400;
@@ -232,7 +232,7 @@ public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChan
         };
         _refreshTimer.Tick += (_, _) =>
         {
-            if (WindowState != WindowState.Minimized)
+            if (IsVisible)
             {
                 RefreshValues();
             }
@@ -659,10 +659,6 @@ public partial class PlcDbBlockProtocolPanelWindow : Window, INotifyPropertyChan
         RefreshValues();
     }
 
-    private void TopmostButton_Click(object sender, RoutedEventArgs e)
-    {
-        Topmost = !Topmost;
-    }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

@@ -23,7 +23,7 @@ namespace Vda5050AgvSimulator.Views;
 /// 2. 数据先编辑副本，点击确定后再写回全局复位模板。
 /// 3. 复位地址支持 5.0、DB{DB}.5.0、DB*.5.0、DB1500.5.0，最终执行时按当前目标DB块号解析。
 /// </summary>
-public partial class PlcDbBlockResetConfigWindow : Window, INotifyPropertyChanged
+public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyChanged
 {
     /// <summary>
     /// 仅用于显示地址解析示例，并兼容旧调用方式；复位配置不再属于该DB块。
@@ -44,6 +44,8 @@ public partial class PlcDbBlockResetConfigWindow : Window, INotifyPropertyChange
         }
     }
 
+    public bool? Result { get; private set; }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public PlcDbBlockResetConfigWindow()
@@ -60,11 +62,6 @@ public partial class PlcDbBlockResetConfigWindow : Window, INotifyPropertyChange
         _contextDbBlock = dbBlock;
 
         Title = "全局PLC复位配置";
-        Width = 780;
-        Height = 520;
-        MinWidth = 780;
-        MinHeight = 520;
-        WindowStartupLocation = WindowStartupLocation.CenterOwner;
         Background = new SolidColorBrush(Color.FromRgb(245, 247, 250));
 
         DataContext = this;
@@ -419,14 +416,14 @@ public partial class PlcDbBlockResetConfigWindow : Window, INotifyPropertyChange
             }
         }
 
-        DialogResult = true;
+        Result = true;
 
         Close();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-        DialogResult = false;
+        Result = false;
 
         Close();
     }
