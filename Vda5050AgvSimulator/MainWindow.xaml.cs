@@ -17,6 +17,7 @@ public partial class MainWindow
     private Forms.NotifyIcon? _notifyIcon;
 
     private bool _isRealExit;
+    private bool _sidebarCollapsed;
 
     private readonly AgvListView _fleet;
     private readonly MqttConfigView _mqtt;
@@ -70,12 +71,29 @@ public partial class MainWindow
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        if (!e.WidthChanged) return;
-        var compact = e.NewSize.Width < 900;
+        if (e.WidthChanged) UpdateSidebar(e.NewSize.Width);
+    }
+
+    private void ToggleSidebar(object sender, RoutedEventArgs e)
+    {
+        _sidebarCollapsed = !_sidebarCollapsed;
+        UpdateSidebar(ActualWidth);
+    }
+
+    private void UpdateSidebar(double width)
+    {
+        var narrow = width < 900;
+        var compact = narrow || _sidebarCollapsed;
         NavigationMenu.Compact = compact;
-        SidebarColumn.Width = new GridLength(compact ? 64 : 200);
+        SidebarColumn.Width = new GridLength(compact ? 68 : 212);
         ProductLabel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         ConnectionFooter.Visibility = ProductLabel.Visibility;
+        SidebarToggle.Visibility = narrow ? Visibility.Collapsed : Visibility.Visible;
+        HeaderDivider.Visibility = SidebarToggle.Visibility;
+        var label = compact ? "展开菜单" : "收起菜单";
+        SidebarToggle.ToolTip = label;
+        System.Windows.Automation.AutomationProperties.SetName(SidebarToggle, label);
+        PageContent.Margin = new Thickness(narrow ? 8 : 16);
     }
 
     private void OpenMqttPage(object sender, RoutedEventArgs e) => NavigationMenu.SelectPage("mqtt");

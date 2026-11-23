@@ -5,17 +5,17 @@
         Title="全局自动写入规则"
         FontFamily="Microsoft YaHei UI"
         FontSize="13"
-        Foreground="#172B4D"
-        Background="#F2F5FA"
+        Foreground="{StaticResource WorkspaceInkBrush}"
+        Background="{StaticResource WorkspaceCanvasBrush}"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
 
     <views:PlcToolPage.Resources>
-        <SolidColorBrush x:Key="PanelBorderBrush" Color="#DCE5F0" />
-        <SolidColorBrush x:Key="MutedTextBrush" Color="#536580" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#245EDB" />
-        <SolidColorBrush x:Key="RulePageBrush" Color="#F2F5FA" />
-        <SolidColorBrush x:Key="RuleIconBrush" Color="#EAF2FF" />
+        <SolidColorBrush x:Key="PanelBorderBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#415E65" />
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="RulePageBrush" Color="{StaticResource WorkspaceCanvasColor}" />
+        <SolidColorBrush x:Key="RuleIconBrush" Color="{StaticResource WorkspaceAccentTintColor}" />
 
         <Style x:Key="RuleCardStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />
@@ -50,7 +50,7 @@
             <Setter Property="Padding" Value="13,0" />
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="#253B5B" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
@@ -70,7 +70,7 @@
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   RecognizesAccessKey="True" />
                             </Border>
-                            <Border x:Name="HoverLayer" CornerRadius="7" Background="#0D172B4D"
+                            <Border x:Name="HoverLayer" CornerRadius="7" Background="#0D142F3D"
                                     Visibility="Collapsed" IsHitTestVisible="False" />
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -78,7 +78,7 @@
                                 <Setter TargetName="HoverLayer" Property="Visibility" Value="Visible" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="HoverLayer" Property="Background" Value="#1F172B4D" />
+                                <Setter TargetName="HoverLayer" Property="Background" Value="#1F142F3D" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush"
@@ -101,9 +101,9 @@
         </Style>
 
         <Style x:Key="AccentButtonStyle" TargetType="Button" BasedOn="{StaticResource NormalButtonStyle}">
-            <Setter Property="Foreground" Value="#204FAE" />
-            <Setter Property="Background" Value="#EAF2FF" />
-            <Setter Property="BorderBrush" Value="#C5D8FA" />
+            <Setter Property="Foreground" Value="#075D60" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="#C5E5E1" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
@@ -118,8 +118,8 @@
                     <ControlTemplate TargetType="CheckBox">
                         <Border x:Name="Track"
                                 Width="36" Height="20" Padding="2"
-                                BorderBrush="#B8C8DA" BorderThickness="1"
-                                Background="#D3DEEB" CornerRadius="10">
+                                BorderBrush="#BCCFD0" BorderThickness="1"
+                                Background="{StaticResource WorkspaceLineBrush}" CornerRadius="10">
                             <Border x:Name="Thumb" Width="14" Height="14" CornerRadius="7"
                                     Background="White" HorizontalAlignment="Left" />
                         </Border>
@@ -130,10 +130,10 @@
                                 <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Track" Property="BorderBrush" Value="#17479E" />
+                                <Setter TargetName="Track" Property="BorderBrush" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="Track" Property="BorderBrush" Value="#173E86" />
+                                <Setter TargetName="Track" Property="BorderBrush" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="Track" Property="Opacity" Value="0.5" />
@@ -145,7 +145,7 @@
         </Style>
 
         <Style x:Key="RuleGridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#EEF3FA" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
             <Setter Property="Padding" Value="9,0,4,0" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
@@ -160,8 +160,8 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E8F0FF" />
-                    <Setter Property="Foreground" Value="#173E86" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="Foreground" Value="#075D60" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                     <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
@@ -188,10 +188,10 @@
             <Setter Property="RowHeight" Value="38" />
             <Setter Property="ColumnHeaderHeight" Value="37" />
             <Setter Property="RowBackground" Value="White" />
-            <Setter Property="AlternatingRowBackground" Value="#F8FAFD" />
+            <Setter Property="AlternatingRowBackground" Value="#F7FAFA" />
             <Setter Property="Background" Value="White" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#EAF0F7" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E8F0F0" />
             <Setter Property="RowHeaderWidth" Value="0" />
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="CanUserAddRows" Value="False" />
@@ -214,9 +214,9 @@
             <Setter Property="Width" Value="112" />
             <Setter Property="Height" Value="34" />
             <Setter Property="Padding" Value="10,0,9,0" />
-            <Setter Property="Foreground" Value="#244A88" />
-            <Setter Property="Background" Value="#F3F7FF" />
-            <Setter Property="BorderBrush" Value="#C9D9F1" />
+            <Setter Property="Foreground" Value="#075D60" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="#C5E5E1" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -233,7 +233,7 @@
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"
                                                   RecognizesAccessKey="True" />
                                 <Path Grid.Column="1" Data="M 1,2 L 5,6 L 9,2"
-                                      Stroke="#55739F" StrokeThickness="1.6"
+                                      Stroke="#516D73" StrokeThickness="1.6"
                                       StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                       Margin="10,0,0,0" Width="10" Height="8"
                                       Stretch="Uniform" VerticalAlignment="Center" />
@@ -241,14 +241,14 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#EAF2FF" />
-                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#9DBBE9" />
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#AAD5D1" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#DCEAFF" />
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#245EDB" />
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="BatchButtonBorder" Property="Opacity" Value="0.5" />
@@ -269,10 +269,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
                         <Border x:Name="BatchMenuSurface" CornerRadius="12"
-                                Background="#FFFFFF" BorderBrush="#D9E3F1"
+                                Background="#FFFFFF" BorderBrush="{StaticResource WorkspaceLineBrush}"
                                 BorderThickness="1" Padding="7" SnapsToDevicePixels="True">
                             <Border.Effect>
-                                <DropShadowEffect Color="#182E50" BlurRadius="18" ShadowDepth="4" Opacity="0.17" />
+                                <DropShadowEffect Color="{StaticResource WorkspaceInkColor}" BlurRadius="18" ShadowDepth="4" Opacity="0.17" />
                             </Border.Effect>
                             <StackPanel>
                                 <Grid Margin="9,7,9,7">
@@ -282,17 +282,17 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <TextBlock Text="批量规则操作" FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="#1C304C" />
+                                                   Foreground="{StaticResource WorkspaceInkBrush}" />
                                         <TextBlock Text="选择操作范围与状态" FontSize="11"
-                                                   Foreground="#7A8BA5" Margin="0,3,0,0" />
+                                                   Foreground="#64828A" Margin="0,3,0,0" />
                                     </StackPanel>
-                                    <Border Grid.Column="1" Background="#EAF2FF" CornerRadius="7"
+                                    <Border Grid.Column="1" Background="{StaticResource WorkspaceAccentTintBrush}" CornerRadius="7"
                                             Padding="7,3" VerticalAlignment="Center">
                                         <TextBlock Text="4 项" FontSize="10" FontWeight="SemiBold"
-                                                   Foreground="#3C6BC1" />
+                                                   Foreground="{StaticResource WorkspaceAccentBrush}" />
                                     </Border>
                                 </Grid>
-                                <Border Height="1" Background="#EDF1F7" Margin="6,3,6,5" />
+                                <Border Height="1" Background="{StaticResource WorkspaceCanvasBrush}" Margin="6,3,6,5" />
                                 <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" />
                             </StackPanel>
                         </Border>
@@ -303,7 +303,7 @@
 
         <!-- 图标由菜单项自己的 Icon 提供；保留 MenuItem 的原始 Click 事件和键盘导航。 -->
         <Style x:Key="BatchActionMenuItemStyle" TargetType="MenuItem">
-            <Setter Property="Foreground" Value="#24364F" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
             <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Template">
@@ -322,16 +322,16 @@
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
                                                       TextElement.FontWeight="SemiBold" />
                                     <TextBlock Text="{TemplateBinding Tag}" FontSize="10.5"
-                                               Foreground="#8390A5" Margin="0,2,0,0" />
+                                               Foreground="#64828A" Margin="0,2,0,0" />
                                 </StackPanel>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="BatchMenuItemSurface" Property="Opacity" Value="0.45" />
@@ -345,7 +345,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Separator">
-                        <Border Background="#EDF1F7" Height="1" Margin="10,6" />
+                        <Border Background="{StaticResource WorkspaceCanvasBrush}" Height="1" Margin="10,6" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -427,9 +427,9 @@
     <MenuItem Header="选中启用" Tag="只启用当前选中的规则" Style="{StaticResource BatchActionMenuItemStyle}"
               Click="EnableSelectedRulesButton_Click">
         <MenuItem.Icon>
-            <Border Width="32" Height="32" CornerRadius="8" Background="#E9F1FF">
+            <Border Width="32" Height="32" CornerRadius="8" Background="{StaticResource WorkspaceAccentTintBrush}">
                 <Path Data="M 3,9 L 7,13 L 15,5" Width="16" Height="16" Stretch="Uniform"
-                      Stroke="#3268CB" StrokeThickness="2"
+                      Stroke="{StaticResource WorkspaceAccentBrush}" StrokeThickness="2"
                       StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                       StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>

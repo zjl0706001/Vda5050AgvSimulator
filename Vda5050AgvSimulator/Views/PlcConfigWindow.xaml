@@ -5,14 +5,14 @@
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         FontFamily="Microsoft YaHei UI"
         FontSize="13"
-        Foreground="#172B4D"
-        Background="#F2F5FA">
+        Foreground="{StaticResource WorkspaceInkBrush}"
+        Background="{StaticResource WorkspaceCanvasBrush}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="PanelBorderBrush" Color="#DCE5F0" />
-        <SolidColorBrush x:Key="MutedTextBrush" Color="#536580" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#245EDB" />
-        <SolidColorBrush x:Key="SectionSurfaceBrush" Color="#F5F8FC" />
+        <SolidColorBrush x:Key="PanelBorderBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#415E65" />
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="SectionSurfaceBrush" Color="#F7FAFA" />
         <views:PlcConnectionCountConverter x:Key="PlcConnectionCountConverter" />
         <!-- 全局规则是规则引用启用权限的最高级开关。 -->
         <views:PlcGlobalRuleEnabledConverter x:Key="PlcGlobalRuleEnabledConverter" />
@@ -24,8 +24,8 @@
                     <ControlTemplate TargetType="CheckBox">
                         <Border x:Name="Track"
                                 Width="36" Height="20" Padding="2"
-                                BorderBrush="#B8C8DA" BorderThickness="1"
-                                Background="#D3DEEB" CornerRadius="10">
+                                BorderBrush="#BCCFD0" BorderThickness="1"
+                                Background="{StaticResource WorkspaceLineBrush}" CornerRadius="10">
                             <Border x:Name="Thumb" Width="14" Height="14" CornerRadius="7"
                                     Background="White" HorizontalAlignment="Left" />
                         </Border>
@@ -36,10 +36,10 @@
                                 <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Track" Property="BorderBrush" Value="#17479E" />
+                                <Setter TargetName="Track" Property="BorderBrush" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="Track" Property="BorderBrush" Value="#173E86" />
+                                <Setter TargetName="Track" Property="BorderBrush" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="Track" Property="Opacity" Value="0.5" />
@@ -71,7 +71,7 @@
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="11" />
+            <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="18" />
         </Style>
 
@@ -88,7 +88,7 @@
         </Style>
 
         <Style TargetType="ScrollBar">
-            <Setter Property="Background" Value="#EEF3F8" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="Width" Value="12" />
             <Setter Property="MinWidth" Value="12" />
             <Setter Property="MinHeight" Value="0" />
@@ -126,16 +126,16 @@
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Border x:Name="ScrollThumb" Background="#AABBD0"
+                                                <Border x:Name="ScrollThumb" Background="#9DB6B8"
                                                         CornerRadius="4" Margin="2" />
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ScrollThumb" Property="Background"
-                                                                Value="#839AB6" />
+                                                                Value="#64828A" />
                                                     </Trigger>
                                                     <Trigger Property="IsDragging" Value="True">
                                                         <Setter TargetName="ScrollThumb" Property="Background"
-                                                                Value="#5C7698" />
+                                                                Value="#516D73" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -194,14 +194,14 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="InputBorder" Property="BorderBrush" Value="#AEBFD4" />
+                                <Setter TargetName="InputBorder" Property="BorderBrush" Value="#BCCFD0" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                 <Setter TargetName="InputBorder" Property="BorderBrush"
                                         Value="{StaticResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="InputBorder" Property="Background" Value="#F3F6FA" />
+                                <Setter TargetName="InputBorder" Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
                                 <Setter TargetName="InputBorder" Property="BorderBrush"
                                         Value="{StaticResource PanelBorderBrush}" />
                                 <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -213,7 +213,7 @@
         </Style>
 
         <Style x:Key="PlcComboItemStyle" TargetType="ComboBoxItem">
-            <Setter Property="Foreground" Value="#172B4D" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
             <Setter Property="Padding" Value="10,8" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Template">
@@ -226,11 +226,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="OptionBackground" Property="Background" Value="#F0F5FC" />
+                                <Setter TargetName="OptionBackground" Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="OptionBackground" Property="Background" Value="#E5EEFF" />
-                                <Setter Property="Foreground" Value="#204FAE" />
+                                <Setter TargetName="OptionBackground" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                                <Setter Property="Foreground" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.55" />
@@ -246,7 +246,7 @@
             <Setter Property="Width" Value="100" />
             <Setter Property="Padding" Value="11,0,32,0" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="#172B4D" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -272,7 +272,7 @@
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                 CornerRadius="7">
-                                            <Path Data="M 0,0 L 4,4 L 8,0" Stroke="#536580" StrokeThickness="1.5"
+                                            <Path Data="M 0,0 L 4,4 L 8,0" Stroke="#415E65" StrokeThickness="1.5"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                                   HorizontalAlignment="Right" VerticalAlignment="Center"
                                                   Margin="0,0,13,0" />
@@ -302,7 +302,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="DropDownToggle" Property="BorderBrush" Value="#AEBFD4" />
+                                <Setter TargetName="DropDownToggle" Property="BorderBrush" Value="#BCCFD0" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                 <Setter TargetName="DropDownToggle" Property="BorderBrush"
@@ -313,7 +313,7 @@
                                         Value="{StaticResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="DropDownToggle" Property="Background" Value="#F3F6FA" />
+                                <Setter TargetName="DropDownToggle" Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
                                 <Setter TargetName="DropDownToggle" Property="BorderBrush"
                                         Value="{StaticResource PanelBorderBrush}" />
                                 <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
@@ -335,7 +335,7 @@
             <Setter Property="Padding" Value="13,0" />
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="#253B5B" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
@@ -355,7 +355,7 @@
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   RecognizesAccessKey="True" />
                             </Border>
-                            <Border x:Name="HoverLayer" CornerRadius="7" Background="#0D172B4D"
+                            <Border x:Name="HoverLayer" CornerRadius="7" Background="#0D142F3D"
                                     Visibility="Collapsed" IsHitTestVisible="False" />
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -363,7 +363,7 @@
                                 <Setter TargetName="HoverLayer" Property="Visibility" Value="Visible" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="HoverLayer" Property="Background" Value="#1F172B4D" />
+                                <Setter TargetName="HoverLayer" Property="Background" Value="#1F142F3D" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush"
@@ -386,9 +386,9 @@
         </Style>
 
         <Style x:Key="AccentButtonStyle" TargetType="Button" BasedOn="{StaticResource NormalButtonStyle}">
-            <Setter Property="Foreground" Value="#204FAE" />
-            <Setter Property="Background" Value="#EAF2FF" />
-            <Setter Property="BorderBrush" Value="#C5D8FA" />
+            <Setter Property="Foreground" Value="#075D60" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="#C5E5E1" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
@@ -408,13 +408,13 @@
             <Setter Property="RowHeight" Value="40" />
             <Setter Property="ColumnHeaderHeight" Value="38" />
             <Setter Property="RowBackground" Value="White" />
-            <Setter Property="AlternatingRowBackground" Value="#F8FAFD" />
+            <Setter Property="AlternatingRowBackground" Value="#F7FAFA" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#EAF0F7" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E8F0F0" />
         </Style>
 
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#EEF3FA" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
             <Setter Property="Padding" Value="6,0" />
             <Setter Property="FontSize" Value="12" />
@@ -427,8 +427,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E8F0FF" />
-                    <Setter Property="Foreground" Value="#173E86" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="Foreground" Value="#075D60" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -444,8 +444,8 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="RowHeight" Value="40" />
             <Setter Property="ColumnHeaderHeight" Value="37" />
-            <Setter Property="AlternatingRowBackground" Value="#F7F9FD" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#E9EFF7" />
+            <Setter Property="AlternatingRowBackground" Value="#F7FAFA" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E8F0F0" />
         </Style>
 
         <Style x:Key="BatchIpv4HeaderStyle" TargetType="DataGridColumnHeader"
@@ -474,62 +474,6 @@
             <Setter Property="FontFamily" Value="Consolas" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
-        </Style>
-
-        <Style x:Key="PlcTabsStyle" TargetType="TabControl">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabControl">
-                        <Grid KeyboardNavigation.TabNavigation="Local">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Border Background="{StaticResource SectionSurfaceBrush}" CornerRadius="8" Padding="4">
-                                <TabPanel IsItemsHost="True" KeyboardNavigation.TabIndex="0" />
-                            </Border>
-                            <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" Margin="0,16,0,0"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              ContentSource="SelectedContent" KeyboardNavigation.TabIndex="1" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PlcTabStyle" TargetType="TabItem">
-            <Setter Property="Padding" Value="17,9" />
-            <Setter Property="Margin" Value="0,0,0,0" />
-            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="TabBorder" Padding="{TemplateBinding Padding}" CornerRadius="6"
-                                BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
-                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#EAF0F8" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="White" />
-                                <Setter TargetName="TabBorder" Property="BorderBrush"
-                                        Value="{StaticResource PanelBorderBrush}" />
-                                <Setter Property="Foreground" Value="#204FAE" />
-                                <Setter Property="FontWeight" Value="SemiBold" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="TabBorder" Property="BorderBrush"
-                                        Value="{StaticResource AccentBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <Style x:Key="FormSectionStyle" TargetType="Border" BasedOn="{StaticResource PageCardStyle}">
@@ -571,9 +515,9 @@
             <Setter Property="Width" Value="112" />
             <Setter Property="Height" Value="34" />
             <Setter Property="Padding" Value="10,0,9,0" />
-            <Setter Property="Foreground" Value="#244A88" />
-            <Setter Property="Background" Value="#F3F7FF" />
-            <Setter Property="BorderBrush" Value="#C9D9F1" />
+            <Setter Property="Foreground" Value="#075D60" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="#C5E5E1" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -590,7 +534,7 @@
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"
                                                   RecognizesAccessKey="True" />
                                 <Path Grid.Column="1" Data="M 1,2 L 5,6 L 9,2"
-                                      Stroke="#55739F" StrokeThickness="1.6"
+                                      Stroke="#516D73" StrokeThickness="1.6"
                                       StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                       Margin="10,0,0,0" Width="10" Height="8"
                                       Stretch="Uniform" VerticalAlignment="Center" />
@@ -598,14 +542,14 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#EAF2FF" />
-                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#9DBBE9" />
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#AAD5D1" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="#DCEAFF" />
+                                <Setter TargetName="BatchButtonBorder" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="#245EDB" />
+                                <Setter TargetName="BatchButtonBorder" Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="BatchButtonBorder" Property="Opacity" Value="0.5" />
@@ -626,10 +570,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
                         <Border x:Name="BatchMenuSurface" CornerRadius="12"
-                                Background="#FFFFFF" BorderBrush="#D9E3F1"
+                                Background="#FFFFFF" BorderBrush="{StaticResource WorkspaceLineBrush}"
                                 BorderThickness="1" Padding="7" SnapsToDevicePixels="True">
                             <Border.Effect>
-                                <DropShadowEffect Color="#182E50" BlurRadius="18" ShadowDepth="4" Opacity="0.17" />
+                                <DropShadowEffect Color="{StaticResource WorkspaceInkColor}" BlurRadius="18" ShadowDepth="4" Opacity="0.17" />
                             </Border.Effect>
                             <StackPanel>
                                 <Grid Margin="9,7,9,7">
@@ -639,17 +583,17 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <TextBlock Text="批量规则操作" FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="#1C304C" />
+                                                   Foreground="{StaticResource WorkspaceInkBrush}" />
                                         <TextBlock Text="选择操作范围与状态" FontSize="11"
-                                                   Foreground="#7A8BA5" Margin="0,3,0,0" />
+                                                   Foreground="#64828A" Margin="0,3,0,0" />
                                     </StackPanel>
-                                    <Border Grid.Column="1" Background="#EAF2FF" CornerRadius="7"
+                                    <Border Grid.Column="1" Background="{StaticResource WorkspaceAccentTintBrush}" CornerRadius="7"
                                             Padding="7,3" VerticalAlignment="Center">
                                         <TextBlock Text="4 项" FontSize="10" FontWeight="SemiBold"
-                                                   Foreground="#3C6BC1" />
+                                                   Foreground="{StaticResource WorkspaceAccentBrush}" />
                                     </Border>
                                 </Grid>
-                                <Border Height="1" Background="#EDF1F7" Margin="6,3,6,5" />
+                                <Border Height="1" Background="{StaticResource WorkspaceCanvasBrush}" Margin="6,3,6,5" />
                                 <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" />
                             </StackPanel>
                         </Border>
@@ -660,7 +604,7 @@
 
         <!-- 图标由菜单项自己的 Icon 提供；保留 MenuItem 的原始 Click 事件和键盘导航。 -->
         <Style x:Key="BatchActionMenuItemStyle" TargetType="MenuItem">
-            <Setter Property="Foreground" Value="#24364F" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
             <Setter Property="FontFamily" Value="Microsoft YaHei UI" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Template">
@@ -679,16 +623,16 @@
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
                                                       TextElement.FontWeight="SemiBold" />
                                     <TextBlock Text="{TemplateBinding Tag}" FontSize="10.5"
-                                               Foreground="#8390A5" Margin="0,2,0,0" />
+                                               Foreground="#64828A" Margin="0,2,0,0" />
                                 </StackPanel>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="#EDF4FF" />
+                                <Setter TargetName="BatchMenuItemSurface" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="BatchMenuItemSurface" Property="Opacity" Value="0.45" />
@@ -702,14 +646,14 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Separator">
-                        <Border Background="#EDF1F7" Height="1" Margin="10,6" />
+                        <Border Background="{StaticResource WorkspaceCanvasBrush}" Height="1" Margin="10,6" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
 
-    <views:PlcToolHost x:Name="ToolHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+    <views:PlcToolHost x:Name="ToolHost" Style="{StaticResource WorkspaceTabControlStyle}">
         <TabItem Header="设备配置">
             <ScrollViewer x:Name="DeviceViewport" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <Border MinWidth="1050" Width="{Binding ViewportWidth, ElementName=DeviceViewport}" Padding="10">
@@ -720,7 +664,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Style="{StaticResource PageCardStyle}" Padding="18,12" Margin="0,0,0,16">
+        <Border Grid.Row="0" Style="{StaticResource PageCardStyle}" Background="{StaticResource WorkspaceAccentTintBrush}"
+                BorderBrush="#B7DCD9" Padding="18,12" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -728,15 +673,15 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="PLC 配置" FontSize="21" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Text="PLC 服务" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center" />
 
-                <Border Grid.Column="1" Background="#EEF3FA" CornerRadius="14"
+                <Border Grid.Column="1" Background="White" BorderBrush="#B7DCD9" BorderThickness="1" CornerRadius="14"
                         Padding="10,6" VerticalAlignment="Center" Margin="0,0,14,0">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse x:Name="PlcServerStatusEllipse" Width="7" Height="7"
-                                 Fill="#64748B" VerticalAlignment="Center" Margin="0,0,7,0" />
+                                 Fill="#516D73" VerticalAlignment="Center" Margin="0,0,7,0" />
                         <TextBlock x:Name="PlcServerStatusTextBlock" Text="服务未启动"
-                                   FontSize="12" VerticalAlignment="Center" Foreground="#536580" />
+                                   FontSize="12" VerticalAlignment="Center" Foreground="#415E65" />
                     </StackPanel>
                 </Border>
 
@@ -804,7 +749,7 @@
                                      AutomationProperties.Name="搜索 PLC"
                                      ToolTip="支持 ID、名称、IP、端口和 IP:端口。" />
                             <TextBlock Text="搜索 ID、名称、IP 或端口" IsHitTestVisible="False"
-                                       VerticalAlignment="Center" Margin="12,0,0,0" Foreground="#657690">
+                                       VerticalAlignment="Center" Margin="12,0,0,0" Foreground="#516D73">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -881,7 +826,7 @@
                                                                 <DataTrigger Binding="{Binding ConnectionMode}"
                                                                              Value="{x:Static plc:PlcConnectionMode.Direct}">
                                                                     <Setter Property="Text" Value="直连" />
-                                                                    <Setter Property="Foreground" Value="#204FAE" />
+                                                                    <Setter Property="Foreground" Value="#075D60" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -967,8 +912,8 @@
                                FontSize="17" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
                                Margin="0,0,0,14" />
 
-                    <TabControl Grid.Row="1" Style="{StaticResource PlcTabsStyle}">
-                        <TabItem Header="连接参数" Style="{StaticResource PlcTabStyle}">
+                    <TabControl Grid.Row="1" Style="{StaticResource SectionTabControlStyle}">
+                        <TabItem Header="连接参数">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel x:Name="PlcDetailEditPanel" Margin="0,0,8,0">
                                     <Border Style="{StaticResource FormSectionStyle}" Margin="0,0,0,14">
@@ -1147,7 +1092,7 @@
                         </TabItem>
 
 
-                        <TabItem Header="DB 块" Style="{StaticResource PlcTabStyle}">
+                        <TabItem Header="DB 块">
                             <Grid x:Name="DbBlockEditPanel">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1231,7 +1176,7 @@
                                                             <Button Content="协议看板" Style="{StaticResource TableActionStyle}"
                                                                     Margin="4,0" Click="OpenProtocolBoardConfigButton_Click" />
                                                             <Button Content="操作面板" Style="{StaticResource TableActionStyle}"
-                                                                    Foreground="#204FAE" Background="#EAF2FF" BorderBrush="#C5D8FA"
+                                                                    Foreground="#075D60" Background="{StaticResource WorkspaceAccentTintBrush}" BorderBrush="#C5E5E1"
                                                                     FontWeight="SemiBold" ToolTip="打开本行 DB 块的点位操作面板"
                                                                     Click="OpenOperationPanelButton_Click" />
                                                         </StackPanel>
@@ -1244,7 +1189,7 @@
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="自动写入规则" Style="{StaticResource PlcTabStyle}">
+                        <TabItem Header="自动写入规则">
                             <Grid x:Name="AutoWriteRuleEditPanel">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1326,9 +1271,9 @@
     <MenuItem Header="选中启用" Tag="只启用当前选中的规则" Style="{StaticResource BatchActionMenuItemStyle}"
               Click="EnableSelectedGlobalRulesButton_Click">
         <MenuItem.Icon>
-            <Border Width="32" Height="32" CornerRadius="8" Background="#E9F1FF">
+            <Border Width="32" Height="32" CornerRadius="8" Background="{StaticResource WorkspaceAccentTintBrush}">
                 <Path Data="M 3,9 L 7,13 L 15,5" Width="16" Height="16" Stretch="Uniform"
-                      Stroke="#3268CB" StrokeThickness="2"
+                      Stroke="{StaticResource WorkspaceAccentBrush}" StrokeThickness="2"
                       StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                       StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
@@ -1478,9 +1423,9 @@
     <MenuItem Header="选中启用" Tag="只启用当前选中的规则" Style="{StaticResource BatchActionMenuItemStyle}"
               Click="EnableSelectedDbBlockRuleRefsButton_Click">
         <MenuItem.Icon>
-            <Border Width="32" Height="32" CornerRadius="8" Background="#E9F1FF">
+            <Border Width="32" Height="32" CornerRadius="8" Background="{StaticResource WorkspaceAccentTintBrush}">
                 <Path Data="M 3,9 L 7,13 L 15,5" Width="16" Height="16" Stretch="Uniform"
-                      Stroke="#3268CB" StrokeThickness="2"
+                      Stroke="{StaticResource WorkspaceAccentBrush}" StrokeThickness="2"
                       StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                       StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>

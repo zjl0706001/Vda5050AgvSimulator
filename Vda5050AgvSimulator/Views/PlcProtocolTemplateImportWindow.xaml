@@ -3,7 +3,7 @@
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="共享协议" UseLayoutRounding="True"
-        FontFamily="Microsoft YaHei UI, Segoe UI" FontSize="13" Foreground="#1F3552" Background="#F2F6FC">
+        FontFamily="Microsoft YaHei UI, Segoe UI" FontSize="13" Foreground="{StaticResource WorkspaceInkBrush}" Background="{StaticResource WorkspaceCanvasBrush}">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -18,16 +18,16 @@
                 <ComboBoxItem Content="PLC → AGV" />
             </ComboBox>
             <StackPanel>
-                <TextBlock Text="工站共享协议" FontSize="20" FontWeight="SemiBold" Foreground="#15457C" />
+                <TextBlock Text="工站共享协议" FontSize="20" FontWeight="SemiBold" Foreground="#075D60" />
                 <TextBlock Text="所有 PLC 和 DB 块共用此表，读写时按当前目标解析偏移。" Margin="0,3,12,0"
-                           Foreground="#4F6681" TextWrapping="Wrap" />
+                           Foreground="#415E65" TextWrapping="Wrap" />
             </StackPanel>
         </DockPanel>
-        <Border Grid.Row="1" Background="White" BorderBrush="#CBD9E9" BorderThickness="1" CornerRadius="6" Padding="2">
+        <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource WorkspaceLineBrush}" BorderThickness="1" CornerRadius="6" Padding="2">
             <DataGrid x:Name="SignalsGrid" AutoGenerateColumns="False" IsReadOnly="True"
                       CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                      HeadersVisibility="Column" BorderThickness="0" Background="White" AlternatingRowBackground="#F4F8FE"
-                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E2EAF5" RowHeight="30" ColumnHeaderHeight="32">
+                      HeadersVisibility="Column" BorderThickness="0" Background="White" AlternatingRowBackground="{StaticResource WorkspaceAccentTintBrush}"
+                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E8F0F0" RowHeight="30" ColumnHeaderHeight="32">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="信号" Binding="{Binding Name}" Width="1.5*" MinWidth="120" />
                     <DataGridTextColumn Header="块内偏移" Binding="{Binding RelativeAddress}" Width="100" />
@@ -38,7 +38,7 @@
         </Border>
         <DockPanel Grid.Row="2" Margin="2,10,0,0">
             <Button DockPanel.Dock="Right" Content="关闭" Click="CloseButton_Click" Padding="18,5" MinHeight="30" />
-            <TextBlock x:Name="CountText" VerticalAlignment="Center" Foreground="#4F6681" />
+            <TextBlock x:Name="CountText" VerticalAlignment="Center" Foreground="#415E65" />
         </DockPanel>
     </Grid>
 </views:PlcToolPage>

@@ -159,22 +159,14 @@ public partial class MqttConfigView
         {
             MosquittoServiceSwitchButton.Content = "处理中...";
             MosquittoServiceSwitchButton.IsEnabled = false;
-            MosquittoServiceSwitchButton.Background =
-                new SolidColorBrush(Color.FromRgb(107, 114, 128));
-            MosquittoServiceSwitchButton.BorderBrush =
-                new SolidColorBrush(Color.FromRgb(107, 114, 128));
 
             return;
         }
 
         if (!_mosquittoWindowsService.IsInstalled())
         {
-            MosquittoServiceSwitchButton.Content = "未安装MQTT";
+            MosquittoServiceSwitchButton.Content = "未安装本机服务";
             MosquittoServiceSwitchButton.IsEnabled = false;
-            MosquittoServiceSwitchButton.Background =
-                new SolidColorBrush(Color.FromRgb(107, 114, 128));
-            MosquittoServiceSwitchButton.BorderBrush =
-                new SolidColorBrush(Color.FromRgb(107, 114, 128));
             MosquittoServiceSwitchButton.ToolTip =
                 "未找到名称为 mosquitto 的 Windows 服务";
 
@@ -190,22 +182,12 @@ public partial class MqttConfigView
 
         if (isRunning)
         {
-            MosquittoServiceSwitchButton.Content = "停止本机MQTT";
-            MosquittoServiceSwitchButton.Background =
-                new SolidColorBrush(Color.FromRgb(239, 68, 68));
-            MosquittoServiceSwitchButton.BorderBrush =
-                new SolidColorBrush(Color.FromRgb(239, 68, 68));
+            MosquittoServiceSwitchButton.Content = "停止本机服务";
         }
         else
         {
-            MosquittoServiceSwitchButton.Content = "启动本机MQTT";
-            MosquittoServiceSwitchButton.Background =
-                new SolidColorBrush(Color.FromRgb(22, 163, 74));
-            MosquittoServiceSwitchButton.BorderBrush =
-                new SolidColorBrush(Color.FromRgb(22, 163, 74));
+            MosquittoServiceSwitchButton.Content = "启动本机服务";
         }
-
-        MosquittoServiceSwitchButton.Foreground = Brushes.White;
     }
 
     /// <summary>
@@ -412,14 +394,14 @@ public partial class MqttConfigView
     {
         MqttConnectSwitchButton.Content = "连接中...";
         MqttConnectSwitchButton.IsEnabled = false;
-        MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(107, 114, 128));
-        MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(107, 114, 128));
+        MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(97, 118, 126));
+        MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(97, 118, 126));
         MqttConnectSwitchButton.Foreground = Brushes.White;
 
-        MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(245, 158, 11));
+        MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(150, 96, 12));
         ConnectionStatus = "连接中";
-        MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(245, 158, 11));
-        MqttBrokerTextBlock.Text = $"Broker: {_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
+        MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(150, 96, 12));
+        MqttBrokerTextBlock.Text = $"{_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
     }
 
     /// <summary>
@@ -429,14 +411,14 @@ public partial class MqttConfigView
     {
         MqttConnectSwitchButton.Content = "断开中...";
         MqttConnectSwitchButton.IsEnabled = false;
-        MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(107, 114, 128));
-        MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(107, 114, 128));
+        MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(97, 118, 126));
+        MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(97, 118, 126));
         MqttConnectSwitchButton.Foreground = Brushes.White;
 
-        MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(245, 158, 11));
+        MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(150, 96, 12));
         ConnectionStatus = "断开中";
-        MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(245, 158, 11));
-        MqttBrokerTextBlock.Text = $"Broker: {_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
+        MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(150, 96, 12));
+        MqttBrokerTextBlock.Text = $"{_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
     }
 
     /// <summary>
@@ -444,7 +426,7 @@ public partial class MqttConfigView
     /// </summary>
     private void RefreshMqttConnectionUi()
     {
-        MqttBrokerTextBlock.Text = $"Broker: {_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
+        MqttBrokerTextBlock.Text = $"{_mqttConfig.ServerIp}:{_mqttConfig.ServerPort}";
 
         if (_isMqttOperating)
         {
@@ -459,25 +441,25 @@ public partial class MqttConfigView
         {
             MqttConnectSwitchButton.Content = "断开";
             MqttConnectSwitchButton.ToolTip = "断开当前 MQTT 连接";
-            MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68));
-            MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+            MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(177, 59, 57));
+            MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(177, 59, 57));
             MqttConnectSwitchButton.Foreground = Brushes.White;
 
-            MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(34, 197, 94));
+            MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(27, 118, 76));
             ConnectionStatus = "已连接";
-            MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(34, 197, 94));
+            MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(27, 118, 76));
         }
         else
         {
             MqttConnectSwitchButton.Content = "连接";
             MqttConnectSwitchButton.ToolTip = "连接到已保存的 MQTT 服务端";
-            MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(22, 119, 255));
-            MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(22, 119, 255));
+            MqttConnectSwitchButton.Background = new SolidColorBrush(Color.FromRgb(8, 126, 128));
+            MqttConnectSwitchButton.BorderBrush = new SolidColorBrush(Color.FromRgb(8, 126, 128));
             MqttConnectSwitchButton.Foreground = Brushes.White;
 
-            MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+            MqttStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(177, 59, 57));
             ConnectionStatus = "未连接";
-            MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+            MqttStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(177, 59, 57));
         }
     }
 }

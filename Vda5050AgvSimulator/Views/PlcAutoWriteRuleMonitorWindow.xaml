@@ -3,19 +3,19 @@
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="规则点位监视"
-        Background="#F0F3F6"
-        Foreground="#142740"
+        Background="{StaticResource WorkspaceCanvasBrush}"
+        Foreground="{StaticResource WorkspaceInkBrush}"
         FontFamily="Microsoft YaHei UI, Microsoft YaHei, Segoe UI"
         FontSize="13"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
     <views:PlcToolPage.Resources>
-        <SolidColorBrush x:Key="Ink" Color="#142740" />
-        <SolidColorBrush x:Key="Muted" Color="#4D5F76" />
-        <SolidColorBrush x:Key="Line" Color="#D5DBE4" />
-        <SolidColorBrush x:Key="Accent" Color="#235DB5" />
-        <SolidColorBrush x:Key="AccentWash" Color="#E0E9F5" />
-        <SolidColorBrush x:Key="Soft" Color="#F1F4F7" />
+        <SolidColorBrush x:Key="Ink" Color="{StaticResource WorkspaceInkColor}" />
+        <SolidColorBrush x:Key="Muted" Color="#415E65" />
+        <SolidColorBrush x:Key="Line" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="Accent" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="AccentWash" Color="{StaticResource WorkspaceAccentTintColor}" />
+        <SolidColorBrush x:Key="Soft" Color="{StaticResource WorkspaceCanvasColor}" />
 
 
         <Style x:Key="PanelBorder" TargetType="Border">
@@ -54,7 +54,7 @@
             <Setter Property="Padding" Value="11,0" />
             <Setter Property="Foreground" Value="{StaticResource Ink}" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#C5CFDB" />
+            <Setter Property="BorderBrush" Value="#BCCFD0" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -84,11 +84,11 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F0F4F9" />
-                    <Setter Property="BorderBrush" Value="#7E9ABE" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
+                    <Setter Property="BorderBrush" Value="#64828A" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#D4DFEE" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceLineBrush}" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocused" Value="True">
                     <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
@@ -102,11 +102,11 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#083D82" />
-                    <Setter Property="BorderBrush" Value="#083D82" />
+                    <Setter Property="Background" Value="#075D60" />
+                    <Setter Property="BorderBrush" Value="#075D60" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#07346F" />
+                    <Setter Property="Background" Value="#075D60" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -129,11 +129,11 @@
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="{StaticResource AccentWash}" />
-                    <Setter Property="Foreground" Value="#083E83" />
+                    <Setter Property="Foreground" Value="#075D60" />
                     <Setter Property="FontWeight" Value="SemiBold" />
                 </Trigger>
                 <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" Value="#D6E0ED" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceLineBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -142,7 +142,7 @@
             <Setter Property="MaxDropDownHeight" Value="264" />
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{StaticResource Ink}" />
-            <Setter Property="BorderBrush" Value="#BAC6D5" />
+            <Setter Property="BorderBrush" Value="#BCCFD0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
             <Setter Property="ItemContainerStyle" Value="{StaticResource PickerItem}" />
@@ -157,7 +157,7 @@
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="1" CornerRadius="6">
-                                            <Path x:Name="Arrow" Data="M1,1 L5,5 L9,1" Stroke="#435771" StrokeThickness="1.5"
+                                            <Path x:Name="Arrow" Data="M1,1 L5,5 L9,1" Stroke="#415E65" StrokeThickness="1.5"
                                                   StrokeLineJoin="Round" Margin="0,0,10,0"
                                                   HorizontalAlignment="Right" VerticalAlignment="Center" />
                                         </Border>
@@ -186,7 +186,7 @@
                                    PlacementTarget="{Binding ElementName=PickerRoot}" Placement="Bottom" VerticalOffset="3"
                                    IsOpen="{TemplateBinding IsDropDownOpen}">
                                 <Border Width="{Binding ActualWidth, ElementName=PickerRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                        Padding="3" Background="White" BorderBrush="#A6B3C3" BorderThickness="1" CornerRadius="6">
+                                        Padding="3" Background="White" BorderBrush="#9DB6B8" BorderThickness="1" CornerRadius="6">
                                     <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
                                     </ScrollViewer>
@@ -212,7 +212,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#718CAF" />
+                    <Setter Property="BorderBrush" Value="#64828A" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                     <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
@@ -230,13 +230,13 @@
         </DataTemplate>
 
         <Style x:Key="TableHeader" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#ECEFF4" />
-            <Setter Property="Foreground" Value="#3D5068" />
+            <Setter Property="Background" Value="#E8F0F0" />
+            <Setter Property="Foreground" Value="#415E65" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Padding" Value="7,0" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="BorderBrush" Value="#D9DFE7" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
             <Setter Property="BorderThickness" Value="0,0,1,1" />
         </Style>
         <Style x:Key="TableCell" TargetType="DataGridCell">
@@ -246,10 +246,10 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#DAE5F3" />
+                    <Setter Property="Background" Value="#C5E5E1" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocused" Value="True">
-                    <Setter Property="BorderBrush" Value="#607FA8" />
+                    <Setter Property="BorderBrush" Value="#516D73" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -257,13 +257,13 @@
             <Setter Property="Background" Value="White" />
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="#F8F9FA" />
+                    <Setter Property="Background" Value="#F7FAFA" />
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#EBF0F6" />
+                    <Setter Property="Background" Value="#E8F0F0" />
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#DAE5F3" />
+                    <Setter Property="Background" Value="#C5E5E1" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -276,7 +276,7 @@
             <Setter Property="SelectionUnit" Value="FullRow" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#E5E8ED" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource WorkspaceLineBrush}" />
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
@@ -298,7 +298,7 @@
         </Style>
         <Style x:Key="CodeText" TargetType="TextBlock" BasedOn="{StaticResource CellText}">
             <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei UI" />
-            <Setter Property="Foreground" Value="#2C425E" />
+            <Setter Property="Foreground" Value="#193E4A" />
         </Style>
         <Style x:Key="EmptyText" TargetType="TextBlock" BasedOn="{StaticResource DetailText}">
             <Setter Property="Margin" Value="6,30,6,0" />
@@ -316,7 +316,7 @@
                     <ControlTemplate TargetType="GridSplitter">
                         <Border Background="{TemplateBinding Background}">
                             <Border x:Name="Grip" Width="3" Height="32" CornerRadius="2"
-                                    Background="#B7C2D1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    Background="#BCCFD0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="ResizeDirection" Value="Rows">
@@ -351,11 +351,11 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Background" Value="{StaticResource Soft}" />
-            <Setter Property="TextElement.Foreground" Value="#4C5D72" />
+            <Setter Property="TextElement.Foreground" Value="#415E65" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsExecuted}" Value="True">
                     <Setter Property="Background" Value="{StaticResource AccentWash}" />
-                    <Setter Property="TextElement.Foreground" Value="#083E83" />
+                    <Setter Property="TextElement.Foreground" Value="#075D60" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="DB 未就绪">
                     <Setter Property="Background" Value="#FFF0D8" />
@@ -381,12 +381,12 @@
             <Setter Property="TextElement.Foreground" Value="{StaticResource Muted}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding CurrentValue}" Value="0">
-                    <Setter Property="Background" Value="#E8ECF1" />
-                    <Setter Property="TextElement.Foreground" Value="#3E516A" />
+                    <Setter Property="Background" Value="#E8F0F0" />
+                    <Setter Property="TextElement.Foreground" Value="#415E65" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding CurrentValue}" Value="1">
-                    <Setter Property="Background" Value="#C6D8EF" />
-                    <Setter Property="TextElement.Foreground" Value="#083B7E" />
+                    <Setter Property="Background" Value="#C5E5E1" />
+                    <Setter Property="TextElement.Foreground" Value="#075D60" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -406,13 +406,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Width="36" Height="36" Background="#163E71" CornerRadius="8" VerticalAlignment="Center">
+                <Border Width="36" Height="36" Background="#075D60" CornerRadius="8" VerticalAlignment="Center">
                     <Viewbox Width="23" Height="23">
                         <Canvas Width="24" Height="24">
                             <Path Data="M4,12 L11,12 M11,6 L11,18 M11,6 L16,6 M11,18 L16,18"
-                                  Stroke="#C8DBF3" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                                  Stroke="#C5E5E1" StrokeThickness="1.6" StrokeLineJoin="Round" />
                             <Path Data="M2,9.5 L6.5,9.5 L6.5,14 L2,14 Z M16,3.5 L21,3.5 L21,8.5 L16,8.5 Z M16,15.5 L21,15.5 L21,20.5 L16,20.5 Z"
-                                  Fill="#163E71" Stroke="White" StrokeThickness="1.6" StrokeLineJoin="Round" />
+                                  Fill="#075D60" Stroke="White" StrokeThickness="1.6" StrokeLineJoin="Round" />
                         </Canvas>
                     </Viewbox>
                 </Border>

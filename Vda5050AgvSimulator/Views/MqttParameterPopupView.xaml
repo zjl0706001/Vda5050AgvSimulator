@@ -8,362 +8,250 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=mqtt:MqttConfigModel, IsDesignTimeCreatable=True}">
 
-    <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <UserControl.Resources>
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Padding" Value="18,15,18,12" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#455F6A" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        <Style x:Key="FieldInput" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
+            <Setter Property="BorderBrush" Value="#C8D9DC" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="9,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="FormAction" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="MinWidth" Value="84" />
+            <Setter Property="Padding" Value="10,2" />
+            <Setter Property="Margin" Value="4,3" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+    </UserControl.Resources>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <StackPanel x:Name="ParameterFields" MinWidth="560" Margin="20,16">
-                    <!-- 基础连接 -->
-                    <TextBlock Text="基础连接"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Foreground="#1F2937"
-                               Margin="0,0,0,10" />
+    <Grid Background="{StaticResource WorkspaceCanvasBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                    <Grid Margin="0,0,0,18">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="ParameterFields" SizeChanged="ParameterFields_SizeChanged">
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="服务端与认证" Style="{StaticResource SectionTitle}" />
+                        <UniformGrid x:Name="ConnectionFields" Columns="1" Margin="-5,0">
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="服务端 IP / 主机名" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="服务端 IP / 主机名" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ServerIp, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="端口" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="端口" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ServerPort, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="客户端 ID" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="客户端 ID" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ClientId, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="心跳间隔（秒）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="心跳间隔（秒）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding KeepAliveSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="用户名" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="用户名" Style="{StaticResource FieldInput}"
+                                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="密码" Style="{StaticResource FieldLabel}" />
+                                <PasswordBox x:Name="BrokerPassword" AutomationProperties.Name="密码" Height="34"
+                                             BorderBrush="#C8D9DC" Padding="9,0" VerticalContentAlignment="Center"
+                                             PasswordChanged="BrokerPassword_Changed" />
+                            </StackPanel>
+                        </UniformGrid>
+                        <WrapPanel Margin="0,3,0,0">
+                            <CheckBox Content="自动重连" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding AutoReconnect, UpdateSourceTrigger=PropertyChanged}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="VDA5050 协议" Style="{StaticResource SectionTitle}" />
+                        <UniformGrid x:Name="ProtocolFields" Columns="1" Margin="-5,0">
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="接口名称" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="接口名称" Style="{StaticResource FieldInput}"
+                                         Text="{Binding InterfaceName, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="协议版本" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="协议版本" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ProtocolVersion, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="制造商" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="制造商" Style="{StaticResource FieldInput}"
+                                         Text="{Binding Manufacturer, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="地图 ID" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="地图 ID" Style="{StaticResource FieldInput}"
+                                         Text="{Binding MapId, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="区域 ID" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="区域 ID" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ZoneId, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="消息主题" Style="{StaticResource SectionTitle}" />
+                        <UniformGrid x:Name="TopicFields" Columns="1" Margin="-5,0">
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="订阅 · Order" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="订阅 · Order" Style="{StaticResource FieldInput}"
+                                         Text="{Binding OrderSubscribeTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="订阅 · Instant Actions" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="订阅 · Instant Actions" Style="{StaticResource FieldInput}"
+                                         Text="{Binding InstantActionsSubscribeTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="发布 · Fact Sheet" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="发布 · Fact Sheet" Style="{StaticResource FieldInput}"
+                                         Text="{Binding FactSheetPublishTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="发布 · State" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="发布 · State" Style="{StaticResource FieldInput}"
+                                         Text="{Binding StatePublishTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="发布 · Visualization" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="发布 · Visualization" Style="{StaticResource FieldInput}"
+                                         Text="{Binding VisualizationPublishTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="发布 · Connection" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="发布 · Connection" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ConnectionPublishTopic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="发布周期与消息保留" Style="{StaticResource SectionTitle}" />
+                        <UniformGrid x:Name="PublishFields" Columns="1" Margin="-5,0">
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="State 周期（毫秒）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="State 周期（毫秒）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding StatePublishIntervalMs, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="Visualization 周期（毫秒）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="Visualization 周期（毫秒）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding VisualizationPublishIntervalMs, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="Connection 周期（毫秒）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="Connection 周期（毫秒）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding ConnectionPublishIntervalMs, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="服务质量（QoS）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="服务质量（QoS）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding Qos, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </UniformGrid>
+                        <WrapPanel Margin="0,3,0,0">
+                            <CheckBox Content="保留 State" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding RetainState, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Content="保留 Visualization" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding RetainVisualization, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Content="保留 Connection" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding RetainConnection, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Content="保留 Fact Sheet" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding RetainFactSheet, UpdateSourceTrigger=PropertyChanged}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="车辆能力 · Fact Sheet" Style="{StaticResource SectionTitle}" />
+                        <UniformGrid x:Name="FactSheetFields" Columns="1" Margin="-5,0">
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="运动学类型（AgvKinematic）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="运动学类型（AgvKinematic）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding FactSheetConfig.AgvKinematic, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="车辆类型（AgvClass）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="车辆类型（AgvClass）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding FactSheetConfig.AgvClass, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin="5,2,5,9">
+                                <TextBlock Text="最大载重（kg）" Style="{StaticResource FieldLabel}" />
+                                <TextBox AutomationProperties.Name="最大载重（kg）" Style="{StaticResource FieldInput}"
+                                         Text="{Binding FactSheetConfig.MaxLoadMass, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </UniformGrid>
+                        <WrapPanel Margin="0,3,0,0">
+                            <CheckBox Content="AGV 上线时发布 Fact Sheet" Foreground="#455F6A" Margin="0,3,16,3"
+                                      IsChecked="{Binding PublishFactSheetOnOnline, UpdateSourceTrigger=PropertyChanged}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
+        <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource WorkspaceLineBrush}" BorderThickness="1"
+                CornerRadius="8" Padding="8" Margin="0,2,0,0">
+            <WrapPanel x:Name="ParameterActions" HorizontalAlignment="Right">
+                <Button Content="恢复默认" Style="{StaticResource FormAction}" Click="RestoreDefaultButton_Click" />
+                <Button Content="撤销修改" Style="{StaticResource FormAction}" Click="CancelButton_Click" />
+                <Button x:Name="TestConnectionButton" Content="测试连接" Style="{StaticResource FormAction}"
+                        Background="{StaticResource WorkspaceAccentTintBrush}" Foreground="#076A6C" Click="TestConnectionButton_Click" />
+                <Button Content="保存配置" Style="{StaticResource FormAction}" Background="{StaticResource WorkspaceAccentBrush}" Foreground="White"
+                        BorderBrush="{StaticResource WorkspaceAccentBrush}" Click="SaveButton_Click" />
+            </WrapPanel>
+        </Border>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="服务端IP：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Height="30"
-                                 Text="{Binding ServerIp, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="服务端端口：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="3" Height="30"
-                                 Text="{Binding ServerPort, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="用户名：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="30"
-                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="密码：" VerticalAlignment="Center" Margin="18,0,0,0"
-                                   Foreground="#4B5563" />
-                        <PasswordBox x:Name="BrokerPassword" Grid.Row="1" Grid.Column="3" Height="30"
-                                 PasswordChanged="BrokerPassword_Changed"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="客户端ID：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Height="30"
-                                 Text="{Binding ClientId, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="2" Text="心跳秒数：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="2" Grid.Column="3" Height="30"
-                                 Text="{Binding KeepAliveSeconds, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="自动重连：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <CheckBox Grid.Row="3" Grid.Column="1"
-                                  IsChecked="{Binding AutoReconnect, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-                    </Grid>
-
-                    <!-- VDA5050 参数 -->
-                    <TextBlock Text="VDA5050 参数"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Foreground="#1F2937"
-                               Margin="0,0,0,10" />
-
-                    <Grid Margin="0,0,0,18">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="接口名称：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Height="30"
-                                 Text="{Binding InterfaceName, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="协议版本：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="3" Height="30"
-                                 Text="{Binding ProtocolVersion, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="制造商：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="30"
-                                 Text="{Binding Manufacturer, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="地图ID：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="3" Height="30"
-                                 Text="{Binding MapId, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="区域ID：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Height="30"
-                                 Text="{Binding ZoneId, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-                    </Grid>
-
-                    <!-- Topic 配置 -->
-                    <TextBlock Text="Topic 配置"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Foreground="#1F2937"
-                               Margin="0,0,0,10" />
-
-                    <Grid Margin="0,0,0,18">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="OrderTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Height="30"
-                                 Text="{Binding OrderSubscribeTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="instantActionsTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="30"
-                                 Text="{Binding InstantActionsSubscribeTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="FactSheetTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Height="30"
-                                 Text="{Binding FactSheetPublishTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="StateTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Height="30"
-                                 Text="{Binding StatePublishTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="VisualizationTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="4" Grid.Column="1" Height="30"
-                                 Text="{Binding VisualizationPublishTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="ConnectionTopic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="5" Grid.Column="1" Height="30"
-                                 Text="{Binding ConnectionPublishTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                    </Grid>
-
-                    <!-- 发布参数 -->
-                    <TextBlock Text="发布参数"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Foreground="#1F2937"
-                               Margin="0,0,0,10" />
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="State周期ms：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Height="30"
-                                 Text="{Binding StatePublishIntervalMs, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Visualization周期ms：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="3" Height="30"
-                                 Text="{Binding VisualizationPublishIntervalMs, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Connection周期ms：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="30"
-                                 Text="{Binding ConnectionPublishIntervalMs, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="QoS：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="3" Height="30"
-                                 Text="{Binding Qos, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <CheckBox Grid.Row="2" Grid.Column="0"
-                                  Grid.ColumnSpan="2"
-                                  Content="Retain State"
-                                  IsChecked="{Binding RetainState, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-
-                        <CheckBox Grid.Row="2" Grid.Column="2"
-                                  Grid.ColumnSpan="2"
-                                  Content="Retain Visualization"
-                                  Margin="18,0,0,0"
-                                  IsChecked="{Binding RetainVisualization, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-
-                        <CheckBox Grid.Row="3" Grid.Column="0"
-                                  Grid.ColumnSpan="2"
-                                  Content="Retain Connection"
-                                  IsChecked="{Binding RetainConnection, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-
-                        <CheckBox Grid.Row="3" Grid.Column="2"
-                                  Grid.ColumnSpan="2"
-                                  Content="Retain FactSheet"
-                                  Margin="18,0,0,0"
-                                  IsChecked="{Binding RetainFactSheet, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-                    </Grid>
-                    <!-- FactSheet 参数 -->
-                    <TextBlock Text="FactSheet 参数"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Foreground="#1F2937"
-                               Margin="0,18,0,10" />
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="40" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="AgvKinematic：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Height="30"
-                                 Text="{Binding FactSheetConfig.AgvKinematic, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="AgvClass：" VerticalAlignment="Center"
-                                   Margin="18,0,0,0" Foreground="#4B5563" />
-                        <TextBox Grid.Row="0" Grid.Column="3" Height="30"
-                                 Text="{Binding FactSheetConfig.AgvClass, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="MaxLoadMass：" VerticalAlignment="Center"
-                                   Foreground="#4B5563" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="30"
-                                 Text="{Binding FactSheetConfig.MaxLoadMass, UpdateSourceTrigger=PropertyChanged}"
-                                 VerticalContentAlignment="Center" />
-
-                        <CheckBox Grid.Row="1" Grid.Column="2"
-                                  Grid.ColumnSpan="2"
-                                  Content="AGV上线后发布FactSheet"
-                                  Margin="18,0,0,0"
-                                  IsChecked="{Binding PublishFactSheetOnOnline, UpdateSourceTrigger=PropertyChanged}"
-                                  VerticalAlignment="Center" />
-                    </Grid>
-                </StackPanel>
-            </ScrollViewer>
-
-            <!-- 参数操作 -->
-            <Border Grid.Row="1"
-                    Background="#F9FAFB"
-                    BorderBrush="#E5E7EB"
-                    BorderThickness="0,1,0,0"
-                    CornerRadius="0,0,10,10"
-                    Padding="12">
-
-                <WrapPanel x:Name="ParameterActions" HorizontalAlignment="Right">
-
-                    <Button Content="恢复默认"
-                            Width="88"
-                            Height="32"
-                            Margin="0,0,8,0"
-                            Click="RestoreDefaultButton_Click" />
-
-                    <Button x:Name="TestConnectionButton"
-                            Content="测试连接"
-                            Width="88"
-                            Height="32"
-                            Margin="0,0,8,0"
-                            Click="TestConnectionButton_Click" />
-
-                    <Button Content="保存配置"
-                            Width="88"
-                            Height="32"
-                            Margin="0,0,8,0"
-                            Background="#1677FF"
-                            Foreground="White"
-                            BorderBrush="#1677FF"
-                            Click="SaveButton_Click" />
-
-                    <Button Content="撤销修改"
-                            MinWidth="88"
-                            Height="32"
-                            Click="CancelButton_Click" />
-
-                </WrapPanel>
-            </Border>
-
-            <!-- 操作反馈 -->
-            <ScrollViewer Grid.RowSpan="2"
-                          HorizontalAlignment="Right"
-                          VerticalAlignment="Top"
-                          VerticalScrollBarVisibility="Hidden"
-                          HorizontalScrollBarVisibility="Disabled"
-                          IsHitTestVisible="False"
-                          Margin="0,12,12,0">
-
-                <StackPanel hc:Growl.Token="MqttConfigGrowl"
-                            Width="360" />
-            </ScrollViewer>
-        </Grid>
-    </Border>
+        <ScrollViewer Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top"
+                      VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                      IsHitTestVisible="False" Margin="0,10,10,0">
+            <StackPanel hc:Growl.Token="MqttConfigGrowl" MaxWidth="360" />
+        </ScrollViewer>
+    </Grid>
 </UserControl>

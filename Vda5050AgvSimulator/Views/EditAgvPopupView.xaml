@@ -3,17 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FontFamily="Microsoft YaHei UI"
              FontSize="13"
-             Foreground="#172B4D"
+             Foreground="{StaticResource WorkspaceInkBrush}"
              UseLayoutRounding="True"
              SnapsToDevicePixels="True">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AgvPageBrush" Color="#F2F5FA" />
-        <SolidColorBrush x:Key="AgvBorderBrush" Color="#DCE5F0" />
-        <SolidColorBrush x:Key="AgvMutedBrush" Color="#536580" />
-        <SolidColorBrush x:Key="AgvAccentBrush" Color="#245EDB" />
-        <SolidColorBrush x:Key="AgvAccentSurfaceBrush" Color="#EAF2FF" />
-        <SolidColorBrush x:Key="AgvReadOnlyBrush" Color="#F3F6FA" />
+        <SolidColorBrush x:Key="AgvPageBrush" Color="{StaticResource WorkspaceCanvasColor}" />
+        <SolidColorBrush x:Key="AgvBorderBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="AgvMutedBrush" Color="#516A71" />
+        <SolidColorBrush x:Key="AgvAccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="AgvAccentSurfaceBrush" Color="{StaticResource WorkspaceAccentTintColor}" />
+        <SolidColorBrush x:Key="AgvReadOnlyBrush" Color="#F1F6F5" />
 
         <Style x:Key="AgvCardStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />
@@ -62,7 +62,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="InputBorder" Property="BorderBrush" Value="#B6C6DB" />
+                                <Setter TargetName="InputBorder" Property="BorderBrush" Value="#AAC2C2" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                 <Setter TargetName="InputBorder" Property="BorderBrush"
@@ -100,10 +100,10 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Option" Property="Background"
                                         Value="{StaticResource AgvAccentSurfaceBrush}" />
-                                <Setter Property="Foreground" Value="#204FAE" />
+                                <Setter Property="Foreground" Value="#05696C" />
                             </Trigger>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Option" Property="Background" Value="#E1EDFF" />
+                                <Setter TargetName="Option" Property="Background" Value="#D3EDEB" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5" />
@@ -213,7 +213,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="DropDownToggle"
                                         Property="BorderBrush"
-                                        Value="#B6C6DB" />
+                                        Value="#AAC2C2" />
                             </Trigger>
 
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
@@ -246,7 +246,7 @@
             <Setter Property="Height" Value="36" />
             <Setter Property="Padding" Value="13,0" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="#253B5B" />
+            <Setter Property="Foreground" Value="#25464F" />
             <Setter Property="BorderBrush" Value="{StaticResource AgvBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Template">
@@ -320,7 +320,7 @@
         </Style>
 
         <Style x:Key="AgvGridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#EEF3FA" />
+            <Setter Property="Background" Value="#E9F2F2" />
             <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource AgvBorderBrush}" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -334,8 +334,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E8F0FF" />
-                    <Setter Property="Foreground" Value="#173E86" />
+                    <Setter Property="Background" Value="#DFF0EE" />
+                    <Setter Property="Foreground" Value="#0B5258" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
@@ -361,10 +361,10 @@
             <Setter Property="RowHeight" Value="36" />
             <Setter Property="ColumnHeaderHeight" Value="35" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#EAF0F7" />
+            <Setter Property="HorizontalGridLinesBrush" Value="#E8F0EF" />
             <Setter Property="Background" Value="White" />
             <Setter Property="RowBackground" Value="White" />
-            <Setter Property="AlternatingRowBackground" Value="#F8FAFD" />
+            <Setter Property="AlternatingRowBackground" Value="#F7FAF9" />
             <Setter Property="BorderBrush" Value="{StaticResource AgvBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="ColumnHeaderStyle" Value="{StaticResource AgvGridHeaderStyle}" />
@@ -377,7 +377,7 @@
     <Border Background="White"
             BorderBrush="{StaticResource AgvBorderBrush}"
             BorderThickness="1"
-            CornerRadius="14">
+            CornerRadius="9">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -390,7 +390,7 @@
                     Background="White"
                     BorderBrush="{StaticResource AgvBorderBrush}"
                     BorderThickness="0,0,0,1"
-                    CornerRadius="14,14,0,0"
+                    CornerRadius="9,9,0,0"
                     Padding="20,14">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -746,7 +746,7 @@
                     Background="White"
                     BorderBrush="{StaticResource AgvBorderBrush}"
                     BorderThickness="0,1,0,0"
-                    CornerRadius="0,0,14,14"
+                    CornerRadius="0,0,9,9"
                     Padding="20,11">
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock x:Name="ValidationText" TextWrapping="Wrap" Foreground="#B42318">

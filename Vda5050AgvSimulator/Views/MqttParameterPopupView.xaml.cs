@@ -24,6 +24,19 @@ public partial class MqttParameterPopupView
         ParameterActions.ToolTip = enabled ? null : "断开连接后可修改 MQTT 参数";
     }
 
+    private void ParameterFields_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (!e.WidthChanged)
+            return;
+
+        var columns = e.NewSize.Width >= 900 ? 3 : e.NewSize.Width >= 560 ? 2 : 1;
+        ConnectionFields.Columns = columns;
+        ProtocolFields.Columns = columns;
+        PublishFields.Columns = columns;
+        FactSheetFields.Columns = columns;
+        TopicFields.Columns = e.NewSize.Width >= 760 ? 2 : 1;
+    }
+
     private void BrokerPassword_Changed(object sender, RoutedEventArgs e)
     {
         _config.Password = BrokerPassword.Password;

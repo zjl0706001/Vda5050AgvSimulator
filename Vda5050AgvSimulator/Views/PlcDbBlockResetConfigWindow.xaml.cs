@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.ObjectModel;
@@ -62,7 +62,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         _contextDbBlock = dbBlock;
 
         Title = "全局PLC复位配置";
-        Background = new SolidColorBrush(Color.FromRgb(245, 247, 250));
+        Background = new SolidColorBrush(Color.FromRgb(242, 246, 247));
 
         DataContext = this;
 
@@ -86,7 +86,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         var headerBorder = new Border
         {
             Background = Brushes.White,
-            BorderBrush = new SolidColorBrush(Color.FromRgb(229, 231, 235)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(216, 228, 229)),
             BorderThickness = new Thickness(1),
             CornerRadius = new CornerRadius(8),
             Padding = new Thickness(12),
@@ -101,7 +101,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
             Text = "全局PLC复位配置",
             FontSize = 16,
             FontWeight = FontWeights.SemiBold,
-            Foreground = new SolidColorBrush(Color.FromRgb(17, 24, 39))
+            Foreground = new SolidColorBrush(Color.FromRgb(20, 47, 61))
         });
 
         var addressExample = DbNumber > 0
@@ -111,7 +111,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         var tipText = new TextBlock
         {
             Margin = new Thickness(0, 6, 0, 0),
-            Foreground = new SolidColorBrush(Color.FromRgb(107, 114, 128)),
+            Foreground = new SolidColorBrush(Color.FromRgb(81, 109, 115)),
             TextWrapping = TextWrapping.Wrap,
             Text = $"该模板由所有PLC、所有DB块共用。复位地址建议只写偏移地址；{addressExample}也兼容 DB{{DB}}.2.0、DB*.2.0、DB1500.2.0。"
         };
@@ -131,7 +131,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         toolbarGrid.Children.Add(new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Center,
-            Foreground = new SolidColorBrush(Color.FromRgb(55, 65, 81)),
+            Foreground = new SolidColorBrush(Color.FromRgb(65, 94, 101)),
             Text = "点击“复位当前DB”时只执行已启用项；模板为空时才按原逻辑清零整个DB块。"
         });
 
@@ -151,7 +151,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         var gridBorder = new Border
         {
             Background = Brushes.White,
-            BorderBrush = new SolidColorBrush(Color.FromRgb(229, 231, 235)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(216, 228, 229)),
             BorderThickness = new Thickness(1),
             CornerRadius = new CornerRadius(8),
             Padding = new Thickness(8)
@@ -257,7 +257,7 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         footerGrid.Children.Add(new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Center,
-            Foreground = new SolidColorBrush(Color.FromRgb(107, 114, 128)),
+            Foreground = new SolidColorBrush(Color.FromRgb(81, 109, 115)),
             Text = "示例：允许进入 2.0=false；请求离开 1.0=false；请求上升 378.0=false。"
         });
 
@@ -268,9 +268,9 @@ public partial class PlcDbBlockResetConfigWindow : PlcToolPage, INotifyPropertyC
         Grid.SetColumn(okPanel, 1);
 
         var okButton = CreateButton("确定", OkButton_Click);
-        okButton.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
+        okButton.Background = new SolidColorBrush(Color.FromRgb(8, 126, 128));
         okButton.Foreground = Brushes.White;
-        okButton.BorderBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
+        okButton.BorderBrush = new SolidColorBrush(Color.FromRgb(8, 126, 128));
 
         okPanel.Children.Add(okButton);
         okPanel.Children.Add(CreateButton("取消", CancelButton_Click));

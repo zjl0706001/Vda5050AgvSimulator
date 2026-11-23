@@ -4,52 +4,142 @@
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         Title="VDA5050 AGV 模拟器"
         Width="1340" Height="800" MinWidth="480" MinHeight="540"
-        WindowStartupLocation="CenterScreen" Background="#F5F5F5"
-        FontFamily="Segoe UI, Microsoft YaHei UI" FontSize="14"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource PageBackgroundBrush}"
+        FontFamily="Microsoft YaHei UI, Segoe UI" FontSize="14"
         UseLayoutRounding="True" SnapsToDevicePixels="True"
         SizeChanged="MainWindow_SizeChanged">
+    <Window.Resources>
+        <SolidColorBrush x:Key="NavigationInk" Color="{StaticResource WorkspaceInkColor}" />
+        <Style x:Key="FooterButton" TargetType="Button">
+            <Setter Property="Foreground" Value="#E5F0F0" />
+            <Setter Property="Background" Value="#203D4A" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Box" Background="{TemplateBinding Background}" CornerRadius="9"
+                                BorderThickness="1" BorderBrush="#36535F" Padding="12,10">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="Background" Value="#2A4A57" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#79D8CB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SidebarSwitch" TargetType="Button">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Foreground" Value="#45636D" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Box" CornerRadius="7" Background="Transparent"
+                                BorderThickness="1" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="SidebarColumn" Width="200" />
+            <ColumnDefinition x:Name="SidebarColumn" Width="212" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Border Background="White" BorderBrush="#F0F0F0" BorderThickness="0,0,1,0">
-            <DockPanel>
-                <Border DockPanel.Dock="Top" Height="72" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
-                        <Border Width="32" Height="32" CornerRadius="7" Background="#1677FF">
-                            <Path Width="22" Height="22" Stretch="Uniform" Stroke="White"
-                                  StrokeThickness="1.65" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                                  Data="M3,7 L5,4 H17 L20,7 V15 H3 Z M3,9 H20 M8,4 V9 M15,4 V9 M6,15 V17 H8 V15 M15,15 V17 H17 V15 M6,12 H8 M15,12 H17" />
-                        </Border>
-                        <StackPanel x:Name="ProductLabel" Margin="10,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="VDA 5050" FontSize="17" FontWeight="SemiBold" Foreground="#141414" />
-                            <TextBlock Text="AGV 模拟器" FontSize="12" Foreground="#595959" />
-                        </StackPanel>
+        <DockPanel Background="{StaticResource NavigationInk}">
+            <Border DockPanel.Dock="Top" Height="78" BorderBrush="#304B57" BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
+                    <Border Width="36" Height="36" CornerRadius="10" Background="#79D8CB">
+                        <Canvas Width="26" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Stroke="{StaticResource WorkspaceInkBrush}" StrokeThickness="2.3" StrokeLineJoin="Round"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  Data="M5,19 L5,12 12,12 16,6 21,6 M9,20 L16,20 21,13" />
+                            <Ellipse Width="5" Height="5" Canvas.Left="2.5" Canvas.Top="17" Fill="{StaticResource WorkspaceInkBrush}" />
+                            <Ellipse Width="5" Height="5" Canvas.Left="18.5" Canvas.Top="3.5" Fill="{StaticResource WorkspaceInkBrush}" />
+                        </Canvas>
+                    </Border>
+                    <StackPanel x:Name="ProductLabel" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="VDA 5050" FontFamily="Segoe UI" FontSize="19" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="AGV 模拟器" FontSize="12" Foreground="#A4C1C6" />
                     </StackPanel>
-                </Border>
-                <Border x:Name="ConnectionFooter" DockPanel.Dock="Bottom" BorderBrush="#F0F0F0"
-                        BorderThickness="0,1,0,0" Padding="12,8">
-                    <Button Click="OpenMqttPage" ToolTip="打开 MQTT 连接设置" Padding="6,4"
-                            Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Left">
-                        <TextBlock Text="{Binding ConnectionStatus, StringFormat='MQTT  {0}'}"
-                                   FontSize="12" Foreground="#595959" />
-                    </Button>
-                </Border>
-                <views:WorkspaceMenu x:Name="NavigationMenu" Margin="6,12,6,0" />
-            </DockPanel>
-        </Border>
+                </StackPanel>
+            </Border>
+            <Border x:Name="ConnectionFooter" DockPanel.Dock="Bottom" Padding="12,14">
+                <Button Style="{StaticResource FooterButton}" Click="OpenMqttPage" ToolTip="打开 MQTT 连接设置"
+                        AutomationProperties.Name="{Binding ConnectionStatus, StringFormat='MQTT {0}，打开连接设置'}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Ellipse Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="#A3B8BE" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ConnectionStatus}" Value="已连接">
+                                            <Setter Property="Fill" Value="#77DCC4" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ConnectionStatus}" Value="连接中">
+                                            <Setter Property="Fill" Value="#F5C278" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ConnectionStatus}" Value="断开中">
+                                            <Setter Property="Fill" Value="#F5C278" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Grid.Column="1" Text="{Binding ConnectionStatus, StringFormat='MQTT  {0}'}"
+                                   FontSize="12" VerticalAlignment="Center" />
+                        <Path Grid.Column="2" Stroke="#A4C1C6" StrokeThickness="1.5" VerticalAlignment="Center"
+                              Data="M1,1 L5,5 1,9" />
+                    </Grid>
+                </Button>
+            </Border>
+            <views:WorkspaceMenu x:Name="NavigationMenu" Margin="10,18,10,0"
+                                 Background="{StaticResource NavigationInk}" FontSize="15" />
+        </DockPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Border Background="White" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="20,0" MinHeight="72">
-                <DockPanel LastChildFill="True">
+            <Border x:Name="PageHeader" Padding="18,0" MinHeight="78" Background="White"
+                    BorderBrush="{StaticResource BorderBrushLight}" BorderThickness="0,0,0,1">
+                <DockPanel>
+                    <Button x:Name="SidebarToggle" DockPanel.Dock="Left" Click="ToggleSidebar"
+                            ToolTip="收起菜单" AutomationProperties.Name="收起菜单"
+                            Style="{StaticResource SidebarSwitch}" VerticalAlignment="Center">
+                        <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                              StrokeThickness="1.5" StrokeLineJoin="Round"
+                              Data="M2,2 H18 V16 H2 Z M7,2 V16" />
+                    </Button>
+                    <Border x:Name="HeaderDivider" DockPanel.Dock="Left" Width="1" Height="21"
+                            VerticalAlignment="Center" Margin="9,0,18,0" Background="{StaticResource BorderBrushLight}" />
                     <StackPanel x:Name="VehiclePicker" DockPanel.Dock="Right" Visibility="Collapsed"
                                 Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <TextBlock Text="当前车辆" VerticalAlignment="Center" Foreground="#595959" Margin="0,0,8,0" />
-                        <ComboBox x:Name="VehicleSelection" Width="108" MinHeight="32"
+                        <TextBlock Text="当前车辆" VerticalAlignment="Center" FontSize="12"
+                                   Foreground="{StaticResource SecondaryTextBrush}" Margin="0,0,10,0" />
+                        <ComboBox x:Name="VehicleSelection" Width="110" MinHeight="34"
                                   AutomationProperties.Name="当前车辆" TextSearch.TextPath="DeviceID"
                                   SelectionChanged="VehicleSelection_Changed">
                             <ComboBox.ItemTemplate>
@@ -60,10 +150,10 @@
                         </ComboBox>
                     </StackPanel>
                     <TextBlock x:Name="PageTitle" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                               FontSize="20" FontWeight="SemiBold" Foreground="#141414" />
+                               FontSize="23" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
                 </DockPanel>
             </Border>
-            <ContentControl x:Name="PageContent" Grid.Row="1" Margin="12" Focusable="False"
+            <ContentControl x:Name="PageContent" Grid.Row="1" Margin="16" Focusable="False"
                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
         </Grid>
     </Grid>

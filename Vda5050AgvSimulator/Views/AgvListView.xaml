@@ -10,19 +10,20 @@
              mc:Ignorable="d"
              d:DesignWidth="1120" d:DesignHeight="720"
              d:DataContext="{d:DesignInstance Type=views:AgvListView}"
-             FontFamily="Inter, Segoe UI, Microsoft YaHei UI"
+             FontFamily="Segoe UI, Microsoft YaHei UI"
              FontSize="13"
              UseLayoutRounding="True"
              SnapsToDevicePixels="True">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AgvPageBrush" Color="#F2F5F9" />
+        <Geometry x:Key="AgvVehicleOutline">M2,5 L5,2 H15 L18,5 V13 H2 Z M2,7 H18 M6,2 V7 M14,2 V7 M5,13 V16 H7 V13 M13,13 V16 H15 V13 M5,10 H7 M13,10 H15</Geometry>
+        <SolidColorBrush x:Key="AgvPageBrush" Color="{StaticResource WorkspaceCanvasColor}" />
         <SolidColorBrush x:Key="AgvSurfaceBrush" Color="#FFFFFF" />
-        <SolidColorBrush x:Key="AgvBorderBrush" Color="#DCE4EE" />
-        <SolidColorBrush x:Key="AgvTextBrush" Color="#172338" />
-        <SolidColorBrush x:Key="AgvMutedBrush" Color="#52637A" />
-        <SolidColorBrush x:Key="AgvAccentBrush" Color="#225ADB" />
-        <SolidColorBrush x:Key="AgvMetricBrush" Color="#F4F7FB" />
+        <SolidColorBrush x:Key="AgvBorderBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="AgvTextBrush" Color="{StaticResource WorkspaceInkColor}" />
+        <SolidColorBrush x:Key="AgvMutedBrush" Color="#516A71" />
+        <SolidColorBrush x:Key="AgvAccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="AgvMetricBrush" Color="#F2F7F7" />
         <SolidColorBrush x:Key="AgvDangerBrush" Color="#A63A32" />
 
         <Style x:Key="AgvToolbarButtonStyle" TargetType="Button">
@@ -52,7 +53,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#8FB2FF" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#139C9F" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.78" />
@@ -67,8 +68,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#EAF1FE" />
-                    <Setter Property="BorderBrush" Value="#B9CCEF" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="BorderBrush" Value="#8ABBB9" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -80,8 +81,8 @@
             <Setter Property="Foreground" Value="White" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#184ABD" />
-                    <Setter Property="BorderBrush" Value="#184ABD" />
+                    <Setter Property="Background" Value="#05696C" />
+                    <Setter Property="BorderBrush" Value="#05696C" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -109,16 +110,15 @@
         </Style>
 
         <Style x:Key="AgvSummaryLabelStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#CAD7EB" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
         <Style x:Key="AgvSummaryNumberStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="23" />
+            <Setter Property="Foreground" Value="{StaticResource AgvTextBrush}" />
+            <Setter Property="FontSize" Value="32" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,0,0" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
@@ -138,7 +138,7 @@
             <EventSetter Event="Unloaded" Handler="CardTelemetry_Unloaded" />
         </Style>
         <Style x:Key="AgvCoordinateStyle" TargetType="TextBlock" BasedOn="{StaticResource AgvLiveValueStyle}">
-            <Setter Property="FontFamily" Value="IBM Plex Mono, Consolas" />
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei UI" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="Normal" />
             <Setter Property="Foreground" Value="{StaticResource AgvMutedBrush}" />
@@ -148,7 +148,7 @@
             <Setter Property="Minimum" Value="0" />
             <Setter Property="Maximum" Value="100" />
             <Setter Property="Focusable" Value="False" />
-            <Setter Property="Background" Value="#DCE6F1" />
+            <Setter Property="Background" Value="#D6E6E5" />
             <Setter Property="Foreground" Value="#278568" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -165,7 +165,7 @@
         </Style>
 
         <Style x:Key="AgvStatusPillStyle" TargetType="Border">
-            <Setter Property="Background" Value="#EDF1F6" />
+            <Setter Property="Background" Value="#EFF3F4" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="8,3" />
             <Style.Triggers>
@@ -199,9 +199,9 @@
     <Grid Background="{StaticResource AgvPageBrush}">
         <ScrollViewer x:Name="AgvPageScrollViewer"
                   Background="{StaticResource AgvPageBrush}"
-                  VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                   CanContentScroll="False" PanningMode="VerticalOnly">
-        <Grid Margin="12,14,12,8">
+        <Grid Margin="8,10,8,4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -209,178 +209,35 @@
             </Grid.RowDefinitions>
 
 
-            <Border Grid.Row="0"
-                    Margin="6,0,6,10"
-                    Padding="14,8"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#DCE8F8"
-                    SnapsToDevicePixels="True">
-
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#F8FBFF" Offset="0" />
-                        <GradientStop Color="#EAF3FF" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
-
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- 左侧标题 -->
-                    <DockPanel Grid.Row="0"
-                               Grid.Column="0"
-                               VerticalAlignment="Center"
-                               LastChildFill="True">
-
-                        <Border DockPanel.Dock="Left"
-                                Width="36"
-                                Height="36"
-                                Margin="0,0,10,0"
-                                Background="#438CE8"
-                                CornerRadius="9">
-
-                            <Path Width="20"
-                                  Height="20"
-                                  Stretch="Uniform"
-                                  Stroke="White"
-                                  StrokeThickness="1.6"
-                                  StrokeLineJoin="Round"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Data="M 3,8 L 19,8 L 19,16 L 3,16 Z
-                            M 6,8 L 6,5 L 16,5 L 16,8
-                            M 6,16 L 6,19
-                            M 16,16 L 16,19
-                            M 7,12 L 15,12" />
-                        </Border>
-
-                        <TextBlock Text="AGV 车队"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Foreground="#24476F"
-                                   VerticalAlignment="Center"
-                                   TextTrimming="CharacterEllipsis" />
-                    </DockPanel>
-
-                    <!-- 统计信息 -->
-                    <Border Background="#FFFFFF"
-                            BorderBrush="#E0EAF7"
-                            BorderThickness="1"
-                            CornerRadius="9"
-                            Padding="6,5"
-                            VerticalAlignment="Center">
-
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Grid.Row" Value="0" />
-                                <Setter Property="Grid.Column" Value="1" />
-                                <Setter Property="Margin" Value="12,0,0,0" />
-
-                                <Style.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding IsCompactLayout,
-                                              ElementName=AgvListRoot}"
-                                        Value="True">
-                                        <Setter Property="Grid.Row" Value="1" />
-                                        <Setter Property="Grid.Column" Value="0" />
-                                        <Setter Property="Grid.ColumnSpan" Value="2" />
-                                        <Setter Property="Margin" Value="0,8,0,0" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-
-                        <UniformGrid Columns="3">
-
-                            <!-- 总数 -->
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Margin="10,0">
-
-                                <Ellipse Width="7" Height="7"
-                                         Fill="#6F9FE5"
-                                         VerticalAlignment="Center"
-                                         Margin="0,0,6,0" />
-
-                                <TextBlock Text="总数"
-                                           FontSize="11"
-                                           Foreground="#8091AA"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,7,0" />
-
-                                <TextBlock x:Name="TotalCountTextBlock"
-                                           Text="0"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"
-                                           Foreground="#285CA4"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <!-- 在线 -->
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Margin="10,0">
-
-                                <Ellipse Width="7" Height="7"
-                                         Fill="#62C9A7"
-                                         VerticalAlignment="Center"
-                                         Margin="0,0,6,0" />
-
-                                <TextBlock Text="在线"
-                                           FontSize="11"
-                                           Foreground="#8091AA"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,7,0" />
-
-                                <TextBlock x:Name="OnlineCountTextBlock"
-                                           Text="0"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"
-                                           Foreground="#238B70"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <!-- 离线 -->
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Margin="10,0">
-
-                                <Ellipse Width="7" Height="7"
-                                         Fill="#E8A49B"
-                                         VerticalAlignment="Center"
-                                         Margin="0,0,6,0" />
-
-                                <TextBlock Text="离线"
-                                           FontSize="11"
-                                           Foreground="#8091AA"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,7,0" />
-
-                                <TextBlock x:Name="OfflineCountTextBlock"
-                                           Text="0"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"
-                                           Foreground="#CB776E"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
-
-                        </UniformGrid>
-                    </Border>
-                </Grid>
-            </Border>
-
+            <UniformGrid Rows="1" Columns="3" Margin="0,0,0,18">
+                <Border Margin="6,0" Padding="16,12" Background="{StaticResource AgvTextBrush}" CornerRadius="9">
+                    <StackPanel>
+                        <TextBlock Text="车辆总数" Style="{StaticResource AgvSummaryLabelStyle}" Foreground="#CAE0DF" />
+                        <TextBlock x:Name="TotalCountTextBlock" Text="0" Style="{StaticResource AgvSummaryNumberStyle}"
+                                   Foreground="White" />
+                    </StackPanel>
+                </Border>
+                <Border Margin="6,0" Padding="16,12" Background="White" CornerRadius="9"
+                        BorderThickness="1" BorderBrush="{StaticResource AgvBorderBrush}">
+                    <StackPanel>
+                        <DockPanel>
+                            <Ellipse Width="7" Height="7" Fill="#288762" Margin="0,0,7,0" VerticalAlignment="Center" />
+                            <TextBlock Text="在线" Style="{StaticResource AgvSummaryLabelStyle}" />
+                        </DockPanel>
+                        <TextBlock x:Name="OnlineCountTextBlock" Text="0" Style="{StaticResource AgvSummaryNumberStyle}" />
+                    </StackPanel>
+                </Border>
+                <Border Margin="6,0" Padding="16,12" Background="White" CornerRadius="9"
+                        BorderThickness="1" BorderBrush="{StaticResource AgvBorderBrush}">
+                    <StackPanel>
+                        <DockPanel>
+                            <Ellipse Width="7" Height="7" Fill="#C36E60" Margin="0,0,7,0" VerticalAlignment="Center" />
+                            <TextBlock Text="离线" Style="{StaticResource AgvSummaryLabelStyle}" />
+                        </DockPanel>
+                        <TextBlock x:Name="OfflineCountTextBlock" Text="0" Style="{StaticResource AgvSummaryNumberStyle}" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
 
             <Grid Grid.Row="1" Margin="6,0,6,8">
                 <Grid.RowDefinitions>
@@ -405,10 +262,10 @@
                         </Style>
                     </Grid.Style>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" MaxWidth="380" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Border CornerRadius="9" Height="38"
+                    <Border CornerRadius="6" Height="38"
                             Background="{StaticResource AgvSurfaceBrush}" BorderThickness="1">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -528,10 +385,10 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="CardChrome" Property="BorderBrush" Value="#A7BCDE" />
+                                            <Setter TargetName="CardChrome" Property="BorderBrush" Value="#83BDBB" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="CardChrome" Property="Background" Value="#F7FAFF" />
+                                            <Setter TargetName="CardChrome" Property="Background" Value="#F5FBFA" />
                                             <Setter TargetName="CardChrome" Property="BorderBrush"
                                                     Value="{StaticResource AgvAccentBrush}" />
                                         </Trigger>
@@ -548,7 +405,7 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="agv:AgvModel">
-                        <Border Padding="12,10,12,8" Background="Transparent" Cursor="Hand"
+                        <Border Padding="15,14,15,9" Background="Transparent" Cursor="Hand"
                                 ToolTip="双击编辑 AGV" MouseLeftButtonDown="AgvCardBorder_MouseLeftButtonDown">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -563,10 +420,16 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                               Text="{Binding DeviceID, StringFormat='AGV {0}'}"
-                                               FontSize="17" FontWeight="SemiBold"
-                                               Foreground="{StaticResource AgvTextBrush}" />
+                                    <DockPanel VerticalAlignment="Center">
+                                        <Border Width="32" Height="32" CornerRadius="7" Background="{StaticResource WorkspaceAccentTintBrush}" Margin="0,0,9,0">
+                                            <Path Width="20" Height="18" Stretch="Uniform"
+                                                  Data="{StaticResource AgvVehicleOutline}"
+                                                  Stroke="{StaticResource AgvAccentBrush}" StrokeThickness="1.4" StrokeLineJoin="Round" />
+                                        </Border>
+                                        <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                                   Text="{Binding DeviceID, StringFormat='AGV {0}'}"
+                                                   FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource AgvTextBrush}" />
+                                    </DockPanel>
                                     <Border Grid.Column="1" Margin="6,0,4,0" VerticalAlignment="Center"
                                             Style="{StaticResource AgvStatusPillStyle}">
                                         <TextBlock Style="{StaticResource AgvStatusTextStyle}" />
@@ -582,7 +445,7 @@
                                     </Button>
                                 </Grid>
 
-                                <Border Grid.Row="1" Margin="0,8,0,0" Padding="9,7"
+                                <Border Grid.Row="1" Margin="0,12,0,0" Padding="11,10"
                                         Background="{StaticResource AgvMetricBrush}" CornerRadius="8">
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -685,7 +548,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <Border Grid.Row="2" Margin="6,0,6,12" Padding="12,26" CornerRadius="11"
+            <Border Grid.Row="2" Margin="6,0,6,12" Padding="16,48" CornerRadius="9"
                     Background="{StaticResource AgvSurfaceBrush}" BorderBrush="{StaticResource AgvBorderBrush}"
                     BorderThickness="1" IsHitTestVisible="False">
                 <Border.Style>
@@ -698,9 +561,15 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <TextBlock x:Name="AgvEmptyStateTextBlock" Text="暂无 AGV"
-                           HorizontalAlignment="Center" TextWrapping="Wrap"
-                           Foreground="{StaticResource AgvMutedBrush}" />
+                <StackPanel HorizontalAlignment="Center">
+                    <Border Width="48" Height="48" CornerRadius="12" Background="{StaticResource WorkspaceAccentTintBrush}" Margin="0,0,0,10">
+                        <Path Width="28" Height="24" Stretch="Uniform" StrokeThickness="1.4" StrokeLineJoin="Round"
+                              Stroke="{StaticResource AgvAccentBrush}"
+                              Data="{StaticResource AgvVehicleOutline}" />
+                    </Border>
+                    <TextBlock x:Name="AgvEmptyStateTextBlock" Text="暂无 AGV" FontSize="15" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="{StaticResource AgvTextBrush}" />
+                </StackPanel>
             </Border>
 
         </Grid>

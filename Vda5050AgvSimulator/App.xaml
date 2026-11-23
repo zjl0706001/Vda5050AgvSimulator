@@ -14,14 +14,15 @@
                 <!-- HandyControl 控件样式 -->
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
 
+                <ResourceDictionary Source="Themes/WorkspaceTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- 全局颜色 -->
-            <SolidColorBrush x:Key="PageBackgroundBrush" Color="#F3F6FA" />
+            <SolidColorBrush x:Key="PageBackgroundBrush" Color="{StaticResource WorkspaceCanvasColor}" />
             <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF" />
-            <SolidColorBrush x:Key="PrimaryTextBrush" Color="#1F2937" />
-            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#6B7280" />
-            <SolidColorBrush x:Key="BorderBrushLight" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource WorkspaceInkColor}" />
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="#536D74" />
+            <SolidColorBrush x:Key="BorderBrushLight" Color="{StaticResource WorkspaceLineColor}" />
 
         </ResourceDictionary>
     </Application.Resources>

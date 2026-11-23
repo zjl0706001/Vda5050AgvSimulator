@@ -1,0 +1,180 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="WorkspaceInkColor">#142F3D</Color>
+    <Color x:Key="WorkspaceAccentColor">#087E80</Color>
+    <Color x:Key="WorkspaceAccentTintColor">#E1F3F1</Color>
+    <Color x:Key="WorkspaceCanvasColor">#F2F6F7</Color>
+    <Color x:Key="WorkspaceLineColor">#D8E4E5</Color>
+
+    <SolidColorBrush x:Key="WorkspaceInkBrush" Color="{StaticResource WorkspaceInkColor}" />
+    <SolidColorBrush x:Key="WorkspaceAccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+    <SolidColorBrush x:Key="WorkspaceAccentTintBrush" Color="{StaticResource WorkspaceAccentTintColor}" />
+    <SolidColorBrush x:Key="WorkspaceCanvasBrush" Color="{StaticResource WorkspaceCanvasColor}" />
+    <SolidColorBrush x:Key="WorkspaceLineBrush" Color="{StaticResource WorkspaceLineColor}" />
+
+    <SolidColorBrush x:Key="TabSecondaryBrush" Color="#46616B" />
+    <SolidColorBrush x:Key="TabActiveTextBrush" Color="#065F62" />
+
+    <Style x:Key="WorkspaceTabCloseStyle" TargetType="Button">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="Foreground" Value="{StaticResource TabSecondaryBrush}" />
+        <Setter Property="ToolTip" Value="关闭此页 (Ctrl+F4)" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Surface" CornerRadius="5" Background="Transparent"
+                            BorderBrush="Transparent" BorderThickness="1">
+                        <Path Data="M1,1 L9,9 M9,1 L1,9" Stroke="{TemplateBinding Foreground}"
+                              StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Surface" Property="Background" Value="#D2E8E7" />
+                            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Surface" Property="Background" Value="#B9DBD8" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="WorkspaceTabItemStyle" TargetType="TabItem">
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+        <Setter Property="Padding" Value="13,4" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid Cursor="Hand">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6,6,0,0"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="Caption" TextElement.Foreground="{StaticResource TabSecondaryBrush}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center" ContentSource="Header" RecognizesAccessKey="True" />
+                        </Border>
+                        <Border x:Name="Indicator" VerticalAlignment="Bottom" Height="3" Margin="8,0"
+                                CornerRadius="2,2,0,0" Background="{StaticResource WorkspaceAccentBrush}"
+                                Visibility="Collapsed" IsHitTestVisible="False" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Caption" Property="TextElement.Foreground" Value="{StaticResource TabActiveTextBrush}" />
+                            <Setter TargetName="Caption" Property="TextElement.FontWeight" Value="SemiBold" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SectionTabItemStyle" TargetType="TabItem" BasedOn="{StaticResource WorkspaceTabItemStyle}">
+        <Setter Property="MinHeight" Value="33" />
+        <Setter Property="Margin" Value="1,0" />
+        <Setter Property="Padding" Value="13,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter x:Name="Caption" TextElement.Foreground="{StaticResource TabSecondaryBrush}"
+                                          ContentSource="Header" HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Caption" Property="TextElement.Foreground" Value="{StaticResource TabActiveTextBrush}" />
+                            <Setter TargetName="Caption" Property="TextElement.FontWeight" Value="SemiBold" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E5EEEF" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="BorderBrush" Value="#9BCAC5" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="WorkspaceTabControlStyle" TargetType="TabControl">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource WorkspaceTabItemStyle}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="8,5,8,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid KeyboardNavigation.TabNavigation="Local">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8,8,0,0"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer Focusable="False" VerticalScrollBarVisibility="Disabled"
+                                          HorizontalScrollBarVisibility="Auto" CanContentScroll="False">
+                                <StackPanel IsItemsHost="True" Orientation="Horizontal"
+                                            KeyboardNavigation.TabIndex="0" KeyboardNavigation.TabNavigation="Once"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </ScrollViewer>
+                        </Border>
+                        <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" ContentSource="SelectedContent"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          KeyboardNavigation.TabIndex="1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SectionTabControlStyle" TargetType="TabControl" BasedOn="{StaticResource WorkspaceTabControlStyle}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource SectionTabItemStyle}" />
+        <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+</ResourceDictionary>

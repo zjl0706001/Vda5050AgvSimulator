@@ -23,9 +23,9 @@ namespace Vda5050AgvSimulator.Views;
 
 public partial class AgvListView
 {
-    private const double MinimumCardWidth = 228;
+    private const double MinimumCardWidth = 255;
     private const double CardHorizontalSpacing = 12;
-    private const double CompactLayoutWidth = 600;
+    private const double CompactLayoutWidth = 730;
 
     private static readonly DependencyPropertyKey CardColumnCountPropertyKey =
         DependencyProperty.RegisterReadOnly(

@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         Title="PLC 点位操作面板"
-        Background="#F3F6FB"
-        Foreground="#24324A"
+        Background="{StaticResource WorkspaceCanvasBrush}"
+        Foreground="{StaticResource WorkspaceInkBrush}"
         FontFamily="Microsoft YaHei UI, Segoe UI"
         FontSize="12"
         UseLayoutRounding="True"
@@ -15,11 +15,11 @@
 
         <!-- 全局配色：清爽的工业监控面板风格 -->
         <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
-        <SolidColorBrush x:Key="PageBrush" Color="#F3F6FB" />
-        <SolidColorBrush x:Key="LineBrush" Color="#E2E8F1" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#2563D9" />
-        <SolidColorBrush x:Key="AccentFillBrush" Color="#EAF1FF" />
-        <SolidColorBrush x:Key="SecondaryTextBrush" Color="#536580" />
+        <SolidColorBrush x:Key="PageBrush" Color="{StaticResource WorkspaceCanvasColor}" />
+        <SolidColorBrush x:Key="LineBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
+        <SolidColorBrush x:Key="AccentFillBrush" Color="{StaticResource WorkspaceAccentTintColor}" />
+        <SolidColorBrush x:Key="SecondaryTextBrush" Color="#415E65" />
 
         <!-- 工具按钮 -->
         <ControlTemplate x:Key="ButtonChromeTemplate" TargetType="Button">
@@ -37,7 +37,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#95B6EF" />
+                    <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#AAD5D1" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocused" Value="True">
                     <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
@@ -56,7 +56,7 @@
             <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Foreground" Value="#465770" />
+            <Setter Property="Foreground" Value="#415E65" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Cursor" Value="Hand" />
@@ -84,8 +84,8 @@
             <Setter Property="Width" Value="72" />
             <Setter Property="Padding" Value="4,0" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Background" Value="#EAF1FF" />
-            <Setter Property="BorderBrush" Value="#D9E5FB" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceAccentTintBrush}" />
             <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
             <Setter Property="ContentTemplate">
                 <Setter.Value>
@@ -123,16 +123,16 @@
                         <Condition Binding="{Binding Point.HasCurrentValue}" Value="True" />
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Content" Value="0" />
-                    <Setter Property="Background" Value="#F0F3F7" />
-                    <Setter Property="BorderBrush" Value="#E1E7F0" />
-                    <Setter Property="Foreground" Value="#627186" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
+                    <Setter Property="Foreground" Value="#415E65" />
                 </MultiDataTrigger>
                 <DataTrigger Binding="{Binding Point.HasCurrentValue}" Value="False">
                     <Setter Property="Content" Value="—" />
                     <Setter Property="ToolTip" Value="{Binding Point.LastMessage}" />
-                    <Setter Property="Background" Value="#F1F3F7" />
-                    <Setter Property="BorderBrush" Value="#E2E7EF" />
-                    <Setter Property="Foreground" Value="#8390A3" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
+                    <Setter Property="Foreground" Value="#64828A" />
                 </DataTrigger>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
@@ -155,14 +155,14 @@
             <Setter Property="Height" Value="59" />
             <Setter Property="Margin" Value="4" />
             <Setter Property="Padding" Value="10,7" />
-            <Setter Property="Background" Value="#F9FBFE" />
-            <Setter Property="BorderBrush" Value="#E5EBF4" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+            <Setter Property="BorderBrush" Value="#E8F0F0" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F2F7FF" />
-                    <Setter Property="BorderBrush" Value="#B8CEF4" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="BorderBrush" Value="#AAD5D1" />
                 </Trigger>
                 <DataTrigger
                     Binding="{Binding DataContext.IsCompactCard, RelativeSource={RelativeSource AncestorType={x:Type views:PlcToolPage}}}"
@@ -174,58 +174,15 @@
             </Style.Triggers>
         </Style>
 
-        <!-- 左右布局的标签按钮 -->
-        <Style x:Key="RangeTabStyle" TargetType="TabItem">
-            <Setter Property="Height" Value="34" />
-            <Setter Property="MinWidth" Value="100" />
-            <Setter Property="Padding" Value="14,0" />
-            <Setter Property="Foreground" Value="#61708A" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="TabChrome"
-                                Padding="{TemplateBinding Padding}"
-                                Background="Transparent"
-                                BorderBrush="Transparent"
-                                BorderThickness="1"
-                                CornerRadius="8">
-                            <ContentPresenter ContentSource="Header"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              TextElement.Foreground="{TemplateBinding Foreground}"
-                                              RecognizesAccessKey="True" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabChrome" Property="Background"
-                                        Value="{StaticResource AccentFillBrush}" />
-                                <Setter TargetName="TabChrome" Property="BorderBrush" Value="#CEDDFC" />
-                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
-                                <Setter Property="FontWeight" Value="SemiBold" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="TabChrome" Property="Background" Value="#EDF3FC" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="TabChrome" Property="BorderBrush"
-                                        Value="{StaticResource AccentBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- 目标下拉框：代替默认系统下拉框，统一圆角和内部间距 -->
         <Style x:Key="TargetPickerStyle" TargetType="ComboBox">
             <Setter Property="Height" Value="32" />
             <Setter Property="MinWidth" Value="135" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
-            <Setter Property="Foreground" Value="#33445D" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#DCE4EF" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
             <Setter Property="ToolTip" Value="{Binding SelectedItem.DisplayName, RelativeSource={RelativeSource Self}}" />
             <Setter Property="ItemTemplate">
                 <Setter.Value>
@@ -252,10 +209,10 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsHighlighted" Value="True">
-                                            <Setter TargetName="ItemChrome" Property="Background" Value="#EEF4FF" />
+                                            <Setter TargetName="ItemChrome" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="ItemChrome" Property="Background" Value="#E6EFFF" />
+                                            <Setter TargetName="ItemChrome" Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -293,14 +250,14 @@
                                                 <Path Grid.Column="1"
                                                       HorizontalAlignment="Center"
                                                       VerticalAlignment="Center"
-                                                      Stroke="#71819B"
+                                                      Stroke="#516D73"
                                                       StrokeThickness="1.6"
                                                       Data="M 2,5 L 6,9 L 10,5" />
                                             </Grid>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ComboChrome" Property="BorderBrush" Value="#9BB9E8" />
+                                                <Setter TargetName="ComboChrome" Property="BorderBrush" Value="#AAD5D1" />
                                             </Trigger>
                                             <Trigger Property="IsChecked" Value="True">
                                                 <Setter TargetName="ComboChrome" Property="BorderBrush"
@@ -321,11 +278,11 @@
                                         MaxHeight="320"
                                         Padding="5"
                                         Background="White"
-                                        BorderBrush="#D8E2F0"
+                                        BorderBrush="{StaticResource WorkspaceLineBrush}"
                                         BorderThickness="1"
                                         CornerRadius="8">
                                     <Border.Effect>
-                                        <DropShadowEffect Color="#152747" BlurRadius="12" ShadowDepth="3"
+                                        <DropShadowEffect Color="{StaticResource WorkspaceInkColor}" BlurRadius="12" ShadowDepth="3"
                                                           Opacity="0.12" />
                                     </Border.Effect>
                                     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -417,7 +374,7 @@
                                                     VerticalAlignment="Center">
                                             <TextBlock Text="{Binding DisplayName}"
                                                        ToolTip="{Binding DisplayName}"
-                                                       Foreground="#22334F"
+                                                       Foreground="{StaticResource WorkspaceInkBrush}"
                                                        FontWeight="SemiBold"
                                                        FontSize="12.5"
                                                        TextTrimming="CharacterEllipsis" />
@@ -444,7 +401,7 @@
                                         <TextBlock Grid.Row="0"
                                                    Text="{Binding DisplayName}"
                                                    ToolTip="{Binding DisplayName}"
-                                                   Foreground="#34445C"
+                                                   Foreground="#193E4A"
                                                    FontSize="10.5"
                                                    FontWeight="SemiBold"
                                                    TextTrimming="CharacterEllipsis" />
@@ -485,10 +442,10 @@
                     <TextBlock Text="暂无点位数据"
                                FontSize="14"
                                HorizontalAlignment="Center"
-                               Foreground="#8492A7" />
+                               Foreground="#64828A" />
                     <TextBlock Text="可在 PLC 协议配置中添加点位"
                                Margin="0,7,0,0"
-                               Foreground="#A3AEC0"
+                               Foreground="#9DB6B8"
                                HorizontalAlignment="Center" />
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
@@ -516,13 +473,13 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TabPanel Grid.Column="0"
-                              IsItemsHost="True"
-                              VerticalAlignment="Center"
-                              KeyboardNavigation.TabIndex="1" />
+                    <Border Grid.Column="0" CornerRadius="7" Background="{StaticResource TabRailBrush}" Padding="4">
+                        <TabPanel IsItemsHost="True" VerticalAlignment="Center"
+                                  KeyboardNavigation.TabIndex="0" KeyboardNavigation.TabNavigation="Once" />
+                    </Border>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="卡片宽度" VerticalAlignment="Center" Margin="0,0,8,0"
-                                   Foreground="#61708A" />
+                                   Foreground="#516D73" />
                         <ComboBox x:Name="CardSizePicker" Width="76" MinWidth="76" Margin="0,0,12,0"
                                   Style="{StaticResource TargetPickerStyle}" ItemTemplate="{x:Null}"
                                   ItemsSource="{Binding CardSizeOptions}"
@@ -575,7 +532,7 @@
                             Template="{StaticResource RangeTabsTemplate}"
                             SelectionChanged="RangeTabs_SelectionChanged">
                     <!-- AGV → PLC -->
-                    <TabItem Header="AGV → PLC" ToolTip="字节偏移 0–199" Style="{StaticResource RangeTabStyle}">
+                    <TabItem Header="AGV → PLC" ToolTip="字节偏移 0–199" Style="{StaticResource SectionTabItemStyle}">
                         <Border Background="White" BorderBrush="{StaticResource LineBrush}"
                                 BorderThickness="1" CornerRadius="12" Padding="13,12,13,9">
                             <Grid>
@@ -591,10 +548,10 @@
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="AGV → PLC" FontSize="15" FontWeight="SemiBold"
-                                                       Foreground="#22334F" />
+                                                       Foreground="{StaticResource WorkspaceInkBrush}" />
                                             <Border Margin="9,0,0,0" Padding="6,2"
-                                                    Background="#EEF3FA" CornerRadius="4">
-                                                <TextBlock Text="0–199" Foreground="#64748B" FontSize="10" />
+                                                    Background="{StaticResource WorkspaceCanvasBrush}" CornerRadius="4">
+                                                <TextBlock Text="0–199" Foreground="#516D73" FontSize="10" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="小车发送至 PLC 的点位"
@@ -603,7 +560,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="选择设备" VerticalAlignment="Center"
-                                                   Margin="0,0,9,0" Foreground="#718096" />
+                                                   Margin="0,0,9,0" Foreground="#516D73" />
                                         <ComboBox Width="178" Margin="0,0,9,0"
                                                   ItemsSource="{Binding Targets}"
                                                   SelectedItem="{Binding SelectedTarget, Mode=TwoWay}"
@@ -614,10 +571,10 @@
                                         <TextBlock
                                             Text="{Binding SelectedTarget.AgvToPlc.Cards.Count, StringFormat={}{0} 个点位}"
                                             VerticalAlignment="Center" Margin="12,0,0,0"
-                                            Foreground="#718096" FontSize="11" />
+                                            Foreground="#516D73" FontSize="11" />
                                     </StackPanel>
                                 </Grid>
-                                <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
+                                <Border Grid.Row="1" BorderBrush="{StaticResource WorkspaceCanvasBrush}" BorderThickness="0,1,0,0">
                                     <ContentControl Content="{Binding SelectedTarget.AgvToPlc.Cards}"
                                                     HorizontalContentAlignment="Stretch"
                                                     VerticalContentAlignment="Stretch"
@@ -628,7 +585,7 @@
                     </TabItem>
 
                     <!-- PLC → AGV -->
-                    <TabItem Header="PLC → AGV" ToolTip="字节偏移 200–400" Style="{StaticResource RangeTabStyle}">
+                    <TabItem Header="PLC → AGV" ToolTip="字节偏移 200–400" Style="{StaticResource SectionTabItemStyle}">
                         <Border Background="White" BorderBrush="{StaticResource LineBrush}"
                                 BorderThickness="1" CornerRadius="12" Padding="13,12,13,9">
                             <Grid>
@@ -644,10 +601,10 @@
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="PLC → AGV" FontSize="15" FontWeight="SemiBold"
-                                                       Foreground="#22334F" />
+                                                       Foreground="{StaticResource WorkspaceInkBrush}" />
                                             <Border Margin="9,0,0,0" Padding="6,2"
-                                                    Background="#EEF3FA" CornerRadius="4">
-                                                <TextBlock Text="200–400" Foreground="#64748B" FontSize="10" />
+                                                    Background="{StaticResource WorkspaceCanvasBrush}" CornerRadius="4">
+                                                <TextBlock Text="200–400" Foreground="#516D73" FontSize="10" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="PLC 发送至小车的点位"
@@ -656,7 +613,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="选择设备" VerticalAlignment="Center"
-                                                   Margin="0,0,9,0" Foreground="#718096" />
+                                                   Margin="0,0,9,0" Foreground="#516D73" />
                                         <ComboBox Width="178" Margin="0,0,9,0"
                                                   ItemsSource="{Binding Targets}"
                                                   SelectedItem="{Binding SelectedTarget, Mode=TwoWay}"
@@ -667,10 +624,10 @@
                                         <TextBlock
                                             Text="{Binding SelectedTarget.PlcToAgv.Cards.Count, StringFormat={}{0} 个点位}"
                                             VerticalAlignment="Center" Margin="12,0,0,0"
-                                            Foreground="#718096" FontSize="11" />
+                                            Foreground="#516D73" FontSize="11" />
                                     </StackPanel>
                                 </Grid>
-                                <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
+                                <Border Grid.Row="1" BorderBrush="{StaticResource WorkspaceCanvasBrush}" BorderThickness="0,1,0,0">
                                     <ContentControl Content="{Binding SelectedTarget.PlcToAgv.Cards}"
                                                     HorizontalContentAlignment="Stretch"
                                                     VerticalContentAlignment="Stretch"
@@ -681,7 +638,7 @@
                     </TabItem>
 
                     <!-- 左右对比：每侧独立 PLC/DB/方向，内容为严格等宽两列 -->
-                    <TabItem Header="左右对比" Tag="Compare" Style="{StaticResource RangeTabStyle}">
+                    <TabItem Header="左右对比" Tag="Compare" Style="{StaticResource SectionTabItemStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -706,7 +663,7 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Row="0" Text="左侧点位" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#22334F" />
+                                                   FontWeight="SemiBold" Foreground="{StaticResource WorkspaceInkBrush}" />
                                         <TextBlock Grid.Row="0" Grid.Column="1"
                                                    Text="{Binding LeftRange.Cards.Count, StringFormat={}{0} 个点位}"
                                                    Foreground="{StaticResource SecondaryTextBrush}" FontSize="11"
@@ -725,7 +682,7 @@
                                                      Style="{StaticResource PaneStatusDotStyle}" />
                                         </Grid>
                                     </Grid>
-                                    <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
+                                    <Border Grid.Row="1" BorderBrush="{StaticResource WorkspaceCanvasBrush}" BorderThickness="0,1,0,0">
                                         <ContentControl Content="{Binding LeftRange.Cards}"
                                                         HorizontalContentAlignment="Stretch"
                                                         VerticalContentAlignment="Stretch"
@@ -751,7 +708,7 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Row="0" Text="右侧点位" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="#22334F" />
+                                                   FontWeight="SemiBold" Foreground="{StaticResource WorkspaceInkBrush}" />
                                         <TextBlock Grid.Row="0" Grid.Column="1"
                                                    Text="{Binding RightRange.Cards.Count, StringFormat={}{0} 个点位}"
                                                    Foreground="{StaticResource SecondaryTextBrush}" FontSize="11"
@@ -770,7 +727,7 @@
                                                      Style="{StaticResource PaneStatusDotStyle}" />
                                         </Grid>
                                     </Grid>
-                                    <Border Grid.Row="1" BorderBrush="#EDF1F6" BorderThickness="0,1,0,0">
+                                    <Border Grid.Row="1" BorderBrush="{StaticResource WorkspaceCanvasBrush}" BorderThickness="0,1,0,0">
                                         <ContentControl Content="{Binding RightRange.Cards}"
                                                         HorizontalContentAlignment="Stretch"
                                                         VerticalContentAlignment="Stretch"
@@ -786,8 +743,8 @@
 
         <!-- 写入反馈 -->
         <Border Grid.Row="1"
-                Background="#EDF4FF"
-                BorderBrush="#DAE8FD"
+                Background="{StaticResource WorkspaceAccentTintBrush}"
+                BorderBrush="{StaticResource WorkspaceAccentTintBrush}"
                 BorderThickness="1"
                 CornerRadius="7"
                 Padding="10,7"
@@ -803,7 +760,7 @@
             </Border.Style>
             <TextBlock x:Name="OperationFeedbackText"
                        TextTrimming="CharacterEllipsis"
-                       Foreground="#365F9F"
+                       Foreground="#415E65"
                        ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
         </Border>
 
@@ -811,11 +768,11 @@
         <Canvas x:Name="ValueEditorLayer" ClipToBounds="True">
             <Border x:Name="ValueEditorFlyout" Visibility="Collapsed" DataContext="{x:Null}"
                     Width="{Binding DataContext.EditorPopupWidth, RelativeSource={RelativeSource AncestorType={x:Type views:PlcToolPage}}}"
-                    Padding="3" CornerRadius="6" Background="White" BorderBrush="#91ACD7" BorderThickness="1"
+                    Padding="3" CornerRadius="6" Background="White" BorderBrush="#88BDBA" BorderThickness="1"
                     KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle"
                     PreviewKeyDown="ValueEditor_PreviewKeyDown" AutomationProperties.Name="修改点位值">
                 <Border.Effect>
-                    <DropShadowEffect Color="#1A304F" BlurRadius="6" ShadowDepth="1" Opacity="0.18" />
+                    <DropShadowEffect Color="{StaticResource WorkspaceInkColor}" BlurRadius="6" ShadowDepth="1" Opacity="0.18" />
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -829,7 +786,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="ValueEditorText" Style="{x:Null}" MinWidth="0" MinHeight="0"
                              Margin="0,0,3,0" Padding="3,0" Background="Transparent" BorderThickness="0"
-                             Foreground="#20314B" CaretBrush="#245EDB" FontFamily="Consolas, Microsoft YaHei UI"
+                             Foreground="{StaticResource WorkspaceInkBrush}" CaretBrush="{StaticResource WorkspaceAccentBrush}" FontFamily="Consolas, Microsoft YaHei UI"
                              FontSize="13" VerticalContentAlignment="Center" TextWrapping="NoWrap"
                              HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
                              AutomationProperties.Name="写入值" AutomationProperties.HelpText="{Binding DisplayName}">
@@ -859,7 +816,7 @@
                     <Button Grid.Column="2" Style="{StaticResource PanelButtonStyle}" MinWidth="0" MinHeight="0"
                             Margin="1,0,0,0" Padding="0" Background="Transparent" BorderBrush="Transparent"
                             ToolTip="取消（Esc）" AutomationProperties.Name="取消" Click="CancelValueButton_Click">
-                        <Path Data="M 2,2 L 9,9 M 9,2 L 2,9" Stroke="#526680" StrokeThickness="1.4"
+                        <Path Data="M 2,2 L 9,9 M 9,2 L 2,9" Stroke="#415E65" StrokeThickness="1.4"
                               StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                     </Button>
                     <TextBlock x:Name="ValueEditorError" Grid.Row="1" Grid.ColumnSpan="3" Margin="3,3,2,1"

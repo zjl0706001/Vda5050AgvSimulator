@@ -191,6 +191,7 @@
         <Compile Include="Views\PlcGlobalAutoWriteRuleWindow.xaml.cs"/>
         <Compile Include="Views\PlcPointChangeMonitorWindow.xaml.cs"/>
         <Compile Include="Views\PlcProtocolTemplateImportWindow.xaml.cs"/>
+        <Page Include="Themes\WorkspaceTheme.xaml"/>
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>

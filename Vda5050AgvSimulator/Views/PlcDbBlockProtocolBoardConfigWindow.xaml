@@ -3,12 +3,12 @@
         xmlns:views="clr-namespace:Vda5050AgvSimulator.Views"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="DB 协议看板"
-        Background="#F2F5FA" Foreground="#172B4D" FontFamily="Microsoft YaHei UI, Segoe UI"
+        Background="{StaticResource WorkspaceCanvasBrush}" Foreground="{StaticResource WorkspaceInkBrush}" FontFamily="Microsoft YaHei UI, Segoe UI"
         FontSize="13" SnapsToDevicePixels="True" UseLayoutRounding="True">
     <views:PlcToolPage.Resources>
-        <SolidColorBrush x:Key="LineBrush" Color="#DCE5F0" />
-        <SolidColorBrush x:Key="MutedBrush" Color="#536580" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#245EDB" />
+        <SolidColorBrush x:Key="LineBrush" Color="{StaticResource WorkspaceLineColor}" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#415E65" />
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource WorkspaceAccentColor}" />
         <Style x:Key="CardBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
@@ -22,7 +22,7 @@
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Foreground" Value="#2B405E" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="Cursor" Value="Hand" />
@@ -38,10 +38,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#799CCA" />
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#64828A" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#173E86" />
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#075D60" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Chrome" Property="Opacity" Value="0.78" />
@@ -67,7 +67,7 @@
             <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
         </Style>
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#EEF3FA" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="12" />
@@ -80,12 +80,12 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E8F0FF" />
-                    <Setter Property="Foreground" Value="#173E86" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="Foreground" Value="#075D60" />
                 </Trigger>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                     <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="BorderBrush" Value="#779CDF" />
+                    <Setter Property="BorderBrush" Value="#88BDBA" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -151,8 +151,8 @@
                       SelectedItem="{Binding SelectedProtocolRow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                       HeadersVisibility="Column" SelectionMode="Single" SelectionUnit="FullRow"
-                      Background="White" BorderThickness="0" RowBackground="White" AlternatingRowBackground="#F8FAFD"
-                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E9EFF6"
+                      Background="White" BorderThickness="0" RowBackground="White" AlternatingRowBackground="#F7FAFA"
+                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E8F0F0"
                       RowHeight="36" ColumnHeaderHeight="34"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
@@ -222,7 +222,7 @@
                             <DataTemplate>
                                 <Button Content="写入" Style="{StaticResource ToolButtonStyle}"
                                         MinWidth="53" Height="26" Padding="8,0" Margin="0"
-                                        Background="#EAF2FF" BorderBrush="#CADAF5" Foreground="#234E9A"
+                                        Background="{StaticResource WorkspaceAccentTintBrush}" BorderBrush="#C5E5E1" Foreground="#075D60"
                                         HorizontalAlignment="Center"
                                         Click="WriteRowValueButton_Click" />
                             </DataTemplate>
@@ -247,7 +247,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel VerticalAlignment="Center" Margin="0,0,14,0">
-                <TextBlock x:Name="ModeHintText" Foreground="#245AA4" TextWrapping="Wrap" />
+                <TextBlock x:Name="ModeHintText" Foreground="#075D60" TextWrapping="Wrap" />
                 <TextBlock Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
                            Text="Bool 默认取反，也可填 true/false、1/0 或是/否。整数支持十进制和 0x，Real 可填 12.34，String 可填 ASCII 或留空清除，ByteArray 可填 01 02 FF。" />
             </StackPanel>

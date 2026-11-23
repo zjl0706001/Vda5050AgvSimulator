@@ -4,13 +4,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:plc="clr-namespace:Vda5050AgvSimulator.Models.Plc"
         Title="DB块位值查看"
-        Background="#F5F7FA">
+        Background="{StaticResource WorkspaceCanvasBrush}">
 
     <views:PlcToolPage.Resources>
 
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
         </Style>
@@ -18,8 +18,8 @@
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="78" />
             <Setter Property="Height" Value="32" />
-            <Setter Property="Background" Value="#2563EB" />
-            <Setter Property="BorderBrush" Value="#2563EB" />
+            <Setter Property="Background" Value="{StaticResource WorkspaceAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceAccentBrush}" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -30,8 +30,8 @@
             <Setter Property="Width" Value="78" />
             <Setter Property="Height" Value="32" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#D1D5DB" />
-            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="BorderBrush" Value="#BCCFD0" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
@@ -40,8 +40,8 @@
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
-            <Setter Property="HorizontalGridLinesBrush" Value="#EEF2F7" />
-            <Setter Property="VerticalGridLinesBrush" Value="#EEF2F7" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource WorkspaceCanvasBrush}" />
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="RowHeight" Value="34" />
             <Setter Property="ColumnHeaderHeight" Value="38" />
             <Setter Property="AlternatingRowBackground" Value="#FAFAFA" />
@@ -55,53 +55,53 @@
         </Style>
 
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#F9FAFB" />
-            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Background" Value="#F7FAFA" />
+            <Setter Property="Foreground" Value="#193E4A" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceLineBrush}" />
             <Setter Property="BorderThickness" Value="0,0,1,1" />
             <Setter Property="Padding" Value="6,0" />
         </Style>
 
         <Style TargetType="DataGridCell">
-            <Setter Property="BorderBrush" Value="#EEF2F7" />
+            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceCanvasBrush}" />
             <Setter Property="BorderThickness" Value="0,0,1,0" />
             <Setter Property="Padding" Value="6,0" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
 
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <!-- 单元格选中浅蓝色 -->
-                    <Setter Property="Background" Value="#DBEAFE" />
-                    <Setter Property="Foreground" Value="#1D4ED8" />
-                    <Setter Property="BorderBrush" Value="#BFDBFE" />
+                    <!-- 单元格选中状态 -->
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="Foreground" Value="#075D60" />
+                    <Setter Property="BorderBrush" Value="#C5E5E1" />
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="#111827" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <!-- 鼠标悬停更淡一点 -->
-                    <Setter Property="Background" Value="#EFF6FF" />
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
                 </Trigger>
 
                 <Trigger Property="IsSelected" Value="True">
-                    <!-- 行选中浅蓝色 -->
-                    <Setter Property="Background" Value="#DBEAFE" />
-                    <Setter Property="Foreground" Value="#1D4ED8" />
+                    <!-- 行选中状态 -->
+                    <Setter Property="Background" Value="{StaticResource WorkspaceAccentTintBrush}" />
+                    <Setter Property="Foreground" Value="#075D60" />
                 </Trigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="CenterTextStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="#111827" />
+            <Setter Property="Foreground" Value="{StaticResource WorkspaceInkBrush}" />
             <Setter Property="FontSize" Value="13" />
         </Style>
 
@@ -115,7 +115,7 @@
             <Setter Property="Text" Value="0" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#9CA3AF" />
+            <Setter Property="Foreground" Value="#64828A" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="ToolTip" Value="双击取反当前bit位" />
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -146,24 +146,24 @@
                     <TextBlock Text="{Binding TitleText}"
                                FontSize="18"
                                FontWeight="Bold"
-                               Foreground="#111827" />
+                               Foreground="{StaticResource WorkspaceInkBrush}" />
 
                     <StackPanel Orientation="Horizontal"
                                 Margin="0,8,0,0">
                         <TextBlock Text="DBX0.0 表示第 0 个字节 bit0；DBX0.7 表示第 0 个字节 bit7。双击bit单元格可取反写入。"
                                    FontSize="12"
-                                   Foreground="#6B7280"
+                                   Foreground="#516D73"
                                    VerticalAlignment="Center" />
 
-                        <Border Background="#EFF6FF"
-                                BorderBrush="#BFDBFE"
+                        <Border Background="{StaticResource WorkspaceAccentTintBrush}"
+                                BorderBrush="#C5E5E1"
                                 BorderThickness="1"
                                 CornerRadius="8"
                                 Padding="8,3"
                                 Margin="12,0,0,0">
                             <TextBlock Text="{Binding LastRefreshText}"
                                        FontSize="12"
-                                       Foreground="#2563EB" />
+                                       Foreground="{StaticResource WorkspaceAccentBrush}" />
                         </Border>
                     </StackPanel>
                 </StackPanel>
@@ -228,7 +228,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit0}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -248,7 +248,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit1}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -268,7 +268,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit2}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -288,7 +288,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit3}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -308,7 +308,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit4}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -328,7 +328,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit5}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -348,7 +348,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit6}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -368,7 +368,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Bit7}" Value="True">
                                                     <Setter Property="Text" Value="1" />
-                                                    <Setter Property="Foreground" Value="#2563EB" />
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceAccentBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

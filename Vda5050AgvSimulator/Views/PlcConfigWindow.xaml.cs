@@ -3077,7 +3077,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         var dialog = new PlcToolPage
         {
             Title = title,
-            Background = CreateBatchBrush(242, 245, 250),
+            Background = CreateBatchBrush(242, 246, 247),
             Foreground = Foreground,
             FontFamily = FontFamily,
             FontSize = 13,
@@ -3106,7 +3106,7 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
             Height = 44,
             Margin = new Thickness(0, 0, 14, 0),
             CornerRadius = new CornerRadius(10),
-            Background = CreateBatchBrush(234, 242, 255),
+            Background = CreateBatchBrush(225, 243, 241),
             Child = new System.Windows.Shapes.Path
             {
                 Data = Geometry.Parse(iconGeometry),
@@ -4981,11 +4981,11 @@ public partial class PlcConfigWindow : INotifyPropertyChanged
         }
         else
         {
-            PlcServerStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(100, 116, 139));
+            PlcServerStatusEllipse.Fill = new SolidColorBrush(Color.FromRgb(81, 109, 115));
 
             PlcServerStatusTextBlock.Text = "服务未启动";
 
-            PlcServerStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 128));
+            PlcServerStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(65, 94, 101));
 
             PlcServerStatusHintTextBlock.Text = "选择 PLC 编辑连接参数，勾选启用后启动。";
         }
